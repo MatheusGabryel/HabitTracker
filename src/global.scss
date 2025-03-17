@@ -34,4 +34,38 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// @import "@ionic/angular/css/palettes/dark.class.css";
+
+@font-face {
+    font-family: poppinsLight;
+    src: url('./assets/fonts/Poppins-Light.ttf');
+}
+
+@font-face {
+    font-family: poppinsMedium;
+    src: url('./assets/fonts/Poppins-Medium.ttf');
+}
+
+@font-face {
+    font-family: poppinsRegular;
+    src: url('./assets/fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: poppinsSemiBold;
+    src: url('./assets/fonts/Poppins-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: poppinsBold;
+    src: url('./assets/fonts/Poppins-Bold.ttf');
+}
+
+@font-face {
+    font-family: poppinsExtraBold;
+    src: url('./assets/fonts/Poppins-ExtraBold.ttf');
+}
+
+* {
+    font-family: 'poppinsMedium', sans-serif;
+}
