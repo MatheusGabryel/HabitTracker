@@ -1,20 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonIcon, IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule]
 })
 export class LoginPage implements OnInit {
+  
+  passwordFieldType: string = 'password';
+  password: string = '';
 
-  constructor() { }
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+  constructor() { 
+    addIcons({ eyeOffOutline, eyeOutline})
+  }
 
   ngOnInit() {
+    
   }
 
 }

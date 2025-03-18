@@ -1,14 +1,50 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
+  <ion-grid class="grid-container">
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col size="auto">
+        <div class="login">
+          <header>
+            <h3>HabitTracker</h3>
+          </header>
+          <div class="text-container">
+            <h1>Seja Bem Vindo</h1>
+            <p>Entre com seu email e senha para continuar.</p>
+          </div>
+          <div class="input-container">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu email"
+              />
+            </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">login</ion-title>
-      <h1>login</h1>
-    </ion-toolbar>
-  </ion-header>
+            <label for="password">Senha</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Digite sua senha"
+                [type]="passwordFieldType"
+                [(ngModel)]="password"
+              />
+              <ion-icon
+                class="toggle-icon"
+                (click)="togglePasswordVisibility()"
+                [name]="passwordFieldType === 'password' ? 'eye-off-outline' : 'eye-outline'"
+              ></ion-icon>
+            </div>
+            <a href="">Esqueceu a Senha?</a>
+          </div>
+          <button>Entrar</button>
+          <div class="text-container">
+            <p>Não possui uma conta? <a href="">Cadastre-se</a></p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
