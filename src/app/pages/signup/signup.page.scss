@@ -1,0 +1,110 @@
+ion-content {
+    .grid-container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .login {
+        width: 30rem;
+        height: 50rem;
+        background-color: white;
+        border-radius: 20px;
+        padding: 3rem 4rem;
+
+        h1 {
+            font-family: poppinsBold;
+            font-size: 25;
+        }
+
+        a {
+            color: rgb(224, 0, 77);
+            text-decoration: none;
+        }
+
+        header {
+            padding-bottom: 1rem;
+            display: flex;
+            flex-direction: row;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .text-container {
+            text-align: center;
+        }
+
+        .signup-buttons-container {
+            display: flex;
+            flex-direction: column;
+            padding-top: 1rem;
+            gap: 15px;
+
+            button {
+                border: 1px solid #ccc;
+                background-color: #ffffff;
+                color: #000000;
+            }
+
+            span {
+                font-family: poppinsExtraBold;
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            background-color: rgb(224, 0, 77);
+            color: #ffffff;
+        }
+
+        .line {
+            border-top: 1px solid #ccc;
+            width: 100%;
+            margin: 2.5rem 0 1rem 0;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 100%;
+            padding: 1rem 0 2rem 0;
+            gap: 15px;
+
+            label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 3px;
+            }
+
+            .input-wrapper {
+                input {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 5px;
+                    background-color: white;
+                    padding-right: 40px;
+                }
+                input::placeholder {
+                    font-family: poppinsMedium;
+                    font-size: 13;
+                }
+
+                .toggle-icon {
+                    position: absolute;
+                    right: 10px;
+                    top: 58.7%;
+                    transform: translateY(100%);
+                    font-size: 22px;
+                    cursor: pointer;
+                    color: #666;
+                }
+            }
+        }
+    }
+}
