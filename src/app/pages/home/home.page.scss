@@ -1,0 +1,62 @@
+ion-content {
+    header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #e0004d;
+
+        h3 {
+            color: #0c2340;
+            font-family: poppinsSemiBold;
+            font-size: 30px;
+        }
+
+        button {
+            background-color: transparent;
+
+            ion-icon {
+                border: none;
+                padding: 0.6rem;
+                transition: 0.3s;
+                cursor: pointer;
+            }
+
+            ion-icon:hover {
+                background-color: #0c2340;
+            }
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            ul {
+                list-style: none;
+                display: flex;
+                flex-direction: row;
+                gap: 30px;
+
+                li {
+                    a {
+                        text-decoration: none;
+                        color: white;
+                        font-size: 20px;
+                        font-weight: bold;
+                        transition: 0.3s;
+                        cursor: pointer;
+                        padding: 1rem;
+                    }
+
+                    a:hover {
+                        background-color: #0c2340;
+                    }
+                }
+            }
+        }
+    }
+}

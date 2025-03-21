@@ -1,0 +1,13 @@
+<div class="menu-container">
+  <button (click)="toggleMenu()" class="menu-button">
+    ☰ Menu
+  </button>
+  <nav class="menu-vertical" [class.open]="isMenuOpen">
+    <ul>
+      <li><a>Início</a></li>
+      <li><a>Sobre</a></li>
+      <li><a>Serviços</a></li>
+      <li><a>Contato</a></li>
+    </ul>
+  </nav>
+</div>
