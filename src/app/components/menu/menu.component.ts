@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { homeOutline, homeSharp, leafOutline, folderOutline, flagOutline, cogOutline, helpOutline} from 'ionicons/icons';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
+  imports: [IonIcon, CommonModule],
 })
 export class MenuComponent  implements OnInit {
   isMenuOpen = false;
@@ -12,7 +17,11 @@ export class MenuComponent  implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  constructor() { }
+  constructor() { 
+    addIcons({
+          homeOutline, homeSharp, leafOutline, folderOutline, flagOutline, cogOutline, helpOutline
+        })
+  }
 
   ngOnInit() {}
 
