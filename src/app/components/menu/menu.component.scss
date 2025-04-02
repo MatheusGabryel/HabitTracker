@@ -148,9 +148,30 @@
     padding: 5px 1em;
     background-color: #2f496e;
     border-right: 1px solid #f2f4f894;
+
     position: sticky;
     top: 0;
     align-self: start;
+
+    overflow: hidden;
+
+    img {
+        width: 30px;
+    }
+}
+
+#sidebar.close {
+    padding: 5px;
+    width: 70px;
+    text-wrap: nowrap;
+
+    span {
+        display: none;
+    }
+
+    .dropdown-btn ion-icon:last-child {
+        display: none;
+    }
 }
 
 #sidebar ul {
@@ -179,6 +200,7 @@
     text-decoration: none;
     color: #e6e6eb;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 1em;
 }
@@ -196,7 +218,7 @@
 }
 
 #sidebar a:hover, #sidebar .dropdown-btn:hover {
-    transition: 0.3s;
+    transition: 0.5s;
 
 }
 
@@ -209,13 +231,29 @@
 #sidebar .sub-menu{
     display: grid;
     grid-template-rows: 0fr;
-    transition: 300ms ease-in-out;
 
     > div{
         overflow: hidden;
     }
 }
 
-#siderbar .sub-menu.show {
+.show {
     grid-template-rows: 1fr;
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+#toggle-btn {
+    margin-left: auto;
+    padding: 1em;
+    border: none;
+    border-radius: .5em;
+    background: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #e0004e;
+        transition: 0.3s;
+    }
 }

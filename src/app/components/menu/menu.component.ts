@@ -12,8 +12,9 @@ import { CommonModule } from '@angular/common';
 })
 export class MenuComponent  implements OnInit {
   isMenuOpen = false;
+  public showSubMenu = false;
 
-  toggleMenu() {
+  toggleSidebar() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 

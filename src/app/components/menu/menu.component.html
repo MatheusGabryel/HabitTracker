@@ -69,32 +69,40 @@
   </ul>
 </div> -->
 
-<nav id="sidebar">
+<nav id="sidebar" [ngClass]="{'close': isMenuOpen}">
   <ul>
     <li>
       <span class="logo">HabitTracker</span>
-      <button id="toggle-btn"></button>
-      <ion-icon name="menu-outline" size="large" color="primary"></ion-icon>
+      <button (click)="toggleSidebar()" id="toggle-btn">
+        <ion-icon name="menu-outline" size="large" color="primary"></ion-icon>
+      </button>
     </li>
     <li class="active">
       <a>
-        <ion-icon name="home-outline" size="large" color="primary"></ion-icon>
+        <img src="./assets/icon/home.png" alt="">
         <span>Início</span>
       </a>
     </li>
     <li>
       <a href="">
-        <ion-icon name="leaf-outline" size="large" color="primary"></ion-icon>
+        <img src="./assets/icon/leaf.png" alt="">
         <span>Hábitos</span>
       </a>
     </li>
     <li>
-      <button class="dropdown-btn">
-        <ion-icon name="folder-outline" size="large" color="primary"></ion-icon>
+      <button class="dropdown-btn" (click)="showSubMenu = !showSubMenu">
+        <img src="./assets/icon/folder.png" alt="">
         <span>Categorias</span>
-        <ion-icon name="chevron-down-outline" size="large" color="primary"></ion-icon>
+        <ion-icon
+          name="chevron-down-outline"
+          size="large"
+          color="primary"
+        ></ion-icon>
       </button>
-      <ul class="sub-menu">
+      <ul
+        class="sub-menu"
+        [ngClass]="{ 'show': showSubMenu, 'sub-menu': !showSubMenu }"
+      >
         <div>
           <li><a href="#">Estudos</a></li>
           <li><a href="#">Saúde</a></li>
@@ -104,19 +112,19 @@
     </li>
     <li>
       <a href="">
-        <ion-icon name="flag-outline" size="large" color="primary"></ion-icon>
+        <img src="./assets/icon/red-flag.png" alt="">
         <span>Metas</span>
       </a>
     </li>
     <li>
       <a href="">
-        <ion-icon name="help-outline" size="large" color="primary"></ion-icon>
+        <img src="./assets/icon/question.png" alt="">
         <span>Ajuda</span>
       </a>
     </li>
     <li>
       <a>
-        <ion-icon name="cog-outline" size="large" color="primary"></ion-icon>
+        <img src="./assets/icon/cog-wheel.png" alt="">
         <span>Configurações</span>
       </a>
     </li>
