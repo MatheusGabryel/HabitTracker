@@ -1,62 +1,23 @@
 ion-content {
-    header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #e0004d;
+    main {
+        padding: min(30px, 7%);
+        
+    }
 
-        h3 {
-            color: #0c2340;
-            font-family: poppinsSemiBold;
-            font-size: 30px;
+    .container {
+        border: 1px solid #00000050;
+        border-radius: 1em;
+        margin-bottom: 20px;
+        padding: min(3em, 15);
+
+        p {
+            color: #161616;
+            margin-top: 5px;
+            margin-bottom: 15px;
         }
 
-        button {
-            background-color: transparent;
-
-            ion-icon {
-                border: none;
-                padding: 0.6rem;
-                transition: 0.3s;
-                cursor: pointer;
-            }
-
-            ion-icon:hover {
-                background-color: #0c2340;
-            }
-        }
-
-        .menu {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-
-            ul {
-                list-style: none;
-                display: flex;
-                flex-direction: row;
-                gap: 30px;
-
-                li {
-                    a {
-                        text-decoration: none;
-                        color: white;
-                        font-size: 20px;
-                        font-weight: bold;
-                        transition: 0.3s;
-                        cursor: pointer;
-                        padding: 1rem;
-                    }
-
-                    a:hover {
-                        background-color: #0c2340;
-                    }
-                }
-            }
+        h2, p {
+            margin-top: 1em;
         }
     }
 }

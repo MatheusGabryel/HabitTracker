@@ -1,24 +1,36 @@
-<div (click)="toggleMenu()" class="colapsed-sidebar" [class.open]="isMenuOpen">
+<!-- <div (click)="toggleMenu()" class="colapsed-sidebar" [class.open]="isMenuOpen">
   <div class="bar">
     <div class="logo">
       <img src="./assets/images/logo-no-name.png" alt="" />
+      <h1 *ngIf="isMenuOpen">HabitTracker</h1>
     </div>
     <nav class="main-icons">
       <ul>
         <li>
           <ion-icon name="home-outline" size="large" color="primary"></ion-icon>
-          <!-- <span *ngIf="isMenuOpen">Início</span> -->
+          <span *ngIf="isMenuOpen">Início</span>
         </li>
         <li>
           <ion-icon name="leaf-outline" size="large" color="primary"></ion-icon>
+          <span *ngIf="isMenuOpen">Hábitos</span>
         </li>
         <div class="divisor"></div>
         <li>
-          <ion-icon name="folder-outline" size="large" color="primary"></ion-icon>
+          <div class="category-container">
+            <ion-icon
+              name="folder-outline"
+              size="large"
+              color="primary"
+            ></ion-icon>
+
+            <span *ngIf="isMenuOpen">Categorias</span>
+            <button *ngIf="isMenuOpen">dada</button>
+          </div>
         </li>
         <div class="divisor"></div>
         <li>
           <ion-icon name="flag-outline" size="large" color="primary"></ion-icon>
+          <span *ngIf="isMenuOpen">Metas</span>
         </li>
       </ul>
     </nav>
@@ -26,9 +38,11 @@
       <ul>
         <li>
           <ion-icon name="help-outline" size="large" color="primary"></ion-icon>
+          <span *ngIf="isMenuOpen">Ajuda</span>
         </li>
         <li>
           <ion-icon name="cog-outline" size="large" color="primary"></ion-icon>
+          <span *ngIf="isMenuOpen">Configurações</span>
         </li>
       </ul>
     </nav>
@@ -36,10 +50,12 @@
     <div class="profile">
       <div class="user-img">
         <img src="./assets/images/pexels-aliatiabi-2075520.png" />
+        <span *ngIf="isMenuOpen">Nome</span>
+        <span *ngIf="isMenuOpen">email</span>
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- 
 <div class="sidebar" >
   <button (click)="toggleMenu()" class="close-button">x</button>
@@ -52,3 +68,57 @@
     <li><a href="#">Configurações</a></li>
   </ul>
 </div> -->
+
+<nav id="sidebar">
+  <ul>
+    <li>
+      <span class="logo">HabitTracker</span>
+      <button id="toggle-btn"></button>
+      <ion-icon name="menu-outline" size="large" color="primary"></ion-icon>
+    </li>
+    <li class="active">
+      <a>
+        <ion-icon name="home-outline" size="large" color="primary"></ion-icon>
+        <span>Início</span>
+      </a>
+    </li>
+    <li>
+      <a href="">
+        <ion-icon name="leaf-outline" size="large" color="primary"></ion-icon>
+        <span>Hábitos</span>
+      </a>
+    </li>
+    <li>
+      <button class="dropdown-btn">
+        <ion-icon name="folder-outline" size="large" color="primary"></ion-icon>
+        <span>Categorias</span>
+        <ion-icon name="chevron-down-outline" size="large" color="primary"></ion-icon>
+      </button>
+      <ul class="sub-menu">
+        <div>
+          <li><a href="#">Estudos</a></li>
+          <li><a href="#">Saúde</a></li>
+          <li><a href="#">Hábitos Ruins</a></li>
+        </div>
+      </ul>
+    </li>
+    <li>
+      <a href="">
+        <ion-icon name="flag-outline" size="large" color="primary"></ion-icon>
+        <span>Metas</span>
+      </a>
+    </li>
+    <li>
+      <a href="">
+        <ion-icon name="help-outline" size="large" color="primary"></ion-icon>
+        <span>Ajuda</span>
+      </a>
+    </li>
+    <li>
+      <a>
+        <ion-icon name="cog-outline" size="large" color="primary"></ion-icon>
+        <span>Configurações</span>
+      </a>
+    </li>
+  </ul>
+</nav>
