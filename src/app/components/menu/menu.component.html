@@ -78,19 +78,19 @@
       </button>
     </li>
     <li class="active">
-      <a>
+      <a [routerLink]="'/home'">
         <img src="./assets/icon/home.png" alt="">
         <span>Início</span>
       </a>
     </li>
     <li>
-      <a href="">
+      <a [routerLink]="'/habit'">
         <img src="./assets/icon/leaf.png" alt="">
         <span>Hábitos</span>
       </a>
     </li>
     <li>
-      <button class="dropdown-btn" (click)="showSubMenu = !showSubMenu">
+      <button class="dropdown-btn" (click)="showSubMenu = !showSubMenu" [routerLink]="'/category'">
         <img src="./assets/icon/folder.png" alt="">
         <span>Categorias</span>
         <ion-icon
@@ -111,19 +111,19 @@
       </ul>
     </li>
     <li>
-      <a href="">
+      <a [routerLink]="'/goals'">
         <img src="./assets/icon/red-flag.png" alt="">
         <span>Metas</span>
       </a>
     </li>
     <li>
-      <a href="">
+      <a [routerLink]="'/help'">
         <img src="./assets/icon/question.png" alt="">
         <span>Ajuda</span>
       </a>
     </li>
     <li>
-      <a>
+      <a [routerLink]="'/config'">
         <img src="./assets/icon/cog-wheel.png" alt="">
         <span>Configurações</span>
       </a>
