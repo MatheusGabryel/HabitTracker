@@ -34,6 +34,7 @@
                 id="email"
                 name="email"
                 placeholder="Digite seu email"
+                [(ngModel)]="email"
                 required
               />
             </div>
@@ -44,12 +45,13 @@
                 type="password"
                 id="password"
                 name="password"
+                [(ngModel)]="password"
                 placeholder="Digite sua senha"
                 required
               />
             </div>
           </div>
-          <button [routerLink]="'/home'">Cadastrar-se</button>
+          <button (click)="onRegister()">Cadastrar-se</button>
           <div class="text-container">
             <p>Possui uma conta? <a [routerLink]="'/login'">Entrar.</a></p>
           </div>
