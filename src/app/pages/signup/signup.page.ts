@@ -6,6 +6,8 @@ import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { doc, setDoc } from '@angular/fire/firestore'
 
 @Component({
   selector: 'app-signup',
@@ -16,22 +18,22 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SignupPage implements OnInit {
   email = '';
+  name = '';
   password= '';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     addIcons({arrowBackOutline, logoGoogle});
    }
 
    async onRegister() {
-    console.log('Tentando registrar com:', this.email, this.password);
-    if (!this.email || !this.password) {
+    if (!this.email || !this.password || !this.name) {
       alert('Preencha os campos corretamente.');
       return;
     }
     
     try {
-      const result = await this.authService.register(this.email, this.password);
-      console.log('Registro feito com sucesso!', result);
+      const result = await this.authService.register(this.email, this.password, this.name);
+      alert('Registro feito com sucesso!');
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
         alert('Este e-mail já está sendo usado.');

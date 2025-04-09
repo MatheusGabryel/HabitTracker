@@ -4,8 +4,9 @@ import { FormBuilder, FormsModule } from '@angular/forms';
 import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
-import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,17 +18,37 @@ import { HttpClient } from '@angular/common/http';
 export class LoginPage implements OnInit {
   passwordFieldType: string = 'password';
   password: string = '';
+  email = '';
 
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
-  constructor() { 
-    addIcons({ eyeOffOutline, eyeOutline})
+  constructor(private authService: AuthService, private router: Router) {
+    addIcons({ eyeOffOutline, eyeOutline })
   }
 
+  async onLogin() {
+    try {
+      const userCredential = await this.authService.login(this.email, this.password);
+      console.log('Login bem-sucedido!', userCredential);
+      this.router.navigate(['/home']);
+    } catch (error: any) {
+      console.error('Erro completo:', error);
+      console.log('Código do erro:', error.code);
+      if (error.code === 'auth/user-not-found') {
+        alert('Usuário não encontrado.');
+      } else if (error.code === 'auth/wrong-password') {
+        alert('Senha incorreta.');
+      } else {
+        alert('Erro ao fazer login. Email ou senha incorreta');
+      }
+    }
+  }
+
+
   ngOnInit() {
-    
+
   }
 
 }

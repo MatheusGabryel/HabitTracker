@@ -1,0 +1,6 @@
+<div class="success-container">
+  <h2>Login realizado com sucesso!</h2>
+  <p>Seja bem-vindo, {{ user?.displayName }}</p>
+  <img *ngIf="user?.photoURL" [src]="user.photoURL" alt="Foto de perfil">
+  <button (click)="goToHome()">Continuar</button>
+</div>

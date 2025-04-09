@@ -18,9 +18,9 @@
                 id="email"
                 name="email"
                 placeholder="Digite seu email"
+                [(ngModel)]="email"
               />
             </div>
-
             <label for="password">Senha</label>
             <div class="input-wrapper">
               <input
@@ -39,7 +39,7 @@
             </div>
             <a [routerLink]>Esqueceu a Senha?</a>
           </div>
-          <button [routerLink]="'/home'">Entrar</button>
+          <button (click)="onLogin()">Entrar</button>
           <div class="text-container">
             <p>
               Não possui uma conta? <a [routerLink]="'/signup'">Cadastre-se</a>

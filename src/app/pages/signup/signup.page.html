@@ -19,14 +19,22 @@
               eficaz.
             </p>
           </div>
-          <div class="signup-buttons-container">
-            <button>Cadastrar com o <span>Google</span></button>
-            <button>Cadastrar com o <span>Facebook</span></button>
-          </div>
-
           <div class="line"></div>
 
           <div class="input-container">
+
+            <label for="email">Nome*</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Digite seu nome"
+                [(ngModel)]="name"
+                required
+              />
+            </div>
+
             <label for="email">Email*</label>
             <div class="input-wrapper">
               <input
