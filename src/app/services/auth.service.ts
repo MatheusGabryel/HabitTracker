@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, User, updateProfile, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from '@angular/fire/auth';
-import { BehaviorSubject } from 'rxjs';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Firestore, doc, setDoc, getDoc, docData } from '@angular/fire/firestore';
+import { UserData } from '../interfaces/user.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,13 +27,20 @@ export class AuthService {
       displayName: name
     });
 
-    // await this.saveUserData({
-    //   uid: result.user.uid,
-    //   email: result.user.email,
-    //   displayName: name,
-    //   photoURL: ''
-    // });
+    const userData: UserData = {
+      uid: result.user.uid,
+      email: result.user.email!,
+      displayName: name,
+      photoURL: '',
+      createdAt: new Date(),
+      bio: '',
+      phoneNumber: '',
+      birthday: '',
+      gender: '',
+      location: ''
+    };
 
+    await this.saveUserData(userData);
     return result;
   }
 
@@ -46,17 +55,14 @@ export class AuthService {
   async logout() {
     return this.auth.signOut();
   }
+  saveUserData(user: UserData): Promise<void> {
+    const userRef = doc(this.firestore, 'users', user.uid);
+    return setDoc(userRef, user, { merge: true });
+  }
 
-  // saveUserData(user: any): Promise<void> {
-  //   const userRef = doc(this.firestore, 'users', user.uid);
-  //   const userData = {
-  //     uid: user.uid,
-  //     email: user.email,
-  //     displayName: user.displayName || '',
-  //     photoURL: user.photoURL || '',
-  //     createdAt: new Date()
-  //   };
-  //   return setDoc(userRef, userData, { merge: true });
-  // }
+  getUserDataFromFirestore$(uid: string): Observable<UserData> {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return docData(userRef) as Observable<UserData>;
+  }
   
 }

@@ -7,7 +7,7 @@ import { addIcons } from 'ionicons';
 import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { doc, setDoc } from '@angular/fire/firestore'
+
 
 @Component({
   selector: 'app-signup',
