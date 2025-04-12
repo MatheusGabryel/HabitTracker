@@ -64,5 +64,5 @@ export class AuthService {
     const userRef = doc(this.firestore, `users/${uid}`);
     return docData(userRef) as Observable<UserData>;
   }
-  
+
 }

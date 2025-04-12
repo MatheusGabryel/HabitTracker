@@ -25,10 +25,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage)
   },
   {
-    path: 'config',
-    loadComponent: () => import('./pages/config/config.page').then(m => m.ConfigPage)
-  },
-  {
     path: 'category',
     loadComponent: () => import('./pages/category/category.page').then(m => m.CategoryPage)
   },
@@ -43,5 +39,9 @@ export const routes: Routes = [
   {
     path: 'goals',
     loadComponent: () => import('./pages/goals/goals.page').then(m => m.GoalsPage)
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
   },
 ];

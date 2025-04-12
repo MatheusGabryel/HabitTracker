@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { homeOutline, homeSharp, leafOutline, folderOutline, flagOutline, cogOutline, helpOutline, menuOutline, chevronDownOutline} from 'ionicons/icons';
+import { menuOutline, chevronDownOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertController } from '@ionic/angular';
+import { MenuService } from 'src/app/services/menu.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,23 +14,40 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./menu.component.scss'],
   imports: [IonIcon, CommonModule, RouterLink],
 })
-export class MenuComponent  implements OnInit {
+export class MenuComponent implements OnInit {
   isMenuOpen = false;
   public showSubMenu = false;
 
-  toggleSidebar() {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  
 
   constructor(
     private alertController: AlertController,
     private authService: AuthService,
-    private router: Router) { 
+    public menuService: MenuService,
+    private router: Router) {
     addIcons({
-          homeOutline, homeSharp, leafOutline, folderOutline, flagOutline, cogOutline, helpOutline, menuOutline, chevronDownOutline
-        })
+      menuOutline, chevronDownOutline
+    })
+  }
+
+  toggleSidebarDesktop() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  isMobile = window.innerWidth <= 768;
+  isOpen = false;
+
+  toggleSidebar() {
+    this.isOpen = !this.isOpen;
+  }
+
+  @Output() closeMenu = new EventEmitter<void>();
+
+  get isMobileView(): boolean {
+    return window.innerWidth <= 768;
+  }
+
+  close() {
+    this.menuService.setMenuOpen(false);
   }
 
   async logout() {
@@ -54,6 +72,6 @@ export class MenuComponent  implements OnInit {
     await alert.present();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
 }

@@ -1,0 +1,39 @@
+<ion-content id="main-content">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="auto" class="menu-col" >
+      <app-menu (closeMenu)="menuOpen = false"></app-menu>
+      </ion-col>
+      <ion-col>
+        <div class="page-wrapper">
+          <!-- Header minimalista -->
+          <header class="page-header">
+            <button class="menu-button" (click)="toggleMenu()">
+              <ion-icon name="menu-outline"></ion-icon>
+            </button>
+
+           
+            <h1 class="page-title">Configurações</h1>
+
+            <div class="profile-icon">
+              <img src="assets/profile-icon.svg" alt="Perfil" />
+            </div>
+          </header>
+
+          <!-- Conteúdo da página de configurações -->
+          <main class="page-content">
+            <section class="settings-section">
+              <h2 class="section-title">Preferências Gerais</h2>
+              <!-- Exemplo de item -->
+              <div class="setting-item">
+                <label for="dark-mode">Modo Escuro</label>
+                <input type="checkbox" id="dark-mode" />
+              </div>
+              <!-- Adicione mais itens conforme for necessário -->
+            </section>
+          </main>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

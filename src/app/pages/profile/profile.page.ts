@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { MenuComponent } from './../../components/menu/menu.component';
+import { Component } from '@angular/core';
+import { IonIcon, IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule]
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage {
 
   constructor() { }
 
