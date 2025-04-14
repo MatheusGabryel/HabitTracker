@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
+
 import { Component } from '@angular/core';
-import { IonContent, IonMenuButton, IonGrid, IonCol, IonRow, IonHeader, IonIcon, IonToolbar, IonTitle, IonList, IonItem, IonMenu, IonButtons } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { menuOutline, } from 'ionicons/icons';
 import { MenuController } from '@ionic/angular';
 import { MenuService } from 'src/app/services/menu.service';
+import { HeaderComponent } from "../../components/header/header.component";
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonMenuButton, IonItem, IonList, IonTitle, IonToolbar, IonIcon, IonHeader, IonRow, IonCol, IonGrid, IonContent, IonMenu, MenuComponent, CommonModule]
+  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent]
 })
 export class SettingsPage {
 
@@ -21,9 +23,6 @@ export class SettingsPage {
 
   constructor(public menuService: MenuService) {
     addIcons({menuOutline});
-  }
-  toggleMenu() {
-    this.menuService.toggleMenu();
   }
 
   // checkViewport() {
