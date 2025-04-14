@@ -3,24 +3,24 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid #e5e7eb; // cor clara tipo tailwind "gray-200"
+    border-bottom: 1px solid #e5e7eb;
 }
 .logo-title {
     display: none;
     font-size: 20px;
     font-weight: 600;
-    color: #F26687; // tailwind "gray-800"
+    color: #F26687;
     margin: 0;
 }
 
 .header_right {
     display: flex;
-    gap: 16px; /* Espaço entre "PERFIL" e "MENU" */
+    gap: 16px;
   }
 .page-title {
     font-size: 20px;
     font-family: poppinsBold;
-    color: #1f2937; // tailwind "gray-800
+    color: #1f2937;
     margin: 0;
 }
 

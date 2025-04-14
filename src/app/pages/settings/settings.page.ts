@@ -18,9 +18,6 @@ import { HeaderComponent } from "../../components/header/header.component";
 })
 export class SettingsPage {
 
-  menuOpen = false;
-  isMobile = false;
-
   constructor(public menuService: MenuService) {
     addIcons({menuOutline});
   }
