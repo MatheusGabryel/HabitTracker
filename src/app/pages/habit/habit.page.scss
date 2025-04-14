@@ -1,23 +1,100 @@
 ion-content {
     main {
         padding: min(30px, 7%);
-        
     }
 
-    .container {
-        border: 1px solid #00000050;
-        border-radius: 1em;
-        margin-bottom: 20px;
-        padding: min(3em, 15);
+    .create-cards {
+        display: grid;
+        flex-wrap: wrap;
+        gap: 16px;
+        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 2rem;
+    }
 
-        p {
-            color: #161616;
-            margin-top: 5px;
-            margin-bottom: 15px;
+    .habit-container {
+        margin-top: 1rem;
+    }
+
+    .habit-header,
+    .habit-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .habit-header h2 {
+        font-family: poppinsSemiBold;
+        font-size: 20px;
+    }
+
+    .filter {
+        display: flex;
+        background-color: transparent;
+        align-items: center;
+        border: 1px solid #d3d3d3;
+        padding: 8px;
+        border-radius: 7px;
+        gap: 5px;
+        transition: 0.3s;
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .habit-list-tabs {
+        background-color: #d3d3d3;
+        height: 40px;
+        padding: 1px 10px 1px 2px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        button {
+            background-color: transparent;
+            padding: 5px;
+            transition: 0.3s;
+            font-family: poppinsSemiBold;
         }
 
-        h2, p {
-            margin-top: 1em;
+        .active {
+            background-color: white;
+            border: 1px transparent;
+            border-radius: 5px;
+            height: 95%;
+            padding: 10px;
+        }
+
+        .new-list {
+            background-color: crimson;
+            border-radius: 5px;
+            color: #e5e7eb;
+        }
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: rgb(242, 244, 248);
+        border: 1px solid #d3d3d3;
+        border-radius: 5px;
+        padding: 7px;
+        gap: 5px;
+
+        input {
+            background-color: rgb(242, 244, 248);
+            outline: none;
+            border: none;
+        }
+    }
+
+    .habit-list-cards {
+        ul {
+            list-style: none;
         }
     }
 }

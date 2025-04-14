@@ -7,33 +7,52 @@
 
       <ion-col>
         <main>
-          <div class="container">
-            <h2>Habitos</h2>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero
-              natus dignissimos quas corporis commodi ducimus, ex fugit ut
-              explicabo laudantium, numquam unde reprehenderit sit eveniet
-              dolore blanditiis sapiente omnis! Deleniti?
-            </p>
-          </div>
-          <div class="container">
-            <h2>dasdasda</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Architecto cum, officiis vero omnis ratione officia fugiat, magni
-              id atque delectus modi unde optio veniam voluptates quam, nesciunt
-              nihil tenetur possimus.
-            </p>
-          </div>
-          <div class="container">
-            <h2>sadsaee</h2>
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. A
-              repellat sequi placeat similique aut et adipisci illo quidem
-              dignissimos sed aliquid quae, consequatur, dolores velit impedit
-              sit id hic iusto.
-            </p>
-          </div>
+          <app-header></app-header>
+          <section>
+            <div class="create-cards">
+              <app-create-card
+                [title]="'Novo Hábito'"
+                [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
+              >
+              </app-create-card>
+              <app-create-card
+                [title]="'Nova Lista'"
+                [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
+              >
+              </app-create-card>
+            </div>
+          </section>
+          <section>
+            <div class="habit-container">
+              <div class="habit-header">
+                <h2>Lista de Hábitos</h2>
+                <button class="filter">
+                  <img src="./assets/icon/tune_100dp_434343.png" alt="" />
+                  <p>Filters</p>
+                </button>
+              </div>
+              <div class="habit-toolbar">
+                <nav class="habit-list-tabs">
+                  <button class="active">Ver tudo</button>
+                  <button>Lista 1</button>
+                  <button>Lista 2</button>
+                  <button class="new-list"> + Nova lista</button>
+                </nav>
+                <div class="search-bar">
+                  <img src="./assets/icon/search_100dp_434343.png" alt="" width="25px">
+                  <input type="text" placeholder="Buscar hábito... " />
+                </div>
+              </div>
+              <div class="habit-list-cards">
+                <ul>
+                  <li>HABITOS</li>
+                </ul>
+              </div>
+            </div>
+            <div class="pagination">
+              <button>1</button>
+            </div>
+          </section>
         </main>
       </ion-col>
     </ion-row>
