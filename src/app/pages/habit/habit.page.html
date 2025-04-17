@@ -33,19 +33,35 @@
               </div>
               <div class="habit-toolbar">
                 <nav class="habit-list-tabs">
-                  <button class="active">Ver tudo</button>
-                  <button>Lista 1</button>
-                  <button>Lista 2</button>
-                  <button class="new-list"> + Nova lista</button>
+                  <button
+                  *ngFor="let tab of tabs"
+                  [class.active]="activeTab === tab"
+                  (click)="setActive(tab)"
+                >
+                  {{ tab }}
+                </button>
+                  <button class="new-list">+ Nova lista</button>
                 </nav>
                 <div class="search-bar">
-                  <img src="./assets/icon/search_100dp_434343.png" alt="" width="25px">
+                  <img
+                    src="./assets/icon/search_100dp_434343.png"
+                    alt=""
+                    width="25px"
+                  />
                   <input type="text" placeholder="Buscar hábito... " />
                 </div>
               </div>
               <div class="habit-list-cards">
-                <ul>
-                  <li>HABITOS</li>
+                <div class="list-header">
+                  <div class="header-item name">Nome</div>
+                  <div class="header-item category">Categoria</div>
+                  <div class="header-item status">Status</div>
+                  <div class="header-item priority">Prioridade</div>
+                </div>
+                <ul class="habit-list">
+                  <li>
+                    <app-habit-card style=" width: 100%"></app-habit-card>
+                  </li>
                 </ul>
               </div>
             </div>
