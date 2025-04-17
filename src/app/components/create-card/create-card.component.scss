@@ -20,6 +20,10 @@
     }
 }
 
+.card:active {
+    transform: scale(1);
+  }
+
 
 .card-icon {
     display: inline-block;
