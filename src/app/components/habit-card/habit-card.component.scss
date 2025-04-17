@@ -1,0 +1,74 @@
+
+.habit-card {
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: poppinsBold;
+    font-size: 14px;
+    color: #666;
+    gap: 16px;
+    margin-top: 2rem;
+  }
+  
+  .name {
+    flex: 3.5;
+  }
+  
+  .category {
+    flex: 0.7;
+    text-align: left;
+
+}
+
+.status {
+    flex: 0.7;
+    text-align: left;
+}
+
+.priority {
+    flex: 0.7;
+    text-align: left;
+
+}
+  
+  .habit-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .status-button {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .status-button.nao-feito {
+    color: #aaa;
+  }
+  
+  .status-button.parcial {
+    color: #fbc02d;
+  }
+  
+  .status-button.concluido {
+    color: #4caf50;
+  }
+  
+  .priority.low {
+    color: #4caf50;
+  }
+  
+  .priority.medium {
+    color: #ff9800;
+  }
+  
+  .priority.high {
+    color: #f44336;
+  }
