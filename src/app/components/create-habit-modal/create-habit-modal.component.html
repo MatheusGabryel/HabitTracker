@@ -1,0 +1,140 @@
+<div class="modal-container">
+  <div class="modal-header">
+    <h2>Criar Hábito</h2>
+    <button (click)="closeModal()">X</button>
+  </div>
+
+  <form (ngSubmit)="criarHabito()">
+    <label>Como deseja marcar o progresso?</label>
+    <div class="radio-group">
+      <label>
+        <input
+          type="radio"
+          name="formaProgresso"
+          value="sim_nao"
+          [(ngModel)]="formaProgresso"
+        />
+        Sim ou Não
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="formaProgresso"
+          value="tempo"
+          [(ngModel)]="formaProgresso"
+        />
+        Tempo cronometrado
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="formaProgresso"
+          value="vezes"
+          [(ngModel)]="formaProgresso"
+        />
+        Vezes realizadas
+      </label>
+    </div>
+
+    <hr />
+
+    <label>Nome do Hábito</label>
+    <input type="text" name="nome" [(ngModel)]="habit.nome" required />
+
+    <label>Categoria</label>
+    <select name="categoria" [(ngModel)]="habit.categoria">
+      <option value="saude">Saúde</option>
+      <option value="estudo">Estudo</option>
+      <option value="trabalho">Trabalho</option>
+    </select>
+
+    <div *ngIf="formaProgresso === 'tempo'">
+      <label>Duração da Atividade</label>
+      <select [(ngModel)]="habit.duracao" name="duracao">
+        <option value="5">5 minutos</option>
+        <option value="15">15 minutos</option>
+        <option value="30">30 minutos</option>
+        <option value="60">1 hora</option>
+        <option value="custom">Personalizado</option>
+      </select>
+
+      <label>Horário Preferido</label>
+      <div class="time-range">
+        <input type="time" [(ngModel)]="habit.horaInicio" name="horaInicio" />
+        até
+        <input type="time" [(ngModel)]="habit.horaFim" name="horaFim" />
+      </div>
+    </div>
+
+    <div *ngIf="formaProgresso === 'vezes'">
+      <label>Quantas vezes por dia?</label>
+      <input
+        type="number"
+        name="vezesPorDia"
+        [(ngModel)]="habit.vezesPorDia"
+        min="1"
+      />
+    </div>
+
+    <label>Dias da Semana</label>
+    <div class="dias-checkboxes">
+      <label *ngFor="let dia of diasDaSemana">
+        <input
+          type="checkbox"
+          [value]="dia"
+          (change)="toggleDia(dia)"
+          [checked]="habit.dias.includes(dia)"
+        />
+        {{ dia }}
+      </label>
+    </div>
+
+    <label>Descrição</label>
+    <textarea [(ngModel)]="habit.descricao" name="descricao"></textarea>
+
+    <label>Prioridade</label>
+    <div class="radio-group">
+      <label
+        ><input
+          type="radio"
+          name="prioridade"
+          value="baixa"
+          [(ngModel)]="habit.prioridade"
+        />
+        Baixa</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="prioridade"
+          value="media"
+          [(ngModel)]="habit.prioridade"
+        />
+        Média</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="prioridade"
+          value="media-alta"
+          [(ngModel)]="habit.prioridade"
+        />
+        Média-Alta</label
+      >
+      <label
+        ><input
+          type="radio"
+          name="prioridade"
+          value="alta"
+          [(ngModel)]="habit.prioridade"
+        />
+        Alta</label
+      >
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" (click)="closeModal()">Cancelar</button>
+      <button type="submit">Criar</button>
+    </div>
+  </form>
+</div>

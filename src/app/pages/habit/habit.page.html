@@ -9,10 +9,12 @@
         <main>
           <app-header></app-header>
           <section>
+            <app-create-habit-modal *ngIf="showModal" (close)="closeModal()" @fadeInOut/>
             <div class="create-cards">
               <app-create-card
                 [title]="'Novo Hábito'"
                 [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
+                (click)="openModal()"
               >
               </app-create-card>
               <app-create-card

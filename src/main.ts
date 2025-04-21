@@ -5,6 +5,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore'
 import { getStorage, provideStorage } from '@angular/fire/storage'
 import { environment } from './environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 
 import { routes } from './app/app.routes';
@@ -20,5 +21,6 @@ bootstrapApplication(AppComponent, {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
+    provideAnimations()
   ],
 });

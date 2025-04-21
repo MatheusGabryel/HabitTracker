@@ -5,16 +5,39 @@ import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CreateCardComponent } from "../../components/create-card/create-card.component";
 import { HabitCardComponent } from "../../components/habit-card/habit-card.component";
+import { CreateHabitModalComponent } from "../../components/create-habit-modal/create-habit-modal.component";
+import { trigger, transition, style, animate } from '@angular/animations';
 @Component({
   selector: 'app-habit',
   templateUrl: './habit.page.html',
   styleUrls: ['./habit.page.scss'],
   standalone: true,
-  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent]
+  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' }))
+      ])
+    ])
+  ]
 })
 export class HabitPage {
   tabs = ['Ver tudo', 'Lista 1', 'Lista 2'];
   activeTab = 'Ver tudo';
+
+  showModal = false;
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
 
   setActive(tab: string) {
     this.activeTab = tab;
