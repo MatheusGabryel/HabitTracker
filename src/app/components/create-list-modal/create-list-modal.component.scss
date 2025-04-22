@@ -1,0 +1,90 @@
+:host {
+    position: fixed;
+    top: -3%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    margin: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    button {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+select {
+    background-color: #fff;
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background-color 0.2s;
+    }
+
+    button[type="button"] {
+        background-color: #e0e0e0;
+    }
+
+    button[type="submit"] {
+        background-color: #1976d2;
+        color: white;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+}

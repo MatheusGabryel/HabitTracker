@@ -1,0 +1,30 @@
+<div class="modal-container">
+  <div class="modal-header">
+    <h2>Criar lista</h2>
+    <button (click)="closeModal()">X</button>
+  </div>
+
+  <form action="">
+    <label>Nome</label>
+    <input type="text" name="name" required>
+
+    <label>Icone (opcional)</label>
+    <select name="icon">
+      <option value="emoji1">Emoji1</option>
+      <option value="emoji2">Emoji2</option>
+      <option value="emoji3">Emoji3</option>
+    </select>
+
+    <label>Categoria</label>
+    <select name="category">
+      <option value="saude">Saúde</option>
+      <option value="estudo">Estudo</option>
+      <option value="trabalho">Trabalho</option>
+    </select>
+  </form>
+
+  <div class="modal-footer">
+    <button type="button" (click)="closeModal()">Cancelar</button>
+    <button type="submit">Criar</button>
+  </div>
+</div>
