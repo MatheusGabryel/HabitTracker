@@ -7,12 +7,14 @@ import { CreateCardComponent } from "../../components/create-card/create-card.co
 import { HabitCardComponent } from "../../components/habit-card/habit-card.component";
 import { CreateHabitModalComponent } from "../../components/create-habit-modal/create-habit-modal.component";
 import { trigger, transition, style, animate } from '@angular/animations';
+import { CreateListModalComponent } from "../../components/create-list-modal/create-list-modal.component";
+
 @Component({
   selector: 'app-habit',
   templateUrl: './habit.page.html',
   styleUrls: ['./habit.page.scss'],
   standalone: true,
-  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent],
+  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -29,14 +31,20 @@ export class HabitPage {
   tabs = ['Ver tudo', 'Lista 1', 'Lista 2'];
   activeTab = 'Ver tudo';
 
-  showModal = false;
+  showHabitModal = false;
+  showListModal = false;
 
-  openModal() {
-    this.showModal = true;
+  openHabitModal() {
+    this.showHabitModal = true;
+  }
+
+  openListModal() {
+    this.showListModal = true;
   }
 
   closeModal() {
-    this.showModal = false;
+    this.showHabitModal = false;
+    this.showListModal = false;
   }
 
   setActive(tab: string) {
@@ -47,5 +55,4 @@ export class HabitPage {
 
   ngOnInit() {
   }
-
 }

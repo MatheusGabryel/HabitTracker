@@ -9,17 +9,19 @@
         <main>
           <app-header></app-header>
           <section>
-            <app-create-habit-modal *ngIf="showModal" (close)="closeModal()" @fadeInOut/>
+            <app-create-habit-modal *ngIf="showHabitModal" (close)="closeModal()" @fadeInOut />
+            <app-create-list-modal *ngIf="showListModal" (close)="closeModal()"  @fadeInOut/>
             <div class="create-cards">
               <app-create-card
                 [title]="'Novo Hábito'"
                 [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
-                (click)="openModal()"
+                (click)="openHabitModal()"
               >
               </app-create-card>
               <app-create-card
                 [title]="'Nova Lista'"
                 [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
+                (click)="openListModal()"
               >
               </app-create-card>
             </div>
@@ -42,7 +44,7 @@
                 >
                   {{ tab }}
                 </button>
-                  <button class="new-list">+ Nova lista</button>
+                  <button class="new-list" (click)="openListModal()">+ Nova lista</button>
                 </nav>
                 <div class="search-bar">
                   <img
