@@ -10,6 +10,7 @@
     align-items: center;
     z-index: 9999;
 }
+
 .modal-container {
     background: #fff;
     border-radius: 16px;
@@ -25,18 +26,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-}
 
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
 
-.modal-header button {
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
+    button {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+    }
 }
 
 /* Inputs e campos */
@@ -117,33 +117,32 @@ textarea {
     background-color: #4caf50;
     color: white;
 }
-
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
     margin-top: 24px;
-}
 
-.modal-footer button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: background-color 0.2s;
-}
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background-color 0.2s;
+    }
 
-.modal-footer button[type="button"] {
-    background-color: #e0e0e0;
-}
+    button[type="button"] {
+        background-color: #e0e0e0;
+    }
 
-.modal-footer button[type="submit"] {
-    background-color: #1976d2;
-    color: white;
-}
+    button[type="submit"] {
+        background-color: #1976d2;
+        color: white;
+    }
 
-.modal-footer button:hover {
-    opacity: 0.9;
+    button:hover {
+        opacity: 0.9;
+    }
 }
