@@ -19,7 +19,6 @@ export class AuthService {
       this.currentUser.next(user);
     });
   }
-
   async register(email: string, password: string, name: string) {
     const result = await createUserWithEmailAndPassword(this.auth, email, password);
 
@@ -48,10 +47,6 @@ export class AuthService {
     return await signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  getUser() {
-    return this.currentUser.asObservable();
-  }
-
   async logout() {
     return this.auth.signOut();
   }
@@ -60,9 +55,5 @@ export class AuthService {
     return setDoc(userRef, user, { merge: true });
   }
 
-  getUserDataFromFirestore$(uid: string): Observable<UserData> {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return docData(userRef) as Observable<UserData>;
-  }
 
 }
