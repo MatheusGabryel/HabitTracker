@@ -5,17 +5,17 @@
       <button class="status-button concluido">✓</button>
     </div>
     <div class="name">
-      <span>Beber água</span>
+      <span>{{ habit?.nome }}</span>
     </div>
     <div class="category">
-      <span>Saúde</span>
+      <span>{{ habit?.categoria }}</span>
     </div>
     <div class="status">
       <span class="status">Em progresso</span>
     </div>
 
     <div class="priority">
-      <span class="priority low">Baixa</span>
+      <span class="priority">{{ habit?.prioridade }}</span>
     </div>
     <div class="habit-actions">
       <button class="favorite-button" title="Favoritar">+</button>
@@ -23,7 +23,7 @@
       <button class="edit-button" title="Editar hábito">⋮</button>
     </div>
   </div>
-  <div class="details">
+  <div class="details" >
     <p>Meta: 3km por dia, 5x na semana.</p>
     <p>Dias seguidos: 4</p>
     <div class="actions">

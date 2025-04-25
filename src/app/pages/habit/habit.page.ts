@@ -1,6 +1,7 @@
+import { UserService } from './../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CreateCardComponent } from "../../components/create-card/create-card.component";
@@ -8,6 +9,7 @@ import { HabitCardComponent } from "../../components/habit-card/habit-card.compo
 import { CreateHabitModalComponent } from "../../components/create-habit-modal/create-habit-modal.component";
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CreateListModalComponent } from "../../components/create-list-modal/create-list-modal.component";
+import { Loading } from 'notiflix';
 
 @Component({
   selector: 'app-habit',
@@ -28,8 +30,19 @@ import { CreateListModalComponent } from "../../components/create-list-modal/cre
   ]
 })
 export class HabitPage {
-  tabs = ['Ver tudo', 'Lista 1', 'Lista 2'];
-  activeTab = 'Ver tudo';
+
+  public userService = inject(UserService);
+
+
+  constructor() { }
+
+  ngOnInit() {
+    this.loadLists();
+    this.loadHabitsForActiveTab('Ver tudo');
+  }
+  tabs: any[] = [];
+  activeTab: string = 'Ver tudo';
+  activeListHabits: any[] = [];
 
   showHabitModal = false;
   showListModal = false;
@@ -45,14 +58,38 @@ export class HabitPage {
   closeModal() {
     this.showHabitModal = false;
     this.showListModal = false;
+
+    this.loadLists();
+    this.loadHabitsForActiveTab(this.activeTab);
   }
 
-  setActive(tab: string) {
-    this.activeTab = tab;
+  async setActive(tabName: string) {
+    this.activeTab = tabName;
+    await this.loadHabitsForActiveTab(tabName);
   }
 
-  constructor() { }
 
-  ngOnInit() {
+
+  async loadLists() {
+    const uid = await this.userService.getUserId();
+    if (uid) {
+      // Obter listas do Firestore
+      const lists = await this.userService.getUserLists(uid);
+      this.tabs = [{ name: 'Ver tudo', id: null }, ...lists];
+    }
+    console.log('tabs carregadas', this.tabs);
+  }
+
+  async loadHabitsForActiveTab(tabName: string) {
+    const uid = await this.userService.getUserId();
+    if (!uid) throw new Error('Usuário não autenticado');
+
+    if (tabName === 'Ver tudo') {
+      // Carregar todos os hábitos
+      this.activeListHabits = await this.userService.getUserHabits(uid);
+    } else {
+
+      console.log('hábitos não carregados')
+    }
   }
 }

@@ -61,45 +61,47 @@ ion-content {
         padding: 5px;
         border-radius: 8px;
 
-        button {
-            background: none;
-            padding: 6px 12px;
+
+    }
+
+    .habit-list-tabs button {
+        background: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        color: #6b7280;
+        cursor: pointer;
+        transition: color 0.2s;
+
+        &:hover {
+            background: #d3d3d3;
+        }
+
+        &.active {
+            background: white;
+            color: #333333;
+            font-weight: 600;
+            box-shadow: 0 0 0 1px #d1d5db;
+        }
+
+        &.new-list {
+            background-color: crimson;
             border-radius: 5px;
-            background: transparent;
-            border: none;
-            font-size: 14px;
-            color: #6b7280;
-            cursor: pointer;
-            transition: color 0.2s;
+            color: #e5e7eb;
+            font-weight: 600;
+            transition:
+                background-color 0.2s,
+                color 0.2s,
+                transform 0.2s;
 
             &:hover {
-                background: #d3d3d3;
+                transform: scale(1.03);
             }
 
-            &.active {
-                background: white;
-                color: #333333;
-                font-weight: 600;
-                box-shadow: 0 0 0 1px #d1d5db;
-            }
-
-            &.new-list {
-                background-color: crimson;
-                border-radius: 5px;
-                color: #e5e7eb;
-                font-weight: 600;
-                transition:
-                    background-color 0.2s,
-                    color 0.2s,
-                    transform 0.2s;
-
-                &:hover {
-                    transform: scale(1.03);
-                }
-
-                &:active {
-                    transform: scale(0.98);
-                }
+            &:active {
+                transform: scale(0.98);
             }
         }
     }

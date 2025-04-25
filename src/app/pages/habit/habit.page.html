@@ -39,10 +39,10 @@
                 <nav class="habit-list-tabs">
                   <button
                   *ngFor="let tab of tabs"
-                  [class.active]="activeTab === tab"
-                  (click)="setActive(tab)"
+                  [class.active]="activeTab === tab.name"
+                  (click)="setActive(tab.name)"
                 >
-                  {{ tab }}
+                  {{ tab.name }}
                 </button>
                   <button class="new-list" (click)="openListModal()">+ Nova lista</button>
                 </nav>
@@ -63,8 +63,8 @@
                   <div class="header-item priority">Prioridade</div>
                 </div>
                 <ul class="habit-list">
-                  <li>
-                    <app-habit-card style=" width: 100%"></app-habit-card>
+                  <li *ngFor="let habit of activeListHabits">
+                    <app-habit-card [habit]="habit" style=" width: 100%"></app-habit-card>
                   </li>
                 </ul>
               </div>
