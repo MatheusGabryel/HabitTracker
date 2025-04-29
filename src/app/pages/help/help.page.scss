@@ -1,23 +1,100 @@
 ion-content {
     main {
         padding: min(30px, 7%);
-        
     }
 
-    .container {
-        border: 1px solid #00000050;
-        border-radius: 1em;
-        margin-bottom: 20px;
-        padding: min(3em, 15);
+    section {
+        padding: 2rem 2rem 0 2rem;
+    }
 
-        p {
-            color: #161616;
-            margin-top: 5px;
-            margin-bottom: 15px;
-        }
+    .text-container {
+        display: flex;
+        flex-direction: column;
+    }
 
-        h2, p {
-            margin-top: 1em;
+    .text-container h1 {
+        font-family: poppinsSemiBold;
+        font-size: 30px;
+        color: #e0004d;
+        margin-bottom: 1rem;
+    }
+
+    .text-container .underline {
+        border-bottom: 3px solid #e0004d;
+        width: 4rem;
+        margin-bottom: 3rem;
+    }
+
+    .text-container p {
+        font-size: 18px;
+        margin-bottom: 1rem;
+        width: 90%;
+    }
+
+    .text-container span {
+        font-family: poppinsSemiBold;
+    }
+
+    .text-container a {
+        color: #1976d2;;
+        text-decoration: none;
+    }
+
+    .contact-form {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        padding: 4rem 3rem;
+        gap: 1rem;
+        margin-top: 2rem;
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        textarea {
+            background-color: #fff;
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
         }
     }
+
+    .contact-form textarea {
+        resize: vertical;
+    }
+
+    .contact-form button {
+        padding: 10px 20px;
+        border: none;
+        margin-top: 2rem;
+        border-radius: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background-color 0.2s;
+        width: 100px;
+        color: #fff;
+        background-color: #1976d2;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}
+
+@media(max-width: 768px) {
+    ion-content {
+        main {
+            padding: min(30px, 5%);
+        }
+
+        section {
+            padding: 0;
+        }
+    }
+
 }
