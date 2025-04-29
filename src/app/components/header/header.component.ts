@@ -13,16 +13,29 @@ import { IonIcon } from "@ionic/angular/standalone";
 })
 export class HeaderComponent {
 
-    menuOpen = false;
-    isMobile = false;
-  
-    constructor(public menuService: MenuService) {
-      addIcons({menuOutline});
-    }
-    toggleMenu() {
-      this.menuService.toggleMenu();
-    }
+  public routeToTitleMap: { [key: string]: string } = {
+    'home': 'Início',
+    'habit': 'Hábitos',
+    'categories': 'Categorias',
+    'goals': 'Metas',
+    'settings': 'Configurações',
+    'help': 'Ajuda',
+    'profile': 'Perfil',
+  };
+  public routerName: string = '';
+  public pageTitle: string = '';
+  menuOpen = false;
+  isMobile = false;
 
-  ngOnInit() {}
+  constructor(public menuService: MenuService) {
+    addIcons({ menuOutline });
+    this.routerName = window.location.pathname.split('/')[1];
+    this.pageTitle = this.routeToTitleMap[this.routerName] || 'App';
+  }
+  toggleMenu() {
+    this.menuService.toggleMenu();
+  }
+
+  ngOnInit() { }
 
 }
