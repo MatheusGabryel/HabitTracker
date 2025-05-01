@@ -1,39 +1,175 @@
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 1rem;
-  height: 100%;
+ion-content {
+  main {
+    padding: min(30px, 7%);
+  }
+
+  .page-description h1 {
+    display: none;
+  }
+
+  .page-description p {
+    margin-top: 2rem;
+    font-size: 18px;
+  }
+
+  .settings-header {
+    display: flex;
+    margin-top: 1rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1rem;
+    background: #e5e7eb;
+    padding: 5px;
+    border-radius: 8px;
+    width: auto;
+    margin-top: 0.5rem;
+  }
+
+  .tabs button {
+    background: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      background: #d3d3d3;
+    }
+
+    &.active {
+      background: white;
+      color: #333333;
+      font-weight: 600;
+      box-shadow: 0 0 0 1px #d1d5db;
+    }
+  }
+
+  .tabs-content section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tab-title {
+    margin-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tab-title h2 {
+    font-family: poppinsSemiBold;
+    font-size: 18px;
+  }
+
+  .settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .setting-item {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 3rem;
+  }
+
+  .setting-item .row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .setting-item .row .title {
+    width: 700px;
+    font-family: poppinsSemiBold;
+  }
+
+  .setting-item .row .info-section p {
+    font-family: poppinsRegular;
+    font-size: 15px;
+  }
+
+  .edit-profile button {
+    padding: 10px 20px;
+    border: none;
+    margin-top: 1rem;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+    width: 150px;
+    color: #fff;
+    background-color: #1976d2;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .privacy-content {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .privacy-content p {
+    font-size: 18px;
+    width: 800px;
+  }
+
+  .privacy-content button {
+    padding: 10px 20px;
+    border: none;
+    margin-top: 1rem;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+    width: 200px;
+    color: #fff;
+    background-color: #1976d2;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
 }
 
-.page-content {
-  margin-top: 2rem;
-}
+@media (max-width: 768px) {
+  ion-content {
+    main {
+      padding: min(30px, 5%);
+    }
 
-.settings-section {
-  margin-bottom: 2rem;
-}
+    .page-description h1 {
+      display: block;
+      font-family: poppinsSemiBold;
+      font-size: 19px;
+    }
+    .page-description p {
+      font-size: 15px;
+      margin-top: 1rem;
+    }
 
-.section-title {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #374151; // tailwind "gray-700"
-}
+    .account .settings-group .setting-item .row {
+      display: flex;
+      flex-direction: column;
+    }
 
-.setting-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f9fafb; // tailwind "gray-50"
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.setting-item label {
-  font-size: 1rem;
-  color: #111827; // tailwind "gray-900"
-}
-.menu-col {
-  transition: all 0.3s ease;
+    .privacy-content p {
+      width: auto;
+    }
+  }
 }

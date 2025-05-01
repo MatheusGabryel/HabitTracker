@@ -1,22 +1,105 @@
-<ion-content id="main-content">
+<ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="auto" class="menu-col" >
-      <app-menu></app-menu>
+      <ion-col size="auto">
+        <app-menu></app-menu>
       </ion-col>
+
       <ion-col>
-        <div class="page-wrapper">
+        <main>
           <app-header></app-header>
-          <main class="page-content">
-            <section class="settings-section">
-              <h2 class="section-title">Preferências Gerais</h2>
-              <div class="setting-item">
-                <label for="dark-mode">Modo Escuro</label>
-                <input type="checkbox" id="dark-mode" />
+          <div class="page-description">
+            <h1>Configurações</h1>
+            <p>Gerencie suas preferências, dados da conta e privacidade.</p>
+          </div>
+          <section>
+            <div class="settings-header">
+              <div class="tabs">
+                <button (click)="changeSection('account')" [class.active]="currentSection === 'account'">Conta</button>
+                <button (click)="changeSection('preferences')" [class.active]="currentSection === 'preferences'">Preferências</button>
+                <button (click)="changeSection('privacy')" [class.active]="currentSection === 'privacy'">Privacidade</button>
               </div>
-            </section>
-          </main>
-        </div>
+            </div>
+            <div class="tabs-content">
+              <section class="account" *ngIf="currentSection === 'account'">
+                <div class="tab-title">
+                  <h2>Informações do Usuario</h2>
+                </div>
+                <div class="settings-group">
+                  <div class="setting-item">
+                    <div class="row">
+                      <div class="title">Name*</div>
+                      <div class="info-section">
+                        <p>{{ nome }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="setting-item">
+                    <div class="row">
+                      <div class="title">Email*</div>
+                      <div class="info-section">
+                        <p>{{ email }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="edit-profile">
+                    <button>Editar Perfil</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="preferences" *ngIf="currentSection === 'preferences'">
+                <div class="tab-title">
+                  <h2>Preferencias</h2>
+                </div>
+                <div class="settings-group">
+                  <div class="setting-item">
+                    <div class="row">
+                      <div class="title">Tema</div>
+                      <div class="options">
+                        <app-toggle-theme></app-toggle-theme>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="row">
+                      <div class="title">Idioma</div>
+                      <div class="options">
+                        <p>PT / EN</p>
+                        <app-switch></app-switch>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="row">
+                      <div class="title">Notificações por e-mail</div>
+                      <div class="options">
+                        <app-switch></app-switch>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="privacy" *ngIf="currentSection === 'privacy'">
+                <div class="tab-title">
+                  <h2>Privacidade</h2>
+                </div>
+                <div class="privacy-content">
+                  <p>
+                    Seus dados são armazenados com segurança na nuvem,
+                    vinculados à sua conta. Nenhuma informação é compartilhada
+                    com terceiros. Você pode solicitar a exclusão da sua conta e
+                    dados a qualquer momento clicando no botão abaixo.
+                  </p>
+                  <button>Excluir meus dados</button>
+                </div>
+              </section>
+            </div>
+          </section>
+        </main>
       </ion-col>
     </ion-row>
   </ion-grid>

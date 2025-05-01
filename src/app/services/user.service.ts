@@ -5,6 +5,7 @@ import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, set
 import { Auth } from '@angular/fire/auth';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { BehaviorSubject } from 'rxjs';
+import { UserData } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -81,10 +82,10 @@ export class UserService {
   }
 
 
-  public async getUserDoc(uid: string) {
+  public async getUserDoc(uid: string): Promise<UserData | null> {
     const docRef = doc(this.collectionRef, uid);
     const snapshot = await getDoc(docRef);
-    return snapshot.data();
+    return snapshot.exists() ? snapshot.data() as UserData : null;
   }
 }
 
