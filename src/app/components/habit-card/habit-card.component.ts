@@ -24,16 +24,16 @@ export class HabitCardComponent implements OnInit {
   }
 
   public async getHabits() {
-    Loading.circle()
+    // Loading.circle()
     try {
       const uid = await this.userService.getUserId();
       if (!uid) throw new Error('Usuário não autenticado');
   
       this.habits = await this.userService.getUserHabits(uid);
       
-      Loading.remove()
+      // Loading.remove()
     } catch (err: any) {
-      Loading.remove();
+      // Loading.remove();
       console.error(err);
       throw new Error(err.message)
     }

@@ -1,9 +1,4 @@
-<button class="menu-button" *ngIf="isMobile" (click)="toggleSidebar()">
-  <ion-icon name="menu-outline"></ion-icon>
-</button>
-
-<nav
-  class="sidebar mobile"
+<nav  class="sidebar mobile"
   *ngIf="menuService.isMobile"
   [ngClass]="{ open: menuService.isOpen }"
 >

@@ -14,7 +14,7 @@ import { Observable, switchMap, of } from 'rxjs';
 })
 export class HomePage {
   userData: any;;
-  user$ = this.authService.getUser();
+  // user$ = this.authService.getUser();
   displayName = '';
   email = ''
   userData$!: Observable<any>;
@@ -22,14 +22,14 @@ export class HomePage {
   constructor(private authService: AuthService) {
   }
   ngOnInit() {
-    this.userData$ = this.authService.getUser().pipe(
-      switchMap((user) => {
-        if (user) {
-          return this.authService.getUserDataFromFirestore$(user.uid);
-        } else {
-          return of(null);
-        }
-      })
-    );
+    // this.userData$ = this.authService.getUser().pipe(
+    //   switchMap((user) => {
+    //     if (user) {
+    //       return this.authService.getUserDataFromFirestore$(user.uid);
+    //     } else {
+    //       return of(null);
+    //     }
+    //   })
+    // );
   }
 }
