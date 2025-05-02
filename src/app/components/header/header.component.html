@@ -1,15 +1,34 @@
 <header class="page-header">
   <div class="header_left">
-    <h1 class="page-title">{{pageTitle}}</h1>
+    <h1 class="page-title">{{ pageTitle }}</h1>
     <h1 class="logo-title">HabitTracker</h1>
   </div>
 
   <div class="header_right">
-    <div class="profile-icon">
-      <img src="assets/profile-icon.svg" alt="Perfil" />
+    <div class="profile" >
+      <div class="user-menu-container">
+        <button class="avatar-btn" (click)="toggleUserMenu(); $event.stopPropagation()">
+          <img src="" alt="Avatar do usuário" />
+        </button>
+      
+        <div class="menu" [ngClass]="{ 'show': isOpen }">
+          <div class="user-info">
+            <p class="name">{{ nome }}</p>
+            <p class="email">{{ email }}</p>
+          </div>
+
+          <div class="menu-item" (click)='closeUserMenu()' (click)="isModalOpen = true">👤 <span>Account</span></div>
+          <div class="menu-item" [routerLink]="'/settings'" (click)='closeUserMenu()'>⚙️ <span>Settings</span></div>
+
+          <div class="menu-item logout" (click)="logout()">↩️ <span>Log out</span></div>
+        </div>
+      </div>
+
     </div>
     <button class="menu-button" (click)="toggleMenu()">
       <ion-icon name="menu-outline"></ion-icon>
     </button>
   </div>
 </header>
+
+<app-profile-modal [isOpen]="isModalOpen" (closed)="isModalOpen = false"></app-profile-modal>

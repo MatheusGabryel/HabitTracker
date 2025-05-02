@@ -1,0 +1,37 @@
+<div class="modal-backdrop" *ngIf="isOpen">
+  <div class="modal-container">
+    <div class="header">
+      <h2>Minha Conta</h2>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="profile-info">
+      <img class="avatar" src="https://i.pravatar.cc/100" alt="Avatar" />
+      <p class="username">{{ user.name }}</p>
+      <p class="email">{{ user.email }}</p>
+      <p class="joined">Entrou em: {{ user.joined }}</p>
+    </div>
+
+    <form class="form">
+      <label>Nome</label>
+      <input type="text" [(ngModel)]="user.name" name="name" />
+
+      <label>Email</label>
+      <input type="email" [(ngModel)]="user.email" name="email" />
+
+      <label>País</label>
+      <input type="text" [(ngModel)]="user.country" name="country" />
+
+      <label>Usuário</label>
+      <div class="username-group">
+        <span>habittracker.com/</span>
+        <input type="text" [(ngModel)]="user.username" name="username" />
+      </div>
+    </form>
+
+    <div class="footer">
+      <button class="cancel-btn" (click)="closeModal()">Cancelar</button>
+      <button class="save-btn" (click)="saveChanges()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
