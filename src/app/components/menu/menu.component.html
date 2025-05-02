@@ -17,31 +17,6 @@
       </a>
     </li>
     <li>
-      <button
-        class="dropdown-btn"
-        (click)="showSubMenu = !showSubMenu"
-        [routerLink]="'/category'"
-      >
-        <img src="./assets/icon/folder.png" alt="" />
-        <span>Categorias</span>
-        <ion-icon
-          name="chevron-down-outline"
-          size="large"
-          color="primary"
-        ></ion-icon>
-      </button>
-      <ul
-        class="sub-menu"
-        [ngClass]="{ show: showSubMenu, 'sub-menu': !showSubMenu }"
-      >
-        <div>
-          <li><a href="#">Estudos</a></li>
-          <li><a href="#">Saúde</a></li>
-          <li><a href="#">Hábitos Ruins</a></li>
-        </div>
-      </ul>
-    </li>
-    <li>
       <a [routerLink]="'/goals'">
         <img src="./assets/icon/red-flag.png" alt="" />
         <span>Metas</span>
@@ -67,9 +42,6 @@
         />
         <span>profile</span>
       </a>
-    </li>
-    <li>
-      <button (click)="logout()">Sair</button>
     </li>
   </ul>
 </nav>
@@ -100,31 +72,6 @@ id="sidebar"
       </a>
     </li>
     <li>
-      <button
-        class="dropdown-btn"
-        (click)="showSubMenu = !showSubMenu"
-        [routerLink]="'/category'"
-      >
-        <img src="./assets/icon/folder.png" alt="" />
-        <span>Categorias</span>
-        <ion-icon
-          name="chevron-down-outline"
-          size="large"
-          color="primary"
-        ></ion-icon>
-      </button>
-      <ul
-        class="sub-menu"
-        [ngClass]="{ show: showSubMenu, 'sub-menu': !showSubMenu }"
-      >
-        <div>
-          <li><a href="#">Estudos</a></li>
-          <li><a href="#">Saúde</a></li>
-          <li><a href="#">Hábitos Ruins</a></li>
-        </div>
-      </ul>
-    </li>
-    <li>
       <a [routerLink]="'/goals'">
         <img src="./assets/icon/red-flag.png" alt="" />
         <span>Metas</span>
@@ -141,18 +88,6 @@ id="sidebar"
         <img src="./assets/icon/cog-wheel.png" alt="" />
         <span>Configurações</span>
       </a>
-    </li>
-    <li>
-      <a [routerLink]="'/profile'">
-        <img
-          src="./assets/icon/person_250dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.png"
-          alt=""
-        />
-        <span>profile</span>
-      </a>
-    </li>
-    <li>
-      <button (click)="logout()">Sair</button>
     </li>
   </ul>
 </nav>

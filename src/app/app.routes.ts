@@ -21,14 +21,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/signup/signup.page').then(m => m.SignupPage)
   },
   {
-    path: 'profile',
-    loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage)
-  },
-  {
-    path: 'category',
-    loadComponent: () => import('./pages/category/category.page').then(m => m.CategoryPage)
-  },
-  {
     path: 'habit',
     loadComponent: () => import('./pages/habit/habit.page').then(m => m.HabitPage)
   },

@@ -50,28 +50,6 @@ export class MenuComponent implements OnInit {
     this.menuService.setMenuOpen(false);
   }
 
-  async logout() {
-    const alert = await this.alertController.create({
-      header: 'Confirmação',
-      message: 'Deseja realmente sair da conta?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Sair',
-          handler: async () => {
-            await this.authService.logout();
-            this.router.navigate(['/login']);
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
   ngOnInit() { }
 
 }
