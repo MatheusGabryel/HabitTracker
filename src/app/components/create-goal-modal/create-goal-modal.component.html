@@ -1,0 +1,60 @@
+<div class="overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Criar Meta</h2>
+      <button class="close-btn" (click)="onFechar()">×</button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <!-- Nome da meta -->
+      <label>Nome da Meta</label>
+      <input type="text" [(ngModel)]="meta.nome" name="nome" required>
+
+      <!-- Vincular hábito -->
+      <label>Deseja vincular a um hábito?</label>
+      <div class="toggle-options">
+        <label><input type="radio" [(ngModel)]="meta.vinculaHabito" [value]="true" name="vincula"> Sim</label>
+        <label><input type="radio" [(ngModel)]="meta.vinculaHabito" [value]="false" name="vincula"> Não</label>
+      </div>
+
+      <!-- Hábito vinculado (se sim) -->
+      <div *ngIf="meta.vinculaHabito">
+        <label>Selecione o Hábito</label>
+        <select [(ngModel)]="meta.habitoId" name="habito">
+          <option *ngFor="let h of habitos" [value]="h">{{ h }}</option>
+        </select>
+      </div>
+
+      <!-- Objetivo do hábito -->
+      <label>Objetivo da Meta</label>
+      <input type="text" [(ngModel)]="meta.objetivo" name="objetivo" required>
+
+      <!-- Forma de marcação -->
+      <label>Como deseja marcar o progresso?</label>
+      <div class="toggle-options">
+        <label *ngFor="let tipo of tiposMarcacao">
+          <input type="radio" name="tipoMarcacao" [(ngModel)]="meta.tipoMarcacao" [value]="tipo">
+          {{ tipo }}
+        </label>
+      </div>
+
+      <!-- Data final opcional -->
+      <label>Possui previsão de término?</label>
+      <div class="toggle-options">
+        <label><input type="radio" [(ngModel)]="meta.temDataFinal" [value]="true" name="dataFinal"> Sim</label>
+        <label><input type="radio" [(ngModel)]="meta.temDataFinal" [value]="false" name="dataFinal"> Não</label>
+      </div>
+
+      <div *ngIf="meta.temDataFinal">
+        <label>Data final prevista</label>
+        <input type="date" [(ngModel)]="meta.dataFinal" name="dataFinalInput">
+      </div>
+
+      <!-- Botões -->
+      <div class="btn-group">
+        <button type="button" class="cancelar" (click)="onFechar()">Cancelar</button>
+        <button type="submit" class="criar">Criar</button>
+      </div>
+    </form>
+  </div>
+</div>

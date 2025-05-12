@@ -8,6 +8,10 @@
       <ion-col>
         <main>
           <app-header></app-header>
+          <app-create-goal-modal
+            *ngIf="mostrarModal"
+            (fechar)="mostrarModal = false"
+          ></app-create-goal-modal>
           <section class="header-goal">
             <div class="text">
               <h1>Transforme seus hábitos em objetivos concretoss!</h1>
@@ -17,7 +21,7 @@
               </p>
             </div>
             <div class="create-goal">
-              <div class="create-goal-card">
+              <div class="create-goal-card" (click)="mostrarModal = true">
                 <div>
                   <img
                     src="./assets/icon/emoji_events_100dp_FFFFFF.png"
@@ -40,14 +44,17 @@
             <div class="list-header">
               <h2>Lista de Metas</h2>
               <button class="filter">
-                <img src="./assets/icon/tune_100dp_434343.png" alt=""/>
+                <img src="./assets/icon/tune_100dp_434343.png" alt="" />
                 <p>Filters</p>
               </button>
             </div>
             <div class="goal-cards">
-              <div class="card" style="background-color: rgba(253, 255, 134, 0.527);">
+              <div
+                class="card"
+                style="background-color: rgba(253, 255, 134, 0.527)"
+              >
                 <div class="header-container">
-                  <div class="title">'tituloaaaaaaaaaaaaaaaaaaaaa'</div>
+                  <div class="title">'tituloa</div>
                   <div class="icon">
                     <img
                       src="./assets/icon/emoji_events_100dp_434343.png"
@@ -57,10 +64,11 @@
                 </div>
                 <div class="progress-container">
                   <div class="teste">teste</div>
-                  <div class="percentage">25%</div>
+
                   <div class="bar">
                     <div class="progress-bar"></div>
                   </div>
+                  <div class="percentage">25%</div>
                 </div>
                 <div class="footer-container">
                   <div class="status">⏳ Em andamento</div>
@@ -69,9 +77,12 @@
                   </div>
                 </div>
               </div>
-              <div class="card" style="background-color: rgba(152, 255, 143, 0.507);">
+              <div
+                class="card"
+                style="background-color: rgba(152, 255, 143, 0.507)"
+              >
                 <div class="header-container">
-                  <div class="title">'tituloaaaaaaaaaaaaaaaaaaaaa'</div>
+                  <div class="title">'titulo'</div>
                   <div class="icon">
                     <img
                       src="./assets/icon/emoji_events_100dp_434343.png"
@@ -93,9 +104,12 @@
                   </div>
                 </div>
               </div>
-              <div class="card" style="background-color: rgba(255, 149, 149, 0.411);">
+              <div
+                class="card"
+                style="background-color: rgba(255, 149, 149, 0.411)"
+              >
                 <div class="header-container">
-                  <div class="title">'tituloaaaaaaaaaaaaaaaaaaaaa'</div>
+                  <div class="title">'titulo'</div>
                   <div class="icon">
                     <img
                       src="./assets/icon/emoji_events_100dp_434343.png"
@@ -117,7 +131,6 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </section>
         </main>
