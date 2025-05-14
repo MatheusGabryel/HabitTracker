@@ -1,27 +1,88 @@
 ion-content {
     main {
         padding: min(30px, 7%);
+        height: 100vh;
+    }
+
+    .dashboard .top-cards, .bottom-cards {
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+        height: auto;
+    }
+
+    .dashboard .top-cards {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 8px;
+    }
+
+    .habit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 40%;
+        height: 100%;
+
+        .motivational-card {
+            background-color: rgb(0, 0, 0);
+            width: 100%;
+            flex: 1.5;
+            padding: 2rem;
+            box-sizing: border-box;
+            border-radius: 15px;
+        }
+
+        .habit-card {
+            background-color: aquamarine;
+            width: 100%;
+            flex: 1;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            border-radius: 15px;
+        }
+
+    }
+
+    .calendar {
+        width: 70%;
+    }
+
+    .goal {
+        display: flex;
+        flex-direction: column;
+        width: 60%;
+
+        .header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            h1 {
+                margin: 0;
+                font-size: 20px;
+            }
+
+            a {
+                font-family: poppinsSemiBold;
+                color: #333333;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
         
-    }
-
-    .container {
-        border: 1px solid #00000050;
-        border-radius: 1em;
-        margin-bottom: 20px;
-        padding: min(3em, 15);
-
-        p {
-            color: #161616;
-            margin-top: 5px;
-            margin-bottom: 15px;
-        }
-
-        h2, p {
-            margin-top: 1em;
         }
     }
-}
 
-button {
-    background-color: #161616;
+    .stats {
+        width: 40%;
+    }
 }
