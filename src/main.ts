@@ -11,6 +11,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideHttpClient } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -21,6 +22,7 @@ bootstrapApplication(AppComponent, {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
-    provideAnimations()
+    provideAnimations(),
+    provideHttpClient()
   ],
 });

@@ -24,23 +24,20 @@
               </p>
             </div>
             <div class="form-container">
-              <form action="" class="contact-form">
+              <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="contact-form">
                 <label for="">Nome</label>
-                <input type="text">
+                <input type="text" formControlName="name" name="name">
 
                 <label for="">Email</label>
-                <input type="email">
-
-                <label for="">Número</label>
-                <input type="tel">
+                <input type="email" formControlName="email" name="email">
 
                 <label for="">Assunto</label>
-                <input type="text">
+                <input type="text" formControlName="subject" name="subject">
 
                 <label for="">Mensagem</label>
-                <textarea rows="6"></textarea>
+                <textarea rows="6" formControlName="message" name="message"></textarea>
 
-                <button>Enviar</button>
+                <button type="submit" [disabled]="formulario.invalid">Enviar</button>
               </form>
             </div>
           </section>

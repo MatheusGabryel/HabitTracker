@@ -83,6 +83,11 @@ ion-content {
         &:hover {
             opacity: 0.9;
         }
+
+        &:disabled {
+            background-color: rgb(135, 169, 233);
+            cursor: auto;
+        }
     }
 }
 
