@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
     "@ionic/angular": "^8.0.0",
+    "cors": "^2.8.5",
     "entities": "^6.0.0",
     "firebase": "^11.6.0",
     "ionicons": "^7.0.0",
