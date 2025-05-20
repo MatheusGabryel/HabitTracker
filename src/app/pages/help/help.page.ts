@@ -1,7 +1,6 @@
-import { EmailService } from '../../services/email-service/email.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Injectable, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,61 +16,78 @@ import { HttpClient } from '@angular/common/http';
   imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, FormsModule, ReactiveFormsModule],
 })
 export class HelpPage {
+  formulario!: FormGroup;
+  private fb = inject(FormBuilder);
 
-  public formulario!: FormGroup;
-
-
-  constructor(private fb: FormBuilder,
-    private emailService: EmailService, private http: HttpClient) { 
-    }
+  constructor() {}
 
   ngOnInit() {
     this.formulario = this.fb.group({
-      name: ['', [Validators.required]],
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      subject: ['', [Validators.required]],
+      subject: ['', Validators.required],
       message: ['', [Validators.required, Validators.minLength(10)]],
+      _honey: ['']
     });
   }
 
-  public onSubmit() {
+  async onSubmit(event: Event) {
+    event.preventDefault();
+
     if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
       Swal.fire({
-        icon: "error",
-        title: "Erro",
-        heightAuto: false,
-        text: "Preencha os campos corretamente",
+        icon: 'error',
+        title: 'Erro',
+        text: 'Por favor, preencha todos os campos corretamente',
         confirmButtonColor: '#E0004D'
       });
-      return
+      return;
     }
 
-    const formData = this.formulario.value;
+    // Se honeypot estiver preenchido, bloqueia (spam)
+    if (this.formulario.value._honey) {
+      console.log('Spam detectado pelo honeypot');
+      return;
+    }
 
-    this.emailService.sendEmail(formData).subscribe({
-      next: () => {
+    // Cria um FormData para enviar via fetch
+    const formData = new FormData();
+    formData.append('name', this.formulario.value.name);
+    formData.append('email', this.formulario.value.email);
+    formData.append('subject', this.formulario.value.subject);
+    formData.append('message', this.formulario.value.message);
+    formData.append('_captcha', 'false'); // disable captcha
+
+    try {
+      const response = await fetch('https://formsubmit.co/mgabryel2007@gmail.com', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
         Swal.fire({
-          title: "Email enviado",
-          text: "Obrigado pelo seu feedback! :)",
-          icon: "success",
+          title: 'Email enviado',
+          text: 'Obrigado pelo seu feedback! :)',
           heightAuto: false,
+          icon: 'success',
           confirmButtonColor: '#E0004D'
         });
         this.formulario.reset();
-      },
-      error: (err) => {
-        console.log("Erro no envio do email:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Erro ao enviar",
-          text: "Tente novamente mais tarde.",
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+      } else {
+        throw new Error('Erro no envio do formulário');
       }
-    });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao enviar',
+        heightAuto: false,
+        text: 'Tente novamente mais tarde.',
+        confirmButtonColor: '#E0004D'
+      });
+    }
   }
-
-
 }

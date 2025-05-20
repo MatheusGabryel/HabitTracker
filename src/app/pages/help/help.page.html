@@ -24,21 +24,25 @@
               </p>
             </div>
             <div class="form-container">
-              <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="contact-form">
-                <label for="">Nome</label>
-                <input type="text" formControlName="name" name="name">
+              <form [formGroup]="formulario" (ngSubmit)="onSubmit($event)" class="contact-form">
+                <label>Nome</label>
+                <input type="text" formControlName="name" required>
 
-                <label for="">Email</label>
-                <input type="email" formControlName="email" name="email">
+                <label>Email</label>
+                <input type="email" formControlName="email" required>
 
-                <label for="">Assunto</label>
-                <input type="text" formControlName="subject" name="subject">
+                <label>Assunto</label>
+                <input type="text" formControlName="subject" required>
 
-                <label for="">Mensagem</label>
-                <textarea rows="6" formControlName="message" name="message"></textarea>
+                <label>Mensagem</label>
+                <textarea rows="6" formControlName="message" required></textarea>
+
+                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+                <input type="hidden" name="_captcha" value="false">
 
                 <button type="submit" [disabled]="formulario.invalid">Enviar</button>
-              </form>
+            </form>
             </div>
           </section>
         </main>
