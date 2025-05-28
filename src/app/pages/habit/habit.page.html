@@ -9,8 +9,16 @@
         <main>
           <app-header></app-header>
           <section>
-            <app-create-habit-modal *ngIf="showHabitModal" (close)="closeModal()" @fadeInOut />
-            <app-create-list-modal *ngIf="showListModal" (close)="closeModal()"  @fadeInOut/>
+            <app-create-habit-modal
+              *ngIf="showHabitModal"
+              (close)="closeModal()"
+              @fadeInOut
+            />
+            <app-create-list-modal
+              *ngIf="showListModal"
+              (close)="closeModal()"
+              @fadeInOut
+            />
             <div class="create-cards">
               <app-create-card
                 [title]="'Novo Hábito'"
@@ -38,13 +46,15 @@
               <div class="habit-toolbar">
                 <nav class="habit-list-tabs">
                   <button
-                  *ngFor="let tab of tabs"
-                  [class.active]="activeTab === tab.name"
-                  (click)="setActive(tab.name)"
-                >
-                  {{ tab.name }}
-                </button>
-                  <button class="new-list" (click)="openListModal()">+ Nova lista</button>
+                    *ngFor="let tab of tabs"
+                    [class.active]="activeTab === tab.name"
+                    (click)="setActive(tab.name)"
+                  >
+                    {{ tab.name }}
+                  </button>
+                  <button class="new-list" (click)="openListModal()">
+                    + Nova lista
+                  </button>
                 </nav>
                 <div class="search-bar">
                   <img
@@ -62,11 +72,25 @@
                   <div class="header-item status">Status</div>
                   <div class="header-item priority">Prioridade</div>
                 </div>
+
+                @if (activeTab === 'Ver tudo') { @if (!loading) { @if
+                (hasHabits) {
                 <ul class="habit-list">
-                  <li *ngFor="let habit of activeListHabits">
-                    <app-habit-card [habit]="habit" style=" width: 100%"></app-habit-card>
+                  <li *ngFor="let habit of habits">
+                    <app-habit-card
+                      (delete)="deleteHabit($event)"
+                      (mark)="completeHabit($event)"
+                      [habit]="habit"
+                      style="width: 100%"
+                    ></app-habit-card>
                   </li>
                 </ul>
+                } @else {
+                <div class="no-habits">
+                  <p>Você ainda não criou hábitos.</p>
+                </div>
+                }}}
+
               </div>
             </div>
             <div class="pagination">
