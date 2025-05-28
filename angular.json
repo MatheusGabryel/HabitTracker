@@ -35,9 +35,20 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": [],
-            "browser": "src/main.ts"
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss",
+              "node_modules/igniteui-angular/styles/igniteui-angular.css"
+            ],
+            "scripts": [
+              "./node_modules/hammerjs/hammer.min.js"
+            ],
+            "browser": "src/main.ts",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -109,8 +120,19 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss",
+              "node_modules/igniteui-angular/styles/igniteui-angular.css"
+            ],
+            "scripts": [
+              "./node_modules/hammerjs/hammer.min.js"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            }
           },
           "configurations": {
             "ci": {
