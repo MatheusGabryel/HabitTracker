@@ -1,7 +1,7 @@
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { collectionData, docData, Firestore } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Auth } from '@angular/fire/auth';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { BehaviorSubject } from 'rxjs';
@@ -17,12 +17,12 @@ export class UserService {
   private collectionRef = collection(this.firestore, 'users')
   private db = getFirestore();
 
-  constructor() { 
+  constructor() {
   }
 
 
   public async addHabit(uid: string, habit: any) {
-    const userDocRef = doc(this.db, 'users', uid); 
+    const userDocRef = doc(this.db, 'users', uid);
     const habitsCollectionRef = collection(userDocRef, 'habits');
     const docRef = await addDoc(habitsCollectionRef, habit);
     await updateDoc(docRef, { id: docRef.id });
@@ -36,6 +36,11 @@ export class UserService {
     const docRef = await addDoc(listCollectionRef, list)
 
     return docRef;
+  }
+
+  async deleteHabit(uid: string, habitId: string): Promise<void> {
+    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+    await deleteDoc(habitRef);
   }
 
   public getHabit(id: any) {
@@ -54,7 +59,7 @@ export class UserService {
   public async getUserHabits(uid: string) {
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
     const snapshot = await getDocs(habitsRef);
-  
+
     if (!snapshot.empty) {
       const habits = snapshot.docs.map(doc => {
         const habitData = doc.data();
@@ -69,7 +74,7 @@ export class UserService {
   public async getUserLists(uid: string) {
     const listRef = collection(this.firestore, `users/${uid}/list`);
     const snapshot = await getDocs(listRef);
-  
+
     if (!snapshot.empty) {
       const lists = snapshot.docs.map(doc => {
         const data = doc.data();
@@ -87,5 +92,18 @@ export class UserService {
     const snapshot = await getDoc(docRef);
     return snapshot.exists() ? snapshot.data() as UserData : null;
   }
+
+  async updateHabitState(habitId: string, newState: 'in_progress' | 'completed' | 'not_completed', uid: string): Promise<void> {
+    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+    await updateDoc(habitRef, { state: newState })
+  }
+
+  async updateHabitProgress(habitId: string, data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number }, uid: string): Promise<void> {
+  const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+  await updateDoc(habitRef, {
+    state: data.state,
+    progressValue: data.progressValue
+  });
+}
 }
 
