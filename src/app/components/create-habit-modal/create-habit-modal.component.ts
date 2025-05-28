@@ -1,14 +1,11 @@
 import { UserService } from './../../services/user.service';
-import { Component, OnInit, EventEmitter, Output, inject } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
 import { AuthService } from 'src/app/services/auth.service';
-import { of, switchMap, firstValueFrom } from 'rxjs';
-import { UserData } from 'src/app/interfaces/user.interface';
-
 
 
 @Component({
@@ -24,18 +21,26 @@ export class CreateHabitModalComponent implements OnInit {
   public userService = inject(UserService);
   @Output() close = new EventEmitter<void>();
 
-
   public habit: HabitData = {
     id: '',
-    nome: '',
-    categoria: '',
-    duracao: '',
-    horaInicio: '',
-    horaFim: '',
-    vezesPorDia: '',
-    dias: [] as string[],
-    descricao: '',
-    prioridade: '',
+    name: '',
+    category: '',
+    days: [] as string[],
+    description: '',
+    priority: '',
+    progressType: 'yes_no',
+    timeTarget: {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      rule: 'at_least',
+    },
+    timesTarget: {
+      value: 0,
+      rule: 'at_least',
+    },
+    state: 'in_progress',
+    progressValue: 0 
   }
 
   constructor() { }
@@ -44,28 +49,72 @@ export class CreateHabitModalComponent implements OnInit {
 
   }
 
-
-
-
   public closeModal() {
     this.close.emit();
   }
 
-  public formaProgresso: string = 'sim_nao'; // valor padrão
+  public progressType: 'yes_no' | 'time' | 'times' = 'yes_no';
 
+  public daysOfWeek = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-  public diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-
-  public toggleDia(dia: string) {
-    if (this.habit.dias.includes(dia)) {
-      this.habit.dias = this.habit.dias.filter(d => d !== dia); // Mais eficiente
+  public toggleDay(day: string) {
+    if (this.habit.days.includes(day)) {
+      this.habit.days = this.habit.days.filter(d => d !== day);
     } else {
-      this.habit.dias.push(dia);
+      this.habit.days.push(day);
     }
   }
 
 
   public async createHabit() {
+
+    if (this.habit.name === '') {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Insira um nome.',
+        icon: 'warning',
+        heightAuto: false,
+      });
+      return;
+    }
+    if (this.habit.category === '') {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Selecione uma categoria.',
+        icon: 'warning',
+        heightAuto: false,
+      });
+      return;
+    }
+    if (this.habit.days.length === 0) {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Selecione ao menos um dia.',
+        icon: 'warning',
+        heightAuto: false,
+      });
+      return;
+    }
+    if (this.habit.priority === '') {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Defina um nivel de prioridade.',
+        icon: 'warning',
+        heightAuto: false,
+      });
+      return;
+    }
+    this.habit.progressType = this.progressType;
+
+    // if (this.formProgress === 'time' && !this.habit.duration) {
+    //   Swal.fire({ title: 'Erro', text: 'Selecione a duração da atividade.', icon: 'warning' });
+    //   return;
+    // }
+    // if (this.formProgress === 'time' && !this.habit.duration) {
+    //   Swal.fire({ title: 'Erro', text: 'Selecione a duração da atividade.', icon: 'warning' });
+    //   return;
+    // }
+
     try {
       Loading.standard('Adicionando hábito...');
       const uid = await this.userService.getUserId();
@@ -80,7 +129,7 @@ export class CreateHabitModalComponent implements OnInit {
       }
 
       await this.userService.addHabit(uid, this.habit);
-  
+
       Swal.fire({
         title: 'Sucesso',
         text: 'Hábito adicionado com sucesso',

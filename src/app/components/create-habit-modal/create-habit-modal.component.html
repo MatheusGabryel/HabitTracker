@@ -4,33 +4,35 @@
     <button (click)="closeModal()">X</button>
   </div>
 
-  <form (ngSubmit)="createHabit()">
+  <form #form="ngForm" (ngSubmit)="createHabit()">
     <label>Como deseja marcar o progresso?</label>
     <div class="radio-group">
       <label>
         <input
           type="radio"
-          name="formaProgresso"
-          value="sim_nao"
-          [(ngModel)]="formaProgresso"
+          name="progressType"
+          value="yes_no"
+          [(ngModel)]="progressType"
+          required
+          #progressTypeModel="ngModel"
         />
         Sim ou Não
       </label>
       <label>
         <input
           type="radio"
-          name="formaProgresso"
-          value="tempo"
-          [(ngModel)]="formaProgresso"
+          name="progressType"
+          value="time"
+          [(ngModel)]="progressType"
         />
         Tempo cronometrado
       </label>
       <label>
         <input
           type="radio"
-          name="formaProgresso"
-          value="vezes"
-          [(ngModel)]="formaProgresso"
+          name="progressType"
+          value="times"
+          [(ngModel)]="progressType"
         />
         Vezes realizadas
       </label>
@@ -39,10 +41,21 @@
     <hr />
 
     <label>Nome do Hábito</label>
-    <input type="text" name="nome" [(ngModel)]="habit.nome" required />
+    <input
+      type="text"
+      name="name"
+      [(ngModel)]="habit.name"
+      required
+      #name="ngModel"
+    />
 
     <label>Categoria</label>
-    <select name="categoria" [(ngModel)]="habit.categoria">
+    <select
+      name="categoria"
+      [(ngModel)]="habit.category"
+      required
+      #category="ngModel"
+    >
       <option value="saude">Saúde</option>
       <option value="estudo">Estudo</option>
       <option value="trabalho">Trabalho</option>
@@ -50,87 +63,186 @@
 
     <!-- progresso por tempo -->
 
-    <div *ngIf="formaProgresso === 'tempo'">
-      <label>Duração da Atividade</label>
-      <select [(ngModel)]="habit.duracao" name="duracao">
-        <option value="5">5 minutos</option>
-        <option value="15">15 minutos</option>
-        <option value="30">30 minutos</option>
-        <option value="60">1 hora</option>
-        <option value="custom">Personalizado</option>
-      </select>
+    @if(progressType === 'time') {
 
-      <label>Horário Preferido</label>
-      <div class="time-range">
-        <input type="time" [(ngModel)]="habit.horaInicio" name="horaInicio" />
-        até
-        <input type="time" [(ngModel)]="habit.horaFim" name="horaFim" />
-      </div>
-    </div>
-
-        <!-- progresso por vezes -->
-
-    <div *ngIf="formaProgresso === 'vezes'">
-      <label>Quantas vezes por dia?</label>
+    <label>Determine o tempo</label>
+    <div class="time-inputs">
       <input
         type="number"
-        name="vezesPorDia"
-        [(ngModel)]="habit.vezesPorDia"
-        min="1"
+        [(ngModel)]="habit.timeTarget!.hours"
+        name="durationHours"
+        min="0"
+        max="23"
+        placeholder="Horas"
+      />
+      <input
+        type="number"
+        [(ngModel)]="habit.timeTarget!.minutes"
+        name="durationMinutes"
+        min="0"
+        max="59"
+        placeholder="Minutos"
+      />
+      <input
+        type="number"
+        [(ngModel)]="habit.timeTarget!.seconds"
+        name="durationSeconds"
+        min="0"
+        max="59"
+        placeholder="Segundos"
       />
     </div>
+<!--     
+    <label> Selecione o tempo</label>
+    <ion-item button (click)="showTimePicker = true">
+      <ion-text>{{ selectedTime || "00:00:00" }}</ion-text>
+    </ion-item>
+
+    <div *ngIf="showTimePicker" class="custom-time-popup">
+  <div class="picker-box">
+    <ion-item>
+      <ion-label position="stacked">Horas</ion-label>
+      <ion-input type="number" min="0" max="23" [(ngModel)]="hour" [ngModelOptions]="{ standalone: true }"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Minutos</ion-label>
+      <ion-input type="number" min="0" max="59" [(ngModel)]="minute" [ngModelOptions]="{ standalone: true }"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Segundos</ion-label>
+      <ion-input type="number" min="0" max="59" [(ngModel)]="second" [ngModelOptions]="{ standalone: true }"></ion-input>
+    </ion-item>
+
+    <div class="btn-group">
+      <ion-button size="small" (click)="confirmTime()">Confirmar</ion-button>
+      <ion-button size="small" fill="clear" (click)="showTimePicker = false">Cancelar</ion-button>
+    </div>
+  </div>
+</div> -->
+
+    <!-- <label>Selecione o tempo</label>
+    <div class="time-inputs">
+      <div>
+        <ion-label>Hora</ion-label>
+        <ion-select [(ngModel)]="selectedHour">
+          <ion-select-option *ngFor="let h of hours" [value]="h">
+            {{ h.toString().padStart(2, "0") }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <div>
+        <ion-label>Minuto</ion-label>
+        <ion-select [(ngModel)]="selectedMinute">
+          <ion-select-option *ngFor="let m of minutes" [value]="m">
+            {{ m.toString().padStart(2, "0") }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <div>
+        <ion-label>Segundo</ion-label>
+        <ion-select [(ngModel)]="selectedSecond">
+          <ion-select-option *ngFor="let s of seconds" [value]="s">
+            {{ s.toString().padStart(2, "0") }}
+          </ion-select-option>
+        </ion-select>
+      </div> 
+    </div> -->
+
+    <div>
+      <label>Regra de Conclusão</label>
+      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
+        <option value="at_least">Ao menos</option>
+        <option value="any">Qualquer tempo</option>
+        <option value="equal">Exatamente</option>
+        <option value="at_most">Menos que</option>
+      </select>
+    </div>
+    }
+
+    <!-- progresso por vezes -->
+
+    @if(progressType === 'times') {
+    <div>
+      <label>Regra de Conclusão</label>
+      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
+        <option value="at_least">Ao menos</option>
+        <option value="any">Quantas valor</option>
+        <option value="equal">Exatamente</option>
+        <option value="at_most">Menos que</option>
+      </select>
+
+      @if(habit.timeTarget!.rule !== 'any') {
+      <label>Quantas vezes?</label>
+      <input
+        type="number"
+        name="targetValue"
+        [(ngModel)]="habit.timesTarget!.value"
+        min="1"
+        required
+      />
+      }
+    </div>
+    }
 
     <label>Dias da Semana</label>
-    <div class="dias-checkboxes">
-      <label *ngFor="let dia of diasDaSemana">
+
+    <div class="days-checkboxes">
+      @for (day of daysOfWeek; track day) {
+      <label>
         <input
           type="checkbox"
-          [value]="dia"
-          (change)="toggleDia(dia)"
-          [checked]="habit.dias.includes(dia)"
+          [value]="day"
+          (change)="toggleDay(day)"
+          [checked]="habit.days.includes(day)"
         />
-        {{ dia }}
+        {{ day }}
       </label>
+
+      }
     </div>
 
     <label>Descrição</label>
-    <textarea [(ngModel)]="habit.descricao" name="descricao"></textarea>
+    <textarea [(ngModel)]="habit.description" name="description"></textarea>
 
     <label>Prioridade</label>
     <div class="radio-group">
       <label
         ><input
           type="radio"
-          name="prioridade"
-          value="baixa"
-          [(ngModel)]="habit.prioridade"
+          name="priority"
+          value="low"
+          [(ngModel)]="habit.priority"
+          required
+          #priority="ngModel"
         />
         Baixa</label
       >
       <label
         ><input
           type="radio"
-          name="prioridade"
-          value="media"
-          [(ngModel)]="habit.prioridade"
+          name="priority"
+          value="medium"
+          [(ngModel)]="habit.priority"
         />
         Média</label
       >
       <label
         ><input
           type="radio"
-          name="prioridade"
-          value="media-alta"
-          [(ngModel)]="habit.prioridade"
+          name="priority"
+          value="medium-high"
+          [(ngModel)]="habit.priority"
         />
         Média-Alta</label
       >
       <label
         ><input
           type="radio"
-          name="prioridade"
-          value="alta"
-          [(ngModel)]="habit.prioridade"
+          name="priority"
+          value="high"
+          [(ngModel)]="habit.priority"
         />
         Alta</label
       >
@@ -138,7 +250,12 @@
 
     <div class="modal-footer">
       <button type="button" (click)="closeModal()">Cancelar</button>
-      <button type="submit">Criar</button>
+      <button
+        type="submit"
+        [disabled]="form.invalid || habit.days.length === 0"
+      >
+        Criar
+      </button>
     </div>
   </form>
 </div>

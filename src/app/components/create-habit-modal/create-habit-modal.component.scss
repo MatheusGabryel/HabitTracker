@@ -39,7 +39,6 @@
     }
 }
 
-/* Inputs e campos */
 label {
     display: block;
     margin-top: 12px;
@@ -92,14 +91,46 @@ textarea {
     gap: 10px;
 }
 
-.dias-checkboxes {
+.time-inputs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    margin-top: 1rem;
+
+}
+.custom-time-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--ion-background-color, white);
+  padding: 16px;
+  border-radius: 12px;
+  z-index: 9999;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 300px;
+}
+
+.picker-box ion-item {
+  --inner-padding-end: 0;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.days-checkboxes {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 6px;
 }
 
-.dias-checkboxes label {
+.days-checkboxes label {
     background-color: #e0e0e0;
     border-radius: 16px;
     padding: 6px 12px;
@@ -108,12 +139,12 @@ textarea {
     transition: background-color 0.2s;
 }
 
-.dias-checkboxes input[type="checkbox"] {
+.days-checkboxes input[type="checkbox"] {
     display: none;
 }
 
-.dias-checkboxes input[type="checkbox"]:checked + label,
-.dias-checkboxes label:has(input[type="checkbox"]:checked) {
+.days-checkboxes input[type="checkbox"]:checked + label,
+.days-checkboxes label:has(input[type="checkbox"]:checked) {
     background-color: #4caf50;
     color: white;
 }
@@ -140,6 +171,10 @@ textarea {
     button[type="submit"] {
         background-color: #1976d2;
         color: white;
+
+        &:disabled {
+            opacity: 0.5;
+        }
     }
 
     button:hover {
