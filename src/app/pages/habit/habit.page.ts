@@ -94,7 +94,7 @@ export class HabitPage {
                 setTimeout(async () => {
                   const invalidAlert = await this.alertController.create({
                     header: 'Valor inválido',
-                    message: `Quantas vezes você realizou o hábito "${habit.name}"?\n(Máx: ${Math.min(maxAllowed, 100000)} vezes)`,
+                    message: 'Insira valores válidos.',
                     buttons: ['OK']
                   });
                   await invalidAlert.present();
@@ -266,7 +266,7 @@ export class HabitPage {
     }
   }
 
- openListModal() {
+  openListModal() {
     this.showListModal = true;
   }
 
@@ -285,21 +285,32 @@ export class HabitPage {
 
   async deleteHabit(habitId: string) {
     try {
-      Loading.standard('Excluindo Hábito...');
       const uid = await this.userService.getUserId();
       if (!uid) return;
-
-      await this.userService.deleteHabit(uid, habitId);
-      this.activeListHabits = this.activeListHabits.filter(h => h.id !== habitId);
-
       Swal.fire({
-        title: 'Excluido',
-        text: 'Hábito excluido com sucesso',
-        icon: 'success',
+        title: "Tem certeza?",
+        text: "Você perderá tudo relacionado ao hábito excluído!",
+        icon: "warning",
         heightAuto: false,
-        confirmButtonColor: '#E0004D'
+        showCancelButton: true,
+        confirmButtonColor: "#1976d2",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sim, desejo deletar."
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.userService.deleteHabit(uid, habitId);
+          this.activeListHabits = this.activeListHabits.filter(h => h.id !== habitId);
+
+          Swal.fire({
+            title: 'Excluido',
+            text: 'Hábito excluido com sucesso',
+            icon: 'success',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          });
+          Loading.remove()
+        }
       });
-      Loading.remove()
     } catch (err: unknown) {
       Loading.remove()
       if (err instanceof Error) {
@@ -323,7 +334,6 @@ export class HabitPage {
       }
     }
   }
-
   async loadLists() {
     const uid = await this.userService.getUserId();
     if (uid) {
