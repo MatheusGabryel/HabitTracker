@@ -6,6 +6,7 @@ import { HabitData } from 'src/app/interfaces/habit.interface';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
 import { AuthService } from 'src/app/services/auth.service';
+import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 
 
 @Component({
@@ -56,6 +57,8 @@ export class CreateHabitModalComponent implements OnInit {
   public progressType: 'yes_no' | 'time' | 'times' = 'yes_no';
 
   public daysOfWeek = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+  public categories = PREDEFINED_CATEGORIES
 
   public toggleDay(day: string) {
     if (this.habit.days.includes(day)) {

@@ -50,15 +50,12 @@
     />
 
     <label>Categoria</label>
-    <select
-      name="categoria"
-      [(ngModel)]="habit.category"
-      required
-      #category="ngModel"
-    >
-      <option value="saude">Saúde</option>
-      <option value="estudo">Estudo</option>
-      <option value="trabalho">Trabalho</option>
+    <select name="categoria" [(ngModel)]="habit.category" required>
+      
+      <!-- <option [value]="''" disabled selected>Selecione uma categoria</option> -->
+      @for (cat of categories; track categories) {
+      <option [value]="cat.id">{{ cat.displayName }}</option>
+      }
     </select>
 
     <!-- progresso por tempo -->
@@ -92,7 +89,7 @@
         placeholder="Segundos"
       />
     </div>
-<!--     
+    <!--     
     <label> Selecione o tempo</label>
     <ion-item button (click)="showTimePicker = true">
       <ion-text>{{ selectedTime || "00:00:00" }}</ion-text>
@@ -159,21 +156,21 @@
         <option value="at_most">Menos que</option>
       </select>
     </div>
-    }
-
-    <!-- progresso por vezes -->
-
-    @if(progressType === 'times') {
+    } @if(progressType === 'times') {
     <div>
       <label>Regra de Conclusão</label>
-      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
+      <select
+        [(ngModel)]="habit.timesTarget!.rule"
+        name="progressRule"
+        required
+      >
         <option value="at_least">Ao menos</option>
         <option value="any">Quantas valor</option>
         <option value="equal">Exatamente</option>
         <option value="at_most">Menos que</option>
       </select>
 
-      @if(habit.timeTarget!.rule !== 'any') {
+      @if(habit.timesTarget!.rule !== 'any') {
       <label>Quantas vezes?</label>
       <input
         type="number"
@@ -199,7 +196,6 @@
         />
         {{ day }}
       </label>
-
       }
     </div>
 
