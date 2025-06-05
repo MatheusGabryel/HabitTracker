@@ -1,34 +1,63 @@
 <div class="card">
-  <div class="habit-card">
+  <div class="habit-card" @fadeInOut>
     <div class="dinamic-status" title="Concluído">
-      <!-- Troque o conteúdo dinamicamente: ⭘, ~, ✓ -->
-      <button class="status-button concluido">✓</button>
+      @if(habit.state === "in_progress") {
+      <button class="status-button" (click)="emitMarkHabit()">
+        <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
+      </button>
+      } @if(habit.state === "completed") {
+      <button class="status-button" (click)="emitMarkHabit()">
+        <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
+      </button>
+      } @if(habit.state === "not_completed") {
+      <button class="status-button" (click)="emitMarkHabit()">
+        <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
+      </button>
+      }
     </div>
     <div class="name">
-      <span>{{ habit?.nome }}</span>
+      <span>{{ habit?.name }}</span>
     </div>
+    @if (category) {
     <div class="category">
-      <span>{{ habit?.categoria }}</span>
+      <div [title]="category.displayName" class="icon-wrapper" [ngStyle]="{ backgroundColor: category.color }">
+        <img [src]="category.icon" [alt]="category.displayName" />
+      </div>
     </div>
+    } 
+  
+    @if(habit.state === "in_progress") {
     <div class="status">
-      <span class="status">Em progresso</span>
+      <span class="in_progress" @fadeInOut>Em progresso</span>
     </div>
+    } @if(habit.state === "completed") {
+    <div class="status">
+      <span class="completed" @fadeInOut>Completo</span>
+    </div>
+    } @if(habit.state === "not_completed") {
+    <div class="status">
+      <span class="not_completed" @fadeInOut>Falhado</span>
+    </div>
+    }
 
     <div class="priority">
-      <span class="priority">{{ habit?.prioridade }}</span>
+      <span class="priority">{{ habit?.priority }}</span>
     </div>
     <div class="habit-actions">
-      <button class="favorite-button" title="Favoritar">+</button>
+      <button class="delete-button" title="Deletar" (click)="emitDelete()">
+        🗑
+      </button>
       <button class="expand-button" title="Ver mais">⤢</button>
       <button class="edit-button" title="Editar hábito">⋮</button>
     </div>
   </div>
-  <div class="details" >
+  <div class="details">
     <p>Meta: 3km por dia, 5x na semana.</p>
     <p>Dias seguidos: 4</p>
     <div class="actions">
       <button>Concluir Hoje</button>
       <button>Editar</button>
     </div>
+      
   </div>
 </div>

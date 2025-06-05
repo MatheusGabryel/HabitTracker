@@ -1,78 +1,99 @@
-
 .habit-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: poppinsBold;
+  font-size: 14px;
+  color: #666;
+  gap: 16px;
+  margin-top: 2rem;
+  // background-color: ; fazer esse background
+}
 
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-family: poppinsBold;
-    font-size: 14px;
-    color: #666;
-    gap: 16px;
-    margin-top: 2rem;
-  }
-  
-  .name {
-    flex: 3.5;
-  }
-  
-  .category {
-    flex: 0.7;
-    text-align: left;
+.name {
+  flex: 3.5;
+}
 
+.icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.category {
+  flex: 0.7;
+  text-align: left;
 }
 
 .status {
-    flex: 0.7;
-    text-align: left;
+  flex: 0.8;
+  text-align: left;
 }
 
 .priority {
-    flex: 0.7;
-    text-align: left;
-
+  flex: 0.7;
+  text-align: left;
 }
-  
-  .habit-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-  }
-  
-  .status-button {
-    border: none;
-    background: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .status-button.nao-feito {
-    color: #aaa;
-  }
-  
-  .status-button.parcial {
-    color: #fbc02d;
-  }
-  
-  .status-button.concluido {
-    color: #4caf50;
-  }
-  
-  .priority.low {
-    color: #4caf50;
-  }
-  
-  .priority.medium {
-    color: #ff9800;
-  }
-  
-  .priority.high {
-    color: #f44336;
-  }
 
-  .details {
-    display: none;
-  }
+.habit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.status-button {
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.in_progress {
+  color: #ff9800;
+}
+
+.not_completed {
+  color: #f44336;
+}
+
+.completed {
+    color: #4caf50;
+}
+
+.status-button.parcial {
+  color: #fbc02d;
+}
+
+.status-button.concluido {
+  color: #4caf50;
+}
+
+.priority.low {
+  color: #4caf50;
+}
+
+.priority.medium {
+  color: #ff9800;
+}
+
+.priority.high {
+  color: #f44336;
+}
+
+.details {
+  display: none;
+}
