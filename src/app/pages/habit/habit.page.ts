@@ -1,6 +1,6 @@
-import { UserService } from './../../services/user.service';
+import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from './../../components/menu/menu.component';
+import { MenuComponent } from '../../components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Output } from '@angular/core';
 import { IonContent, IonGrid, IonCol, IonRow, IonSpinner } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
@@ -13,13 +13,15 @@ import { Loading } from 'notiflix';
 import Swal from 'sweetalert2';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { AlertController } from '@ionic/angular';
+import { HabitList } from 'src/app/interfaces/habitlist.interface';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-habit',
   templateUrl: './habit.page.html',
   styleUrls: ['./habit.page.scss'],
   standalone: true,
-  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
+  imports: [IonRow, FormsModule, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -42,6 +44,10 @@ export class HabitPage {
   public activeListHabits: any[] = [];
   public hasHabits: boolean = false;
   public loading: boolean = true;
+  // editingList: HabitList | null = null;
+  // editingListName: string = '';
+  // allHabits: HabitData[] = [];
+  // selectedHabits: Set<string> = new Set();
 
   constructor() { }
 
@@ -280,8 +286,11 @@ export class HabitPage {
 
   async setActive(tabName: string) {
     this.activeTab = tabName;
-    await this.loadHabitsForActiveTab(tabName);
+
+    const list = this.tabs.find(tab => tab.name === tabName && tab.id);
+    await this.loadHabitsForActiveTab(tabName, list as HabitList);
   }
+
 
   async deleteHabit(habitId: string) {
     try {
@@ -334,6 +343,11 @@ export class HabitPage {
       }
     }
   }
+
+  selectHabitForCategories() {
+
+  }
+
   async loadLists() {
     const uid = await this.userService.getUserId();
     if (uid) {
@@ -343,20 +357,71 @@ export class HabitPage {
     console.log('tabs carregadas', this.tabs);
   }
 
-  async loadHabitsForActiveTab(tabName: string) {
+  async loadHabitsForActiveTab(tabName: string, list?: HabitList) {
     this.loading = true
     const uid = await this.userService.getUserId();
     if (!uid) throw new Error('Usuário não autenticado');
 
     if (tabName === 'Ver tudo') {
       this.habits = await this.userService.getUserHabits(uid);
-      this.activeListHabits = this.habits;
-      this.hasHabits = this.habits.length > 0;
+    } else if (list) {
+      this.habits = await this.userService.getHabitsByCategories(uid, list.categories);
     } else {
-      this.activeListHabits = [];
-      this.hasHabits = false;
-      console.log('hábitos não carregados')
+      this.habits = [];
     }
+
+    this.activeListHabits = this.habits;
+    this.hasHabits = this.habits.length > 0;
     this.loading = false
   }
+
+//   async openEditModal(list: HabitList) {
+//     this.editingList = list;
+//     this.editingListName = list.name;
+
+//     const uid = await this.userService.getUserId();
+//     if (!uid) return;
+//     const allHabits = await this.userService.getUserHabits(uid);
+//     this.habits = allHabits;
+
+//     this.selectedHabits = new Set(list.habitIds);
+//   }
+
+//   toggleHabitSelection(habitId: string) {
+//     if (this.selectedHabits.has(habitId)) {
+//       this.selectedHabits.delete(habitId);
+//     } else {
+//       this.selectedHabits.add(habitId);
+//     }
+//   }
+//   cancelEdit() {
+//     this.editingList = null;
+//     this.editingListName = '';
+//     this.selectedHabits.clear();
+//   }
+
+//   async saveListChanges() {
+//     if (!this.editingList) return;
+
+// const uid = await this.userService.getUserId();
+// if (!uid) return;
+//     const updatedList: HabitList = {
+//       ...this.editingList,
+//       name: this.editingListName,
+//       habitIds: Array.from(this.selectedHabits),
+//       updatedAt: new Date()
+//     };
+
+//     await this.userService.updateUserList(uid, updatedList);
+
+//     // atualizar localmente
+//     this.editingList = null;
+//     this.editingListName = '';
+//     this.selectedHabits.clear();
+
+//     // recarregar listas e hábitos
+//     await this.loadLists();
+//     await this.setActive(updatedList.name);
+//   }
+
 }
