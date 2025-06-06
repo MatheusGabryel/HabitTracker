@@ -21,6 +21,32 @@
     margin: auto;
 }
 
+.cat-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.cat-checkboxes label {
+    background-color: #e0e0e0;
+    border-radius: 16px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s;
+}
+
+.cat-checkboxes input[type="checkbox"] {
+    display: none;
+}
+
+.cat-checkboxes input[type="checkbox"]:checked + label,
+.cat-checkboxes label:has(input[type="checkbox"]:checked) {
+    background-color: #4caf50;
+    color: white;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -48,6 +74,7 @@ label {
 }
 
 input[type="text"],
+input[type="checkbox"]
 select {
     background-color: #fff;
     width: 100%;

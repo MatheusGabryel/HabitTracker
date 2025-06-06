@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { serverTimestamp } from 'firebase/firestore';
 import { Loading } from 'notiflix';
+import { Category } from 'src/app/interfaces/category.interface';
+import { HabitList } from 'src/app/interfaces/habitlist.interface';
 import { UserService } from 'src/app/services/user.service';
+import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,12 +20,12 @@ export class CreateListModalComponent implements OnInit {
   constructor() { }
   public uid = this.userService.getUserId();
 
-  public list: any = {
-    userId: this.uid,
+  public habitList: HabitList = {
     name: '',
-    createdAt: new Date(),
-    updatedAt: '',
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
     habitIds: [],
+    categories: [] as string[],
   }
 
   @Output() close = new EventEmitter<void>();
@@ -30,6 +34,17 @@ export class CreateListModalComponent implements OnInit {
     this.close.emit();
   }
   ngOnInit() { }
+
+  public categories = PREDEFINED_CATEGORIES
+
+  public toggleCategory(categoryId: string) {
+  const index = this.habitList.categories.indexOf(categoryId);
+  if (index > -1) {
+    this.habitList.categories.splice(index, 1);
+  } else {
+    this.habitList.categories.push(categoryId);
+  }
+}
 
   public async createList() {
     try {
@@ -45,10 +60,8 @@ export class CreateListModalComponent implements OnInit {
         throw new Error('Usuário não autenticado');
       }
 
-      this.list.userId = uid;
 
-
-      await this.userService.addList(uid, this.list);
+      await this.userService.addList(uid, this.habitList);
 
       Swal.fire({
         title: 'Sucesso',
