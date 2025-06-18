@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
       } else if (error.code === 'auth/wrong-password') {
         alert('Senha incorreta.');
       } else {
-        alert('Erro ao fazer login. Email ou senha incorreta');
+        alert('Erro ao fazer login.');
       }
     }
   }
