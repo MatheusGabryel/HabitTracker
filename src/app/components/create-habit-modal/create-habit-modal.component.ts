@@ -41,7 +41,7 @@ export class CreateHabitModalComponent implements OnInit {
       rule: 'at_least',
     },
     state: 'in_progress',
-    progressValue: 0 
+    progressValue: 0
   }
 
   constructor() { }
@@ -56,9 +56,14 @@ export class CreateHabitModalComponent implements OnInit {
 
   public progressType: 'yes_no' | 'time' | 'times' = 'yes_no';
 
-  public daysOfWeek = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  public daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-  public categories = PREDEFINED_CATEGORIES
+  public categories = PREDEFINED_CATEGORIES;
+
+  public sortState: { key: 'name' | 'category' | 'state' | 'priority'; direction: 'asc' | 'desc' } = {
+    key: 'name',
+    direction: 'asc'
+  };
 
   public toggleDay(day: string) {
     if (this.habit.days.includes(day)) {

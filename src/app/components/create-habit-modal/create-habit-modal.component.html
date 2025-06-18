@@ -51,16 +51,22 @@
 
     <label>Categoria</label>
     <select name="categoria" [(ngModel)]="habit.category" required>
-      
-      <!-- <option [value]="''" disabled selected>Selecione uma categoria</option> -->
       @for (cat of categories; track categories) {
       <option [value]="cat.id">{{ cat.displayName }}</option>
       }
     </select>
 
-    <!-- progresso por tempo -->
-
     @if(progressType === 'time') {
+
+    <div>
+      <label>Regra de Conclusão</label>
+      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
+        <option value="at_least">Ao menos</option>
+        <option value="any">Qualquer tempo</option>
+        <option value="equal">Exatamente</option>
+        <option value="at_most">Menos que</option>
+      </select>
+    </div>
 
     <label>Determine o tempo</label>
     <div class="time-inputs">
@@ -89,73 +95,6 @@
         placeholder="Segundos"
       />
     </div>
-    <!--     
-    <label> Selecione o tempo</label>
-    <ion-item button (click)="showTimePicker = true">
-      <ion-text>{{ selectedTime || "00:00:00" }}</ion-text>
-    </ion-item>
-
-    <div *ngIf="showTimePicker" class="custom-time-popup">
-  <div class="picker-box">
-    <ion-item>
-      <ion-label position="stacked">Horas</ion-label>
-      <ion-input type="number" min="0" max="23" [(ngModel)]="hour" [ngModelOptions]="{ standalone: true }"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Minutos</ion-label>
-      <ion-input type="number" min="0" max="59" [(ngModel)]="minute" [ngModelOptions]="{ standalone: true }"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Segundos</ion-label>
-      <ion-input type="number" min="0" max="59" [(ngModel)]="second" [ngModelOptions]="{ standalone: true }"></ion-input>
-    </ion-item>
-
-    <div class="btn-group">
-      <ion-button size="small" (click)="confirmTime()">Confirmar</ion-button>
-      <ion-button size="small" fill="clear" (click)="showTimePicker = false">Cancelar</ion-button>
-    </div>
-  </div>
-</div> -->
-
-    <!-- <label>Selecione o tempo</label>
-    <div class="time-inputs">
-      <div>
-        <ion-label>Hora</ion-label>
-        <ion-select [(ngModel)]="selectedHour">
-          <ion-select-option *ngFor="let h of hours" [value]="h">
-            {{ h.toString().padStart(2, "0") }}
-          </ion-select-option>
-        </ion-select>
-      </div>
-
-      <div>
-        <ion-label>Minuto</ion-label>
-        <ion-select [(ngModel)]="selectedMinute">
-          <ion-select-option *ngFor="let m of minutes" [value]="m">
-            {{ m.toString().padStart(2, "0") }}
-          </ion-select-option>
-        </ion-select>
-      </div>
-
-      <div>
-        <ion-label>Segundo</ion-label>
-        <ion-select [(ngModel)]="selectedSecond">
-          <ion-select-option *ngFor="let s of seconds" [value]="s">
-            {{ s.toString().padStart(2, "0") }}
-          </ion-select-option>
-        </ion-select>
-      </div> 
-    </div> -->
-
-    <div>
-      <label>Regra de Conclusão</label>
-      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
-        <option value="at_least">Ao menos</option>
-        <option value="any">Qualquer tempo</option>
-        <option value="equal">Exatamente</option>
-        <option value="at_most">Menos que</option>
-      </select>
-    </div>
     } @if(progressType === 'times') {
     <div>
       <label>Regra de Conclusão</label>
@@ -165,9 +104,9 @@
         required
       >
         <option value="at_least">Ao menos</option>
-        <option value="any">Quantas valor</option>
+        <option value="any">Qualquer valor</option>
         <option value="equal">Exatamente</option>
-        <option value="at_most">Menos que</option>
+        <option value="at_most">No máximo</option>
       </select>
 
       @if(habit.timesTarget!.rule !== 'any') {
