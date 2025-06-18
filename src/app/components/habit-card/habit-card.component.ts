@@ -8,14 +8,17 @@ import { firstValueFrom } from 'rxjs';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { UserData } from 'src/app/interfaces/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
+import { register } from 'swiper/element/bundle';
+register()
 
 @Component({
   selector: 'app-habit-card',
   templateUrl: './habit-card.component.html',
   styleUrls: ['./habit-card.component.scss'],
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -25,6 +28,21 @@ import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
       transition(':leave', [
         animate('300ms ease-out', style({ opacity: 0 }))
       ])
+    ]),
+    trigger('expandCollapse', [
+      state('collapsed', style({
+        height: '0px',
+        opacity: 0,
+        overflow: 'hidden',
+      })),
+      state('expanded', style({
+        height: '*',
+        opacity: 1,
+        overflow: 'visible',
+      })),
+      transition('collapsed <=> expanded', [
+        animate('300ms ease')
+      ]),
     ])
   ]
 
@@ -41,6 +59,13 @@ export class HabitCardComponent implements OnInit {
   emitMarkHabit() {
     this.mark.emit(this.habit);
   }
+
+  public showDetails: boolean = false;
+
+  toggleDetails() {
+    this.showDetails = !this.showDetails;
+  }
+
   public habits: any[] = [];
 
   constructor() { }

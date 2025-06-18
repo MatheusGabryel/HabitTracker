@@ -1,63 +1,102 @@
 <div class="card">
-  <div class="habit-card" @fadeInOut>
-    <div class="dinamic-status" title="Concluído">
-      @if(habit.state === "in_progress") {
-      <button class="status-button" (click)="emitMarkHabit()">
-        <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
-      </button>
+  <div class="habit-card" @fadeInOut [class.expanded]="showDetails">
+    <div class="habit-main">
+      <div class="dinamic-status" title="Concluído">
+        @if(habit.state === "in_progress") {
+        <button class="status-button" (click)="emitMarkHabit()">
+          <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
+        </button>
+        } @if(habit.state === "completed") {
+        <button class="status-button" (click)="emitMarkHabit()">
+          <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
+        </button>
+        } @if(habit.state === "not_completed") {
+        <button class="status-button" (click)="emitMarkHabit()">
+          <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
+        </button>
+        }
+      </div>
+
+      <div class="name">
+        <span>{{ habit?.name }}</span>
+      </div>
+
+      @if (category) {
+      <div class="category">
+        <div
+          [title]="category.displayName"
+          class="icon-wrapper"
+          [ngStyle]="{ backgroundColor: category.color }"
+        >
+          <img [src]="category.icon" [alt]="category.displayName" />
+        </div>
+      </div>
+      } @if(habit.state === "in_progress") {
+      <div class="status">
+        <span class="in_progress" @fadeInOut>Em progresso</span>
+      </div>
       } @if(habit.state === "completed") {
-      <button class="status-button" (click)="emitMarkHabit()">
-        <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
-      </button>
+      <div class="status">
+        <span class="completed" @fadeInOut>Completo</span>
+      </div>
       } @if(habit.state === "not_completed") {
-      <button class="status-button" (click)="emitMarkHabit()">
-        <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
-      </button>
+      <div class="status">
+        <span class="not_completed" @fadeInOut>Falhado</span>
+      </div>
       }
-    </div>
-    <div class="name">
-      <span>{{ habit?.name }}</span>
-    </div>
-    @if (category) {
-    <div class="category">
-      <div [title]="category.displayName" class="icon-wrapper" [ngStyle]="{ backgroundColor: category.color }">
-        <img [src]="category.icon" [alt]="category.displayName" />
+
+      <div class="priority">
+        @if (habit.priority === 'high') {
+        <span class="priority" @fadeInOut>Alta</span>
+        } @if (habit.priority === 'medium-high') {
+        <span class="priority" @fadeInOut>Média-Alta</span>
+        } @if (habit.priority === 'medium') {
+        <span class="priority" @fadeInOut>Média</span>
+        } @if (habit.priority === 'low') {
+        <span class="priority" @fadeInOut>Baixa</span>
+        }
+      </div>
+
+      <div class="habit-actions">
+        <button class="delete-button" title="Deletar" (click)="emitDelete()">
+          🗑
+        </button>
+        <button
+          class="expand-button"
+          title="Ver mais"
+          (click)="toggleDetails()"
+        >
+          ⤢
+        </button>
+        <button class="edit-button" title="Editar hábito">⋮</button>
       </div>
     </div>
-    } 
-  
-    @if(habit.state === "in_progress") {
-    <div class="status">
-      <span class="in_progress" @fadeInOut>Em progresso</span>
-    </div>
-    } @if(habit.state === "completed") {
-    <div class="status">
-      <span class="completed" @fadeInOut>Completo</span>
-    </div>
-    } @if(habit.state === "not_completed") {
-    <div class="status">
-      <span class="not_completed" @fadeInOut>Falhado</span>
-    </div>
-    }
-
-    <div class="priority">
-      <span class="priority">{{ habit?.priority }}</span>
-    </div>
-    <div class="habit-actions">
-      <button class="delete-button" title="Deletar" (click)="emitDelete()">
-        🗑
-      </button>
-      <button class="expand-button" title="Ver mais">⤢</button>
-      <button class="edit-button" title="Editar hábito">⋮</button>
-    </div>
-  </div>
-  <div class="details">
-    <p>Meta: 3km por dia, 5x na semana.</p>
-    <p>Dias seguidos: 4</p>
-    <div class="actions">
-      <button>Concluir Hoje</button>
-      <button>Editar</button>
-    </div>
-      
-  </div>
+<div
+  class="details"
+  [@expandCollapse]="showDetails ? 'expanded' : 'collapsed'"
+>
+  <swiper-container
+    slides-per-view="1"
+    loop="false"
+    pagination="true"
+    space-between="16"
+    class="swiper"
+  >
+    <swiper-slide>
+      <div class="slide-content">
+        Slide 1 - Detalhes do hábito
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="slide-content">
+        Slide 2 - Estatísticas
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="slide-content">
+        Slide 3 - Opções
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>
 </div>

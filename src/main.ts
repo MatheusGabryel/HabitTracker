@@ -6,12 +6,12 @@ import { getStorage, provideStorage } from '@angular/fire/storage'
 import { environment } from './environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideAnimations } from '@angular/platform-browser/animations';
-
-
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideHttpClient } from '@angular/common/http';
+import { register } from 'swiper/element/bundle';
+register()
 
 bootstrapApplication(AppComponent, {
   providers: [
