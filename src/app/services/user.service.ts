@@ -35,6 +35,7 @@ export class UserService {
     const userDocRef = doc(this.db, 'users', uid);
     const listCollectionRef = collection(userDocRef, 'list')
     const docRef = await addDoc(listCollectionRef, habitlist)
+    await updateDoc(docRef, { id: docRef.id });
 
     return docRef;
   }
@@ -106,12 +107,6 @@ export class UserService {
       progressValue: data.progressValue
     });
   }
-
-async updateUserList(uid: string, list: HabitList) {
-  if (!list.id) throw new Error('ID da lista não encontrado');
-  const listRef = doc(this.firestore, `users/${uid}/list/${list.id}`);
-  await setDoc(listRef, list, { merge: true });
-}
 
   async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
