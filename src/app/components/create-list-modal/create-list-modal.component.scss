@@ -109,6 +109,10 @@ select {
     button[type="submit"] {
         background-color: #1976d2;
         color: white;
+        
+        &:disabled {
+            opacity: 0.5;
+        }
     }
 
     button:hover {

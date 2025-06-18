@@ -4,11 +4,11 @@
     <button (click)="closeModal()">X</button>
   </div>
 
-  <form action="" (ngSubmit)="createList()">
+  <form #form="ngForm" action="" (ngSubmit)="createList()">
     <label>Nome</label>
     <input type="text" name="name" [(ngModel)]="habitList.name" required />
 
-    <label>Selecione uma categoria (opcional)</label>
+    <label>Selecione uma categoria</label>
     <div class="cat-checkboxes">
       @for (cat of categories; track cat) {
         <label>
@@ -26,7 +26,7 @@
 
     <div class="modal-footer">
       <button type="button" (click)="closeModal()">Cancelar</button>
-      <button type="submit">Criar</button>
+      <button type="submit" [disabled]="form.invalid || habitList.name === '' || habitList.categories.length === 0">Criar</button>
     </div>
   </form>
 </div>

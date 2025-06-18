@@ -21,6 +21,7 @@ export class CreateListModalComponent implements OnInit {
   public uid = this.userService.getUserId();
 
   public habitList: HabitList = {
+    id: '',
     name: '',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -38,62 +39,85 @@ export class CreateListModalComponent implements OnInit {
   public categories = PREDEFINED_CATEGORIES
 
   public toggleCategory(categoryId: string) {
-  const index = this.habitList.categories.indexOf(categoryId);
-  if (index > -1) {
-    this.habitList.categories.splice(index, 1);
-  } else {
-    this.habitList.categories.push(categoryId);
+    const index = this.habitList.categories.indexOf(categoryId);
+    if (index > -1) {
+      this.habitList.categories.splice(index, 1);
+    } else {
+      this.habitList.categories.push(categoryId);
+    }
   }
-}
 
   public async createList() {
-    try {
-      Loading.standard('Adicionando hábito...');
-      const uid = await this.userService.getUserId();
-      if (!uid) {
+    if (this.habitList.name !== '') {
+      try {
+        Loading.standard('Adicionando hábito...');
+        const uid = await this.userService.getUserId();
+        if (!uid) {
+          Swal.fire({
+            title: 'Erro',
+            text: 'Usuário não autenticado',
+            icon: 'error',
+            confirmButtonColor: '#E0004D'
+          });
+          throw new Error('Usuário não autenticado');
+        }
+
+        if (this.habitList.name === '') {
+          Swal.fire({
+            title: 'Erro',
+            text: 'Insira um nome.',
+            icon: 'warning',
+            heightAuto: false,
+          });
+          Loading.remove()
+          return;
+          
+        }
+        if (this.habitList.categories.length === 0) {
+          Swal.fire({
+            title: 'Erro',
+            text: 'Selecione uma categoria.',
+            icon: 'warning',
+            heightAuto: false,
+          });
+          Loading.remove()
+          return;
+        }
+
+        await this.userService.addList(uid, this.habitList);
+
         Swal.fire({
-          title: 'Erro',
-          text: 'Usuário não autenticado',
-          icon: 'error',
-          confirmButtonColor: '#E0004D'
-        });
-        throw new Error('Usuário não autenticado');
-      }
-
-
-      await this.userService.addList(uid, this.habitList);
-
-      Swal.fire({
-        title: 'Sucesso',
-        text: 'Lista adicionado com sucesso',
-        icon: 'success',
-        heightAuto: false,
-        confirmButtonColor: '#E0004D'
-      });
-      Loading.remove()
-      this.closeModal();
-    } catch (err: unknown) {
-      Loading.remove()
-      if (err instanceof Error) {
-        console.error(err);
-        Swal.fire({
-          title: 'Erro',
-          text: err.message,
-          icon: 'error',
+          title: 'Sucesso',
+          text: 'Lista adicionado com sucesso',
+          icon: 'success',
           heightAuto: false,
           confirmButtonColor: '#E0004D'
         });
-      } else {
-        console.error('Erro desconhecido', err);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Ocorreu um erro desconhecido',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+        Loading.remove()
+        this.closeModal();
+      } catch (err: unknown) {
+        Loading.remove()
+        if (err instanceof Error) {
+          console.error(err);
+          Swal.fire({
+            title: 'Erro',
+            text: err.message,
+            icon: 'error',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          });
+        } else {
+          console.error('Erro desconhecido', err);
+          Swal.fire({
+            title: 'Erro',
+            text: 'Ocorreu um erro desconhecido',
+            icon: 'error',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          });
+        }
       }
-    }
+    } else { alert('Por favor, insira um nome a lista.') }
   }
 
 }
