@@ -1,3 +1,4 @@
+import { Category } from './../../interfaces/category.interface';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../components/menu/menu.component';
@@ -40,10 +41,13 @@ export class HabitPage {
   public alertController = inject(AlertController)
   public habits: any[] = [];
   public tabs: any[] = [];
-  public activeTab: string = 'Ver tudo';
+  readonly DEFAULT_TAB = 'Ver tudo';
+  public activeTab: string = this.DEFAULT_TAB;
   public activeListHabits: any[] = [];
   public hasHabits: boolean = false;
   public loading: boolean = true;
+  public searchText: string = '';
+  public filteredHabits: any[] = [];
   // editingList: HabitList | null = null;
   // editingListName: string = '';
   // allHabits: HabitData[] = [];
@@ -344,15 +348,11 @@ export class HabitPage {
     }
   }
 
-  selectHabitForCategories() {
-
-  }
-
   async loadLists() {
     const uid = await this.userService.getUserId();
     if (uid) {
       const lists = await this.userService.getUserLists(uid);
-      this.tabs = [{ name: 'Ver tudo', id: null }, ...lists];
+      this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...lists];
     }
     console.log('tabs carregadas', this.tabs);
   }
@@ -362,7 +362,7 @@ export class HabitPage {
     const uid = await this.userService.getUserId();
     if (!uid) throw new Error('Usuário não autenticado');
 
-    if (tabName === 'Ver tudo') {
+    if (tabName === this.DEFAULT_TAB) {
       this.habits = await this.userService.getUserHabits(uid);
     } else if (list) {
       this.habits = await this.userService.getHabitsByCategories(uid, list.categories);
@@ -370,58 +370,114 @@ export class HabitPage {
       this.habits = [];
     }
 
-    this.activeListHabits = this.habits;
-    this.hasHabits = this.habits.length > 0;
-    this.loading = false
+    this.applySearchFilter();
+    this.activeListHabits = this.filteredHabits;
+    this.hasHabits = this.filteredHabits.length > 0;
+    this.loading = false;
   }
 
-//   async openEditModal(list: HabitList) {
-//     this.editingList = list;
-//     this.editingListName = list.name;
+  applySearchFilter() {
+    const search = this.searchText.toLowerCase();
+    this.filteredHabits = this.habits.filter(habit =>
+      habit.name.toLowerCase().includes(search) || habit.category.toLowerCase().includes(search)
+    );
+  }
 
-//     const uid = await this.userService.getUserId();
-//     if (!uid) return;
-//     const allHabits = await this.userService.getUserHabits(uid);
-//     this.habits = allHabits;
+  public sortState: { key: 'name' | 'category' | 'state' | 'priority'; direction: 'asc' | 'desc' } = {
+    key: 'name',
+    direction: 'asc'
+  };
 
-//     this.selectedHabits = new Set(list.habitIds);
-//   }
+  public sortBy(key: 'name' | 'category' | 'state' | 'priority') {
+    if (this.sortState.key === key) {
+      this.sortState.direction = this.sortState.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortState.key = key;
+      this.sortState.direction = 'asc';
+    }
 
-//   toggleHabitSelection(habitId: string) {
-//     if (this.selectedHabits.has(habitId)) {
-//       this.selectedHabits.delete(habitId);
-//     } else {
-//       this.selectedHabits.add(habitId);
-//     }
-//   }
-//   cancelEdit() {
-//     this.editingList = null;
-//     this.editingListName = '';
-//     this.selectedHabits.clear();
-//   }
+    this.sortHabits();
+  }
+  public sortHabits() {
+    const key = this.sortState.key;
+    const direction = this.sortState.direction;
 
-//   async saveListChanges() {
-//     if (!this.editingList) return;
+    const directionFactor = direction === 'asc' ? 1 : -1;
 
-// const uid = await this.userService.getUserId();
-// if (!uid) return;
-//     const updatedList: HabitList = {
-//       ...this.editingList,
-//       name: this.editingListName,
-//       habitIds: Array.from(this.selectedHabits),
-//       updatedAt: new Date()
-//     };
+    this.filteredHabits.sort((a, b) => {
+      if (key === 'name' || key === 'category') {
+        return a[key].localeCompare(b[key]) * directionFactor;
+      }
 
-//     await this.userService.updateUserList(uid, updatedList);
+      if (key === 'state') {
+        const order = ['completed', 'not_completed', 'in_progress'];
+        const aIndex = order.indexOf(a.state);
+        const bIndex = order.indexOf(b.state);
+        return (aIndex - bIndex) * directionFactor;
+      }
 
-//     // atualizar localmente
-//     this.editingList = null;
-//     this.editingListName = '';
-//     this.selectedHabits.clear();
+      if (key === 'priority') {
+        const order = ['high', 'medium-high', 'medium', 'low'];
+        const aIndex = order.indexOf(a.priority);
+        const bIndex = order.indexOf(b.priority);
+        return (aIndex - bIndex) * directionFactor;
+      }
 
-//     // recarregar listas e hábitos
-//     await this.loadLists();
-//     await this.setActive(updatedList.name);
-//   }
+      return 0;
+    });
+  }
+
+  onSearchChange() {
+    this.applySearchFilter();
+  }
+
+  //   async openEditModal(list: HabitList) {
+  //     this.editingList = list;
+  //     this.editingListName = list.name;
+
+  //     const uid = await this.userService.getUserId();
+  //     if (!uid) return;
+  //     const allHabits = await this.userService.getUserHabits(uid);
+  //     this.habits = allHabits;
+
+  //     this.selectedHabits = new Set(list.habitIds);
+  //   }
+
+  //   toggleHabitSelection(habitId: string) {
+  //     if (this.selectedHabits.has(habitId)) {
+  //       this.selectedHabits.delete(habitId);
+  //     } else {
+  //       this.selectedHabits.add(habitId);
+  //     }
+  //   }
+  //   cancelEdit() {
+  //     this.editingList = null;
+  //     this.editingListName = '';
+  //     this.selectedHabits.clear();
+  //   }
+
+  //   async saveListChanges() {
+  //     if (!this.editingList) return;
+
+  // const uid = await this.userService.getUserId();
+  // if (!uid) return;
+  //     const updatedList: HabitList = {
+  //       ...this.editingList,
+  //       name: this.editingListName,
+  //       habitIds: Array.from(this.selectedHabits),
+  //       updatedAt: new Date()
+  //     };
+
+  //     await this.userService.updateUserList(uid, updatedList);
+
+  //     // atualizar localmente
+  //     this.editingList = null;
+  //     this.editingListName = '';
+  //     this.selectedHabits.clear();
+
+  //     // recarregar listas e hábitos
+  //     await this.loadLists();
+  //     await this.setActive(updatedList.name);
+  //   }
 
 }

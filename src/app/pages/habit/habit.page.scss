@@ -47,8 +47,7 @@ ion-content {
         &:hover {
             background-color: #e6e9ec;
         }
-        
-        
+
         &:active {
             transform: scale(0.94);
         }
@@ -60,8 +59,6 @@ ion-content {
         background: #e5e7eb;
         padding: 5px;
         border-radius: 8px;
-
-
     }
 
     .habit-list-tabs button {
@@ -129,6 +126,10 @@ ion-content {
             flex-direction: row;
             list-style: none;
         }
+
+        .no-habits {
+            margin-top: 2rem;
+        }
     }
 
     .list-header {
@@ -149,6 +150,29 @@ ion-content {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .sort-icon {
+            opacity: 0;
+            transform: translateY(3px) rotate(0deg);
+            transition:
+                opacity 0.2s ease,
+                transform 0.25s ease;
+        }
+
+        .header-item:hover .sort-icon,
+        .header-item.active .sort-icon,
+        .sort-icon.visible {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg);
+        }
+
+        .sort-icon.rotated {
+            transform: translateY(0) rotate(180deg) !important;
         }
 
         .name {
@@ -156,21 +180,20 @@ ion-content {
             padding-left: 27px;
         }
 
-        .category {
-            flex: 0.7;
-            text-align: left;
-
-        }
-
-        .status {
+        .category,
+        .status,
+        .priority {
             flex: 0.7;
             text-align: left;
         }
 
         .priority {
-            flex: 0.7;
-            text-align: left;
-            padding-right: 56px;
+            padding-right: 70px;
+        }
+
+        .header-item:hover {
+            cursor: pointer;
+            opacity: 0.8;
         }
     }
 }
@@ -194,3 +217,12 @@ ion-content {
 //   width: 90%;
 //   max-width: 500px;
 // }
+
+@media (max-width: 768px) {
+    ion-content {
+
+        .list-header {
+            display: none;
+        }
+    }
+}

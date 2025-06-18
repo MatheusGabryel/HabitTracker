@@ -36,7 +36,7 @@
                 <h2>Lista de Hábitos</h2>
                 <button class="filter">
                   <img src="./assets/icon/tune_100dp_434343.png" alt="" />
-                  <p>Filters</p>
+                  <p>Editar Listas</p>
                 </button>
               </div>
               <div class="habit-toolbar">
@@ -61,20 +61,86 @@
                     alt=""
                     width="25px"
                   />
-                  <input type="text" placeholder="Buscar hábito... " />
+                  <input
+                    type="text"
+                    placeholder="Buscar hábito... "
+                    [(ngModel)]="searchText"
+                    (ngModelChange)="onSearchChange()"
+                  />
                 </div>
               </div>
+
               <div class="habit-list-cards">
                 <div class="list-header">
-                  <div class="header-item name">Nome</div>
-                  <div class="header-item category">Categoria</div>
-                  <div class="header-item status">Status</div>
-                  <div class="header-item priority">Prioridade</div>
+                  <div
+                    class="header-item name"
+                    [class.active]="sortState.key === 'name'"
+                    (click)="sortBy('name')"
+                  >
+                    Nome
+                    <img
+                      src="./assets/icon/arrow.svg"
+                      alt=""
+                      class="sort-icon"
+                      [class.rotated]="sortState.key === 'name' && sortState.direction === 'asc'"
+                      [class.visible]="sortState.key === 'name'"
+                      width="12px"
+                      height="12px"
+                    />
+                  </div>
+                  <div
+                    class="header-item category"
+                    [class.active]="sortState.key === 'category'"
+                    (click)="sortBy('category')"
+                  >
+                    Categoria
+                    <img
+                      src="./assets/icon/arrow.svg"
+                      alt=""
+                      class="sort-icon"
+                      [class.rotated]="sortState.key === 'category' && sortState.direction === 'asc'"
+                      [class.visible]="sortState.key === 'category'"
+                      width="12px"
+                      height="12px"
+                    />
+                  </div>
+                  <div
+                    class="header-item status"
+                    [class.active]="sortState.key === 'state'"
+                    (click)="sortBy('state')"
+                  >
+                    Status
+                    <img
+                      src="./assets/icon/arrow.svg"
+                      alt=""
+                      class="sort-icon"
+                      [class.rotated]="sortState.key === 'state' && sortState.direction === 'asc'"
+                      [class.visible]="sortState.key === 'state'"
+                      width="12px"
+                      height="12px"
+                    />
+                  </div>
+                  <div
+                    class="header-item priority"
+                    [class.active]="sortState.key === 'priority'"
+                    (click)="sortBy('priority')"
+                  >
+                    Prioridade
+                    <img
+                      src="./assets/icon/arrow.svg"
+                      alt=""
+                      class="sort-icon"
+                      [class.rotated]="sortState.key === 'priority' && sortState.direction === 'asc'"
+                      [class.visible]="sortState.key === 'priority'"
+                      width="12px"
+                      height="12px"
+                    />
+                  </div>
                 </div>
                 @if (!loading) { @if (activeTab === 'Ver tudo') { @if
                 (hasHabits) {
                 <ul class="habit-list">
-                  @for (habit of habits; track habit.id) {
+                  @for (habit of filteredHabits; track habit.id) {
                   <li>
                     <app-habit-card
                       (delete)="deleteHabit($event)"
@@ -89,10 +155,9 @@
                 <div class="no-habits">
                   <p>Você ainda não criou hábitos.</p>
                 </div>
-                } } @if (activeTab !== 'Ver tudo') { @if (hasHabits) {
-                <button>✏️ Editar</button>
+                }} @if (activeTab !== 'Ver tudo') { @if (hasHabits) {
                 <ul class="habit-list">
-                  @for (habit of habits; track habit.id) {
+                  @for (habit of filteredHabits; track habit.id) {
                   <li>
                     <app-habit-card
                       (delete)="deleteHabit($event)"
@@ -107,7 +172,7 @@
                 <div class="no-habits">
                   <p>Não há hábitos nesta lista.</p>
                 </div>
-                } } }
+                }}}
               </div>
             </div>
           </section>
