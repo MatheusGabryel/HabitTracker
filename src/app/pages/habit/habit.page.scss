@@ -1,6 +1,6 @@
 ion-content {
     main {
-        padding: min(30px, 7%);
+        padding: min(30px, 4%);
     }
 
     .create-cards {
@@ -53,6 +53,14 @@ ion-content {
         }
     }
 
+    .habit-list-tabs.mobile-only {
+        display: none;
+    }
+
+    .habit-list-tabs.desktop-only {
+        display: flex;
+    }
+
     .habit-list-tabs {
         display: flex;
         gap: 1rem;
@@ -70,7 +78,9 @@ ion-content {
         font-size: 14px;
         color: #6b7280;
         cursor: pointer;
-        transition: color 0.2s;
+        transition:
+            background-color 0.2s,
+            color 0.2s;
 
         &:hover {
             background: #d3d3d3;
@@ -220,9 +230,86 @@ ion-content {
 
 @media (max-width: 768px) {
     ion-content {
+        .habit-toolbar {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: space-between;
+            align-items: flex-start;
 
+            .search-bar {
+                width: 100%;
+                margin-bottom: 1rem;
+                margin-top: 0.5rem;
+            }
+        }
         .list-header {
             display: none;
+        }
+        .habit-list-tabs.mobile-only {
+            display: flex;
+        }
+
+        .habit-list-tabs.desktop-only {
+            display: none;
+        }
+
+        .habit-list-tabs.mobile-only swiper-container {
+            width: max-content;
+            max-width: 100%;
+        }
+
+        .habit-list-tabs swiper-slide {
+            width: auto !important;
+        }
+
+        .habit-list-tabs button {
+            white-space: nowrap;
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            border-radius: 5px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .habit-list-tabs button.active {
+            background: white;
+            color: #333;
+            font-weight: 600;
+            box-shadow: 0 0 0 1px #d1d5db;
+        }
+
+        .habit-list-tabs button.new-list {
+            background-color: crimson;
+            color: white;
+            font-weight: 600;
+        }
+
+        swiper-container.habit-list-tabs.mobile-only {
+            width: max-content;
+            max-width: 100%;
+        }
+
+        swiper-slide button {
+            white-space: nowrap;
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            color: #6b7280;
+            border-radius: 5px;
+        }
+
+        swiper-slide button.active {
+            background: white;
+            color: #333;
+            font-weight: 600;
+            box-shadow: 0 0 0 1px #d1d5db;
+        }
+
+        .new-list {
+            background-color: crimson;
+            color: #fff;
         }
     }
 }

@@ -29,6 +29,8 @@
               >
               </app-create-card>
             </div>
+
+            
           </section>
           <section>
             <div class="habit-container">
@@ -39,8 +41,9 @@
                   <p>Editar Listas</p>
                 </button>
               </div>
+
               <div class="habit-toolbar">
-                <nav class="habit-list-tabs">
+                <nav class="habit-list-tabs desktop-only">
                   @for (tab of tabs; track tab.id) {
                   <button
                     [class.active]="activeTab === tab.name"
@@ -48,13 +51,37 @@
                   >
                     {{ tab.name }}
                   </button>
-                  @if (tab.id) {
-                  <!-- <button (click)="openEditModal(tab)">Editar</button> -->
-                  } }
+                  }
                   <button class="new-list" (click)="openListModal()">
                     + Nova lista
                   </button>
                 </nav>
+
+                <!-- VERSÃO MOBILE COM SWIPER -->
+                <swiper-container
+                  class="habit-list-tabs mobile-only"
+                  slides-per-view="auto"
+                  space-between="10"
+                  free-mode="true"
+                >
+                  @for (tab of tabs; track tab.id) {
+                  <swiper-slide>
+                    <button
+                      [class.active]="activeTab === tab.name"
+                      (click)="setActive(tab.name)"
+                    >
+                      {{ tab.name }}
+                    </button>
+                  </swiper-slide>
+                  }
+
+                  <swiper-slide>
+                    <button class="new-list" (click)="openListModal()">
+                      + Nova lista
+                    </button>
+                  </swiper-slide>
+                </swiper-container>
+
                 <div class="search-bar">
                   <img
                     src="./assets/icon/search_100dp_434343.png"
@@ -181,35 +208,3 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<!-- 
-<div class="modal-backdrop" *ngIf="editingList">
-  <div class="modal">
-    <h2>Editar Lista</h2>
-
-    <label>
-      Nome:
-      <input type="text" [(ngModel)]="editingListName" />
-    </label>
-
-    <div class="habit-selection">
-      <h3>Selecionar Hábitos</h3>
-      <ul>
-        @for (habit of allHabits; track habit.id) {
-        <li>
-          <input
-            type="checkbox"
-            [checked]="selectedHabits.has(habit.id)"
-            (change)="toggleHabitSelection(habit.id)"
-          />
-          {{ habit.name }}
-        </li>
-        }
-      </ul>
-    </div>
-
-    <div class="modal-buttons">
-      <button (click)="saveListChanges()">Salvar</button>
-      <button (click)="cancelEdit()">Cancelar</button>
-    </div>
-  </div>
-</div> -->

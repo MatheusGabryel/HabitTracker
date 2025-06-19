@@ -16,12 +16,15 @@ import { HabitData } from 'src/app/interfaces/habit.interface';
 import { AlertController } from '@ionic/angular';
 import { HabitList } from 'src/app/interfaces/habitlist.interface';
 import { FormsModule } from '@angular/forms';
+import { register } from 'swiper/element/bundle';
+register()
 
 @Component({
   selector: 'app-habit',
   templateUrl: './habit.page.html',
   styleUrls: ['./habit.page.scss'],
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [IonRow, FormsModule, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
   animations: [
     trigger('fadeInOut', [
