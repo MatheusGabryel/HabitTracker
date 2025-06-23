@@ -1,12 +1,12 @@
 import { HabitData } from 'src/app/interfaces/habit.interface';
-import { collectionData, docData, Firestore } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc, deleteDoc, query, where, serverTimestamp } from 'firebase/firestore';
 import { Auth } from '@angular/fire/auth';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { BehaviorSubject } from 'rxjs';
 import { UserData } from '../interfaces/user.interface';
 import { HabitList } from '../interfaces/habitlist.interface';
+import { GoalData } from '../interfaces/goal.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class UserService {
   }
 
 
-  public async addHabit(uid: string, habit: any) {
+  public async addHabit(uid: string, habit: HabitData) {
     const userDocRef = doc(this.db, 'users', uid);
     const habitsCollectionRef = collection(userDocRef, 'habits');
     const docRef = await addDoc(habitsCollectionRef, habit);
@@ -31,7 +31,16 @@ export class UserService {
     return docRef;
   }
 
-  public async addList(uid: string, habitlist: any) {
+    public async addGoal(uid: string, goal: GoalData) {
+    const userDocRef = doc(this.db, 'users', uid);
+    const habitsCollectionRef = collection(userDocRef, 'goals');
+    const docRef = await addDoc(habitsCollectionRef, goal);
+    await updateDoc(docRef, { id: docRef.id });
+
+    return docRef;
+  }
+
+  public async addList(uid: string, habitlist: HabitList) {
     const userDocRef = doc(this.db, 'users', uid);
     const listCollectionRef = collection(userDocRef, 'list')
     const docRef = await addDoc(listCollectionRef, habitlist)
@@ -95,18 +104,27 @@ export class UserService {
     return snapshot.exists() ? snapshot.data() as UserData : null;
   }
 
-  async updateHabitState(habitId: string, newState: 'in_progress' | 'completed' | 'not_completed', uid: string): Promise<void> {
-    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
-    await updateDoc(habitRef, { state: newState })
-  }
+async updateHabitState(habitId: string, newState: 'in_progress' | 'completed' | 'not_completed', uid: string): Promise<void> {
+  const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+  await updateDoc(habitRef, {
+    state: newState,
+    updatedAt: serverTimestamp()
+  });
+}
 
-  async updateHabitProgress(habitId: string, data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number }, uid: string): Promise<void> {
-    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
-    await updateDoc(habitRef, {
-      state: data.state,
-      progressValue: data.progressValue
-    });
-  }
+// Atualiza progresso e estado
+async updateHabitProgress(
+  habitId: string,
+  data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number },
+  uid: string
+): Promise<void> {
+  const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+  await updateDoc(habitRef, {
+    state: data.state,
+    progressValue: data.progressValue,
+    updatedAt: serverTimestamp()
+  });
+}
 
   async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
