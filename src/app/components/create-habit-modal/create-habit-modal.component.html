@@ -51,7 +51,7 @@
 
     <label>Categoria</label>
     <select name="categoria" [(ngModel)]="habit.category" required>
-      @for (cat of categories; track categories) {
+      @for (cat of categories; track cat.id) {
       <option [value]="cat.id">{{ cat.displayName }}</option>
       }
     </select>

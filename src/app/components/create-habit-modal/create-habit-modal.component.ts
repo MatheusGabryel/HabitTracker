@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
 import { AuthService } from 'src/app/services/auth.service';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
+import { serverTimestamp } from 'firebase/firestore';
 
 
 @Component({
@@ -41,7 +42,9 @@ export class CreateHabitModalComponent implements OnInit {
       rule: 'at_least',
     },
     state: 'in_progress',
-    progressValue: 0
+    progressValue: 0,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   }
 
   constructor() { }
@@ -60,10 +63,7 @@ export class CreateHabitModalComponent implements OnInit {
 
   public categories = PREDEFINED_CATEGORIES;
 
-  public sortState: { key: 'name' | 'category' | 'state' | 'priority'; direction: 'asc' | 'desc' } = {
-    key: 'name',
-    direction: 'asc'
-  };
+
 
   public toggleDay(day: string) {
     if (this.habit.days.includes(day)) {
