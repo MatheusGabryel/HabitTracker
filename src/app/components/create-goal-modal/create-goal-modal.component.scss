@@ -15,7 +15,7 @@
   background: white;
   border-radius: 12px;
   padding: 2rem;
-  width: 400px;
+  width: 600px;
   max-width: 90%;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
   position: relative;
@@ -45,15 +45,29 @@ form label {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="date"],
+input[type="time"],
 select {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-top: 0.3rem;
-  background: #fff;
+    background-color: #fff;
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
 }
+
+input[type="number"] {
+    width: auto;
+}
+
+input[type="date"] {
+    width: auto;
+    background-color: #cccccc;
+}
+
 
 .toggle-options {
   display: flex;
@@ -98,4 +112,8 @@ button.criar {
   padding: 0.6rem 1.2rem;
   border-radius: 10px;
   cursor: pointer;
+
+          &:disabled {
+            opacity: 0.5;
+        }
 }

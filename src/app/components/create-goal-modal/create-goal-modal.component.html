@@ -2,58 +2,95 @@
   <div class="modal">
     <div class="modal-header">
       <h2>Criar Meta</h2>
-      <button class="close-btn" (click)="onFechar()">×</button>
+      <button class="close-btn" (click)="onClose()">×</button>
     </div>
 
-    <form (ngSubmit)="onSubmit()">
-      <!-- Nome da meta -->
+    <form #form="ngForm" (ngSubmit)="createGoal()">
       <label>Nome da Meta</label>
-      <input type="text" [(ngModel)]="meta.nome" name="nome" required>
+      <input
+        type="text"
+        [(ngModel)]="goal.name"
+        name="name"
+        required
+        #name="ngModel"
+      />
 
-      <!-- Vincular hábito -->
-      <label>Deseja vincular a um hábito?</label>
-      <div class="toggle-options">
-        <label><input type="radio" [(ngModel)]="meta.vinculaHabito" [value]="true" name="vincula"> Sim</label>
-        <label><input type="radio" [(ngModel)]="meta.vinculaHabito" [value]="false" name="vincula"> Não</label>
-      </div>
+      <label>Descrição da Meta (opcional)</label>
+      <input type="text" [(ngModel)]="goal.description" name="description" />
 
-      <!-- Hábito vinculado (se sim) -->
-      <div *ngIf="meta.vinculaHabito">
-        <label>Selecione o Hábito</label>
-        <select [(ngModel)]="meta.habitoId" name="habito">
-          <option *ngFor="let h of habitos" [value]="h">{{ h }}</option>
-        </select>
-      </div>
+      <label>Categoria</label>
+      <select name="category" [(ngModel)]="goal.category" required>
+        @for (cat of categories; track cat.id) {
+        <option [value]="cat.id">{{ cat.displayName }}</option>
+        }
+      </select>
 
-      <!-- Objetivo do hábito -->
-      <label>Objetivo da Meta</label>
-      <input type="text" [(ngModel)]="meta.objetivo" name="objetivo" required>
-
-      <!-- Forma de marcação -->
       <label>Como deseja marcar o progresso?</label>
       <div class="toggle-options">
-        <label *ngFor="let tipo of tiposMarcacao">
-          <input type="radio" name="tipoMarcacao" [(ngModel)]="meta.tipoMarcacao" [value]="tipo">
-          {{ tipo }}
+        @for (type of progressTypes; track type) {
+        <label>
+          <input
+            type="radio"
+            name="progressValueType"
+            [(ngModel)]="goal.progressValueType"
+            [value]="type"
+          />
+          {{ type }}
         </label>
+        }
       </div>
 
-      <!-- Data final opcional -->
-      <label>Possui previsão de término?</label>
+      @if (goal.progressValueType === 'Outro') {
+      <label>Descreva este tipo de marcação</label>
+      <input
+        type="text"
+        [(ngModel)]="goal.customProgressType"
+        name="customProgressType"
+        required
+      />
+      }
+
+      <label>Valor mínimo para conclusão da meta</label>
+      <input
+        type="number"
+        name="targetValue"
+        [(ngModel)]="goal.targetValue"
+        min="1"
+        required
+      />
+
+      <label>Você quer definir uma data final?</label>
       <div class="toggle-options">
-        <label><input type="radio" [(ngModel)]="meta.temDataFinal" [value]="true" name="dataFinal"> Sim</label>
-        <label><input type="radio" [(ngModel)]="meta.temDataFinal" [value]="false" name="dataFinal"> Não</label>
+        <label
+          ><input
+            type="radio"
+            [(ngModel)]="goal.hasEndDate"
+            [value]="true"
+            name="hasEndDate"
+          />Sim</label
+        >
+        <label
+          ><input
+            type="radio"
+            [(ngModel)]="goal.hasEndDate"
+            [value]="false"
+            name="hasEndDate"
+          />Não</label
+        >
       </div>
 
-      <div *ngIf="meta.temDataFinal">
+      @if (goal.hasEndDate) {
+      <div>
         <label>Data final prevista</label>
-        <input type="date" [(ngModel)]="meta.dataFinal" name="dataFinalInput">
+        <input type="date" [(ngModel)]="goal.endDate" name="dataFinalInput" />
       </div>
+      }
 
-      <!-- Botões -->
       <div class="btn-group">
-        <button type="button" class="cancelar" (click)="onFechar()">Cancelar</button>
-        <button type="submit" class="criar">Criar</button>
+        <button type="button" class="cancelar" (click)="onClose()">
+          Cancelar
+        </button>
+        <button type="submit" class="criar" [disabled]="form.invalid || !goal.name.trim()">Criar</button>
       </div>
     </form>
   </div>
