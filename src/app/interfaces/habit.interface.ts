@@ -1,3 +1,5 @@
+import { serverTimestamp } from 'firebase/firestore';
+
 export interface HabitData {
     id: string,
     name: string,
@@ -21,4 +23,6 @@ export interface HabitData {
     currentTimes?: number;
     inputValue?: number;
     progressValue: number;
+    createdAt: Date | ReturnType<typeof serverTimestamp>;
+    updatedAt: Date | ReturnType<typeof serverTimestamp>
 }

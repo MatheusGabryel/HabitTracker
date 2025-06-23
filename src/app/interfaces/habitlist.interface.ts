@@ -3,6 +3,5 @@ export interface HabitList {
   name: string;
   createdAt: any;
   updatedAt: any;
-  habitIds: string[];
   categories: string[];
 }
