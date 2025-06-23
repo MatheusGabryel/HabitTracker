@@ -25,7 +25,6 @@ export class CreateListModalComponent implements OnInit {
     name: '',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-    habitIds: [],
     categories: [] as string[],
   }
 
