@@ -60,14 +60,22 @@ export class HabitPage {
 
   async ngOnInit() {
     this.loadLists();
-    this.loadHabitsForActiveTab('Ver tudo');
+    this.loadHabitsForActiveTab(this.DEFAULT_TAB);
   }
-  showHabitModal = false;
-  showListModal = false;
+  public showHabitModal = false;
+  public showListModal = false;
 
   openHabitModal() {
     this.showHabitModal = true;
   }
+
+ public tableHeaders: { key: 'name' | 'category' | 'state' | 'priority'; label: string; class: string }[] = [
+  { key: 'name', label: 'Nome', class: 'name' },
+  { key: 'category', label: 'Categoria', class: 'category' },
+  { key: 'state', label: 'Status', class: 'status' },
+  { key: 'priority', label: 'Prioridade', class: 'priority' }
+];
+
 
   private getNextStateYesNo(currentState: HabitData['state']): HabitData['state'] {
     const states: HabitData['state'][] = ['in_progress', 'completed', 'not_completed'];
@@ -279,11 +287,11 @@ export class HabitPage {
     }
   }
 
-  openListModal() {
+  public openListModal() {
     this.showListModal = true;
   }
 
-  closeModal() {
+  public closeModal() {
     this.showHabitModal = false;
     this.showListModal = false;
 
@@ -364,6 +372,10 @@ export class HabitPage {
     this.loading = true
     const uid = await this.userService.getUserId();
     if (!uid) throw new Error('Usuário não autenticado');
+
+    if (!list && tabName !== this.DEFAULT_TAB) {
+      list = this.tabs.find(tab => tab.name === tabName && tab.id) as HabitList;
+    }
 
     if (tabName === this.DEFAULT_TAB) {
       this.habits = await this.userService.getUserHabits(uid);

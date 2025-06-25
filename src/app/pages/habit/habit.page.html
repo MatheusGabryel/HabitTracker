@@ -29,8 +29,6 @@
               >
               </app-create-card>
             </div>
-
-            
           </section>
           <section>
             <div class="habit-container">
@@ -99,73 +97,26 @@
 
               <div class="habit-list-cards">
                 <div class="list-header">
+                  @for (header of tableHeaders; track header.key) {
                   <div
-                    class="header-item name"
-                    [class.active]="sortState.key === 'name'"
-                    (click)="sortBy('name')"
+                    class="header-item {{ header.class }}"
+                    [class.active]="sortState.key === header.key"
+                    (click)="sortBy(header.key)"
                   >
-                    Nome
+                    {{ header.label }}
                     <img
                       src="./assets/icon/arrow.svg"
                       alt=""
                       class="sort-icon"
-                      [class.rotated]="sortState.key === 'name' && sortState.direction === 'asc'"
-                      [class.visible]="sortState.key === 'name'"
+                      [class.rotated]="sortState.key === header.key && sortState.direction === 'asc'"
+                      [class.visible]="sortState.key === header.key"
                       width="12px"
                       height="12px"
                     />
                   </div>
-                  <div
-                    class="header-item category"
-                    [class.active]="sortState.key === 'category'"
-                    (click)="sortBy('category')"
-                  >
-                    Categoria
-                    <img
-                      src="./assets/icon/arrow.svg"
-                      alt=""
-                      class="sort-icon"
-                      [class.rotated]="sortState.key === 'category' && sortState.direction === 'asc'"
-                      [class.visible]="sortState.key === 'category'"
-                      width="12px"
-                      height="12px"
-                    />
-                  </div>
-                  <div
-                    class="header-item status"
-                    [class.active]="sortState.key === 'state'"
-                    (click)="sortBy('state')"
-                  >
-                    Status
-                    <img
-                      src="./assets/icon/arrow.svg"
-                      alt=""
-                      class="sort-icon"
-                      [class.rotated]="sortState.key === 'state' && sortState.direction === 'asc'"
-                      [class.visible]="sortState.key === 'state'"
-                      width="12px"
-                      height="12px"
-                    />
-                  </div>
-                  <div
-                    class="header-item priority"
-                    [class.active]="sortState.key === 'priority'"
-                    (click)="sortBy('priority')"
-                  >
-                    Prioridade
-                    <img
-                      src="./assets/icon/arrow.svg"
-                      alt=""
-                      class="sort-icon"
-                      [class.rotated]="sortState.key === 'priority' && sortState.direction === 'asc'"
-                      [class.visible]="sortState.key === 'priority'"
-                      width="12px"
-                      height="12px"
-                    />
-                  </div>
+                  }
                 </div>
-                @if (!loading) { @if (activeTab === 'Ver tudo') { @if
-                (hasHabits) {
+                @if (!loading) { @if (hasHabits) {
                 <ul class="habit-list">
                   @for (habit of filteredHabits; track habit.id) {
                   <li>
@@ -180,26 +131,12 @@
                 </ul>
                 } @else {
                 <div class="no-habits">
-                  <p>Você ainda não criou hábitos.</p>
+                  <p>
+                    @if (activeTab === 'Ver tudo') { Você ainda não criou
+                    hábitos. } @else { Não há hábitos nesta lista. }
+                  </p>
                 </div>
-                }} @if (activeTab !== 'Ver tudo') { @if (hasHabits) {
-                <ul class="habit-list">
-                  @for (habit of filteredHabits; track habit.id) {
-                  <li>
-                    <app-habit-card
-                      (delete)="deleteHabit($event)"
-                      (mark)="completeHabit($event)"
-                      [habit]="habit"
-                      style="width: 100%"
-                    ></app-habit-card>
-                  </li>
-                  }
-                </ul>
-                } @else {
-                <div class="no-habits">
-                  <p>Não há hábitos nesta lista.</p>
-                </div>
-                }}}
+                } }
               </div>
             </div>
           </section>
