@@ -24,7 +24,7 @@ export class CreateGoalModalComponent {
 
   ngOnInit() { }
 
-  @Output() fechar = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
   progressTypes = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'Dinheiro', 'Outro'];
   public categories = PREDEFINED_CATEGORIES;
 
@@ -44,8 +44,8 @@ export class CreateGoalModalComponent {
     updatedAt: undefined,
   };
 
-  onClose() {
-    this.fechar.emit();
+  public closeModal() {
+    this.close.emit();
   }
 
 
@@ -122,7 +122,7 @@ export class CreateGoalModalComponent {
         confirmButtonColor: '#E0004D'
       });
       Loading.remove()
-      this.onClose();
+      this.closeModal();
     } catch (err: unknown) {
       Loading.remove()
       if (err instanceof Error) {

@@ -1,97 +1,101 @@
-<div class="overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Criar Meta</h2>
-      <button class="close-btn" (click)="onClose()">×</button>
+<div class="modal">
+  <div class="modal-header">
+    <h2>Criar Meta</h2>
+    <button class="close-btn" (click)="closeModal()">×</button>
+  </div>
+
+  <form #form="ngForm" (ngSubmit)="createGoal()">
+    <label>Nome da Meta</label>
+    <input
+      type="text"
+      [(ngModel)]="goal.name"
+      name="name"
+      required
+      #name="ngModel"
+    />
+
+    <label>Descrição da Meta (opcional)</label>
+    <input type="text" [(ngModel)]="goal.description" name="description" />
+
+    <label>Categoria</label>
+    <select name="category" [(ngModel)]="goal.category" required>
+      @for (cat of categories; track cat.id) {
+      <option [value]="cat.id">{{ cat.displayName }}</option>
+      }
+    </select>
+
+    <label>Como deseja marcar o progresso?</label>
+    <div class="toggle-options">
+      @for (type of progressTypes; track type) {
+      <label>
+        <input
+          type="radio"
+          name="progressValueType"
+          [(ngModel)]="goal.progressValueType"
+          [value]="type"
+        />
+        {{ type }}
+      </label>
+      }
     </div>
 
-    <form #form="ngForm" (ngSubmit)="createGoal()">
-      <label>Nome da Meta</label>
-      <input
-        type="text"
-        [(ngModel)]="goal.name"
-        name="name"
-        required
-        #name="ngModel"
-      />
+    @if (goal.progressValueType === 'Outro') {
+    <label>Descreva este tipo de marcação</label>
+    <input
+      type="text"
+      [(ngModel)]="goal.customProgressType"
+      name="customProgressType"
+      required
+    />
+    }
 
-      <label>Descrição da Meta (opcional)</label>
-      <input type="text" [(ngModel)]="goal.description" name="description" />
+    <label>Valor mínimo para conclusão da meta</label>
+    <input
+      type="number"
+      name="targetValue"
+      [(ngModel)]="goal.targetValue"
+      min="1"
+      required
+    />
 
-      <label>Categoria</label>
-      <select name="category" [(ngModel)]="goal.category" required>
-        @for (cat of categories; track cat.id) {
-        <option [value]="cat.id">{{ cat.displayName }}</option>
-        }
-      </select>
+    <label>Você quer definir uma data final?</label>
+    <div class="toggle-options">
+      <label
+        ><input
+          type="radio"
+          [(ngModel)]="goal.hasEndDate"
+          [value]="true"
+          name="hasEndDate"
+        />Sim</label
+      >
+      <label
+        ><input
+          type="radio"
+          [(ngModel)]="goal.hasEndDate"
+          [value]="false"
+          name="hasEndDate"
+        />Não</label
+      >
+    </div>
 
-      <label>Como deseja marcar o progresso?</label>
-      <div class="toggle-options">
-        @for (type of progressTypes; track type) {
-        <label>
-          <input
-            type="radio"
-            name="progressValueType"
-            [(ngModel)]="goal.progressValueType"
-            [value]="type"
-          />
-          {{ type }}
-        </label>
-        }
-      </div>
+    @if (goal.hasEndDate) {
+    <div>
+      <label>Data final prevista</label>
+      <input type="date" [(ngModel)]="goal.endDate" name="dataFinalInput" />
+    </div>
+    }
 
-      @if (goal.progressValueType === 'Outro') {
-      <label>Descreva este tipo de marcação</label>
-      <input
-        type="text"
-        [(ngModel)]="goal.customProgressType"
-        name="customProgressType"
-        required
-      />
-      }
-
-      <label>Valor mínimo para conclusão da meta</label>
-      <input
-        type="number"
-        name="targetValue"
-        [(ngModel)]="goal.targetValue"
-        min="1"
-        required
-      />
-
-      <label>Você quer definir uma data final?</label>
-      <div class="toggle-options">
-        <label
-          ><input
-            type="radio"
-            [(ngModel)]="goal.hasEndDate"
-            [value]="true"
-            name="hasEndDate"
-          />Sim</label
-        >
-        <label
-          ><input
-            type="radio"
-            [(ngModel)]="goal.hasEndDate"
-            [value]="false"
-            name="hasEndDate"
-          />Não</label
-        >
-      </div>
-
-      @if (goal.hasEndDate) {
-      <div>
-        <label>Data final prevista</label>
-        <input type="date" [(ngModel)]="goal.endDate" name="dataFinalInput" />
-      </div>
-      }
-
-      <div class="btn-group">
-        <button type="button" class="cancelar" (click)="onClose()">
-          Cancelar
-        </button>
-        <button type="submit" class="criar" [disabled]="form.invalid || !goal.name.trim()">Criar</button>
-      </div>
-    </form>
-  </div>
+    <div class="btn-group">
+      <button type="button" class="cancelar" (click)="closeModal()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="criar"
+        [disabled]="form.invalid || !goal.name.trim()"
+      >
+        Criar
+      </button>
+    </div>
+  </form>
 </div>
