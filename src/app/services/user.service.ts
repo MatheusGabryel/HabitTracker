@@ -140,5 +140,21 @@ async updateHabitProgress(
       };
     });
   }
+
+  
+  public async getUserGoals(uid: string) {
+    const goalsRef = collection(this.firestore, `users/${uid}/goals`);
+    const snapshot = await getDocs(goalsRef);
+
+    if (!snapshot.empty) {
+      const goals = snapshot.docs.map(doc => {
+        const goalsData = doc.data();
+        return { id: doc.id, ...goalsData }
+      });
+      return goals;
+    } else {
+      return [];
+    }
+  }
 }
 
