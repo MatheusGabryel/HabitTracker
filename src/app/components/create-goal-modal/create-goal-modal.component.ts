@@ -25,7 +25,7 @@ export class CreateGoalModalComponent {
   ngOnInit() { }
 
   @Output() close = new EventEmitter<void>();
-  progressTypes = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'Dinheiro', 'Outro'];
+  progressTypes = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'R$', 'Dias', 'Semanas', 'Outro'];
   public categories = PREDEFINED_CATEGORIES;
 
   goal: GoalData = {
