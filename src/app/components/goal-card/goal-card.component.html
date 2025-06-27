@@ -1,4 +1,4 @@
-<div class="goal-card" [ngStyle]="{ 'background-color': rgbaCatColor }">
+<div class="goal-card" [ngStyle]="{ 'background-color': rgbaCatColor }" (click)="openModal()">
   <div
     class="goal-category-banner"
     [ngStyle]="{
@@ -8,10 +8,30 @@
 
   <div class="goal-content">
     <div class="goal-name">{{ goal.name }}</div>
-    <div class="goal-status">🟠 Em progresso: 60%</div>
+    @if (goal.state) {
+    <div
+      class="goal-status neutral"
+    >
+      <div
+        class="bola"
+        [ngStyle]="{ 'background-color': getProgressColor(
+            calculateProgress()
+          ) }"
+      ></div>
+      {{ translateStatus() }}: {{ calculateProgress() }}%
+    </div>
+    }
 
     <div class="goal-progress-bar">
-      <div class="goal-progress-fill" style="width: 60%"></div>
+      <div
+        class="goal-progress-fill"
+        [ngStyle]="{
+          'width.%': calculateProgress(),
+          'background-color': getProgressColor(
+            calculateProgress()
+          )
+        }"
+      ></div>
     </div>
 
     <div class="goal-info-row">Unidade: {{ goal.progressValueType }}</div>
@@ -33,7 +53,41 @@
         }
       </div>
       }
-      <button class="add-progress-btn">+ Progresso</button>
+      <button class="add-progress-btn" (click)="onAddProgressClick($event)">
+        + Progresso
+      </button>
     </div>
   </div>
 </div>
+@if (showGoalModal) {
+<div class="goal-modal-backdrop" (click)="closeModal()"></div>
+
+<div class="goal-modal">
+  <div class="goal-modal-header">
+    <h2>{{ goal.name }}</h2>
+    <button class="close-btn" (click)="closeModal()">✕</button>
+  </div>
+
+  <div class="goal-modal-swiper">
+    <swiper-container
+      slides-per-view="1"
+      loop="false"
+      pagination="true"
+      space-between="16"
+      class="swiper"
+    >
+      <swiper-slide>
+        <div class="slide-content">Slide 1 – Detalhes da meta</div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="slide-content">Slide 2 – Estatísticas</div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="slide-content">Slide 3 – Opções</div>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+</div>
+}
+
+
