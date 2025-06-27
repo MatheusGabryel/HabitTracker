@@ -22,8 +22,8 @@ register()
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms ease-in', style({ opacity: 1 }))
+        style({ opacity: 0, transform: 'scale(0.98)' }),
+        animate('300ms ease-in', style({ opacity: 1, transform: 'scale(1)' }))
       ]),
       transition(':leave', [
         animate('300ms ease-out', style({ opacity: 0 }))
@@ -65,8 +65,6 @@ export class HabitCardComponent implements OnInit {
   toggleDetails() {
     this.showDetails = !this.showDetails;
   }
-
-  public habits: any[] = [];
 
   constructor() { }
 
