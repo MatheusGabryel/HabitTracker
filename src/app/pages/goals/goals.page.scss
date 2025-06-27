@@ -80,6 +80,33 @@ ion-content {
         margin-bottom: 2rem;
     }
 
+    .list-header .left {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .list-header .left h2 {
+        font-family: poppinsSemiBold;
+        font-size: 20px;
+    }
+
+    .list-header .left .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: rgb(242, 244, 248);
+        border: 1px solid #d3d3d3;
+        border-radius: 5px;
+        padding: 7px;
+        gap: 5px;
+
+        input {
+            background-color: rgb(242, 244, 248);
+            outline: none;
+            border: none;
+            width: 100%;
+        }
+    }
+
     .list-header .filter {
         display: flex;
         background-color: transparent;
@@ -104,114 +131,40 @@ ion-content {
         }
     }
 
-    .progressGoal {
-        display: flex;
-        flex-direction: column;
-        background-color: white;
-        width: 25%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        border-top-left-radius: 25px;
-        border-top-right-radius: 25px;
-        padding: 1rem;
+    .goal-list-cards-wrapper {
+        max-width: calc(100vw - 250px);
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
+    }
 
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #e5e7eb;
+    .goal-list-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        position: relative;
+        overflow: visible;
+        gap: 24px;
+        justify-content: center;
+        padding: 12px;
 
-            h3 {
-                font-family: poppinsSemiBold;
-                font-size: 22px;
-            }
+        li {
+            list-style: none;
+        }
+
+        .no-goals {
+            margin-top: 2rem;
         }
     }
 
-    // .goal-cards {
-    //     display: grid;
-    //     width: 100%;
-    //     margin-top: 1rem;
-    //     padding: 2rem;
-    //     grid-template-columns: repeat(2, 1fr);
-    //     gap: 16px;
-    //     justify-items: center;
-    // }
+    @media (max-width: 1250px) {
+        .goal-list-cards-wrapper {
+            max-width: 100%;
+        }
 
-    // .card {
-    //     width: 95%;
-    //     height: auto;
-    //     padding: 1.5rem;
-    //     border-radius: 20px;
-    //     background-color: #fff;
-    //     display: flex;
-    //     gap: 1.5rem;
-    //     flex-direction: column;
-    //     text-overflow: ellipsis;
-    // }
+        .goal-list-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
 
-    // .card .header-container {
-    //     display: flex;
-    //     flex-direction: row;
-    //     align-items: center;
-    //     justify-content: space-between;
-    // }
-
-    // .card .header-container .title {
-    //     font-family: poppinsSemiBold;
-    //     font-size: 20px;
-    // }
-
-    // .card .header-container .icon {
-    //     width: 50px;
-    //     display: flex;
-    //     align-items: right;
-    // }
-
-    // .card .progress-container {
-    //     display: flex;
-    //     flex-direction: row;
-    //     gap: 1rem;
-    //     justify-content: space-between;
-    //     align-items: center;
-    // }
-
-    // .card .bar {
-    //     border-radius: 2rem;
-    //     background-color: rgba(146, 146, 146, 0.418);
-    //     width: 100%;
-    //     height: 20px;
-    //     overflow: hidden;
-    //     display: flex;
-    // }
-
-    // .card .bar .progress-bar {
-    //     background-color: #e0004d;
-    //     width: 50%;
-    //     border-radius: 2rem;
-    //     height: 100%;
-    // }
-
-    // .card .footer-container {
-    //     display: flex;
-    //     flex-direction: row;
-    //     align-items: center;
-    //     justify-content: space-between;
-    // }
-
-    // .card .footer-container .reward,
-    // .status {
-    //     font-size: 18px;
-    //     font-family: poppinsSemiBold;
-    // }
-
-    // .card .teste {
-    //     display: none;
-    // }
-}
-
-@media (max-width: 1000px) {
-    ion-content {
         main {
             padding: min(30px, 5%);
         }
@@ -228,22 +181,11 @@ ion-content {
         .create-goal-card {
             display: none;
         }
+    }
 
-        // .card {
-        //     width: 90%;
-        //     .reward {
-        //         display: none;
-        //     }
-        // }
-        // .goal-cards {
-        //     display: grid;
-        //     width: 100%;
-        //     margin-top: 1rem;
-        //     padding: 0;
-        //     justify-content: center;
-        //     grid-template-columns: repeat(1, 1fr);
-        //     gap: 16px;
-        //     justify-items: center;
-        // }
+    @media (max-width: 640px) {
+        .goal-list-cards {
+            grid-template-columns: 1fr;
+        }
     }
 }

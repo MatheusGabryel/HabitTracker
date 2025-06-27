@@ -1,0 +1,126 @@
+.goal-card {
+  width: auto;
+  max-width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgbaCatColor;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.goal-card:hover {
+  transform: scaleY(1.03) scaleX(1.02);
+  transform-origin: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.goal-category-banner {
+  background: transparent;
+  padding: 23px 16px 16px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.goal-category-banner::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 18px;
+  width: 60px;
+  height: 60px;
+  background-image: var(--catIcon);
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.15; /* “enfraquece” o ícone */
+  transform: rotate(15deg);
+  pointer-events: none;
+}
+
+.goal-content {
+  background-color: #ffffff;
+  padding: 20px 20px 12px 20px;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+}
+
+/* Nome da meta */
+.goal-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status visual com % */
+.goal-status {
+  font-size: 13px;
+  color: #219653;
+  background: #e6f4ea;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* Barra de progresso */
+.goal-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #eee;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  background-color: #27ae60;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Linha de informações */
+.goal-info-row {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Rodapé com datas e botão */
+.goal-footer {
+  padding-top: 12px;
+  font-size: 12px;
+  color: #777;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.goal-footer .date span {
+  display: block;
+}
+/* Botão de progresso */
+.add-progress-btn {
+  background-color: #7964ff;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-progress-btn:hover {
+  background-color: #3e2fc3;
+}

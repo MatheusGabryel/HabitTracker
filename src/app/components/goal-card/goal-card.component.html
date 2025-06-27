@@ -1,0 +1,39 @@
+<div class="goal-card" [ngStyle]="{ 'background-color': rgbaCatColor }">
+  <div
+    class="goal-category-banner"
+    [ngStyle]="{
+      '--catIcon': 'url(' + category?.icon + ')'
+    }"
+  ></div>
+
+  <div class="goal-content">
+    <div class="goal-name">{{ goal.name }}</div>
+    <div class="goal-status">🟠 Em progresso: 60%</div>
+
+    <div class="goal-progress-bar">
+      <div class="goal-progress-fill" style="width: 60%"></div>
+    </div>
+
+    <div class="goal-info-row">Unidade: {{ goal.progressValueType }}</div>
+    <div class="goal-info-row">
+      Progresso: {{ goal.progressValue }} / {{ goal.targetValue }}
+    </div>
+    <div class="goal-info-row">Recompensa: Não há</div>
+
+    <div class="goal-footer">
+      @if (goal?.createdAt) {
+      <div class="date">
+        <span
+          >Criada em: {{ goal.createdAt.toDate() | date : "dd-MM-yyyy" }}</span
+        >
+        @if (goal.hasEndDate) {
+        <span>Prazo final: {{ goal.endDate | date : "dd-MM-yyyy" }}</span>
+        } @else {
+        <span>Prazo final: Não há</span>
+        }
+      </div>
+      }
+      <button class="add-progress-btn">+ Progresso</button>
+    </div>
+  </div>
+</div>
