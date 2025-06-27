@@ -126,6 +126,19 @@ async updateHabitProgress(
   });
 }
 
+async updateGoalProgress(
+  goalId: string,
+  data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number },
+  uid: string
+): Promise<void> {
+  const goalRef = doc(this.firestore, `users/${uid}/goals/${goalId}`);
+  await updateDoc(goalRef, {
+    state: data.state,
+    progressValue: data.progressValue,
+    updatedAt: serverTimestamp()
+  });
+}
+
   async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
     if (!categories || categories.length === 0) return [];

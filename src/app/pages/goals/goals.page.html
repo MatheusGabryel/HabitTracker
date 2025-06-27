@@ -63,11 +63,11 @@
               </button>
             </div>
               <div class="goal-list-card-wrapper">
-                @if (!loading) { @if (hasHabits) {
+                @if (!loading) { @if (hasGoals) {
                 <ul class="goal-list-cards">
                   @for (goal of goals; track goal.id) {
                   <li>
-                    <app-goal-card [goal]="goal"></app-goal-card>
+                    <app-goal-card [goal]="goal" (mark)="completeGoal($event)"></app-goal-card>
                   </li>
                   }
                 </ul>
