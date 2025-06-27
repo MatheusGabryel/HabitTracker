@@ -118,7 +118,7 @@
                 </div>
                 @if (!loading) { @if (hasHabits) {
                 <ul class="habit-list">
-                  @for (habit of filteredHabits; track habit.id) {
+                  @for (habit of activeListHabits; track habit.id) {
                   <li>
                     <app-habit-card
                       (delete)="deleteHabit($event)"

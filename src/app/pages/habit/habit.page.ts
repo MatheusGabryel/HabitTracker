@@ -69,12 +69,12 @@ export class HabitPage {
     this.showHabitModal = true;
   }
 
- public tableHeaders: { key: 'name' | 'category' | 'state' | 'priority'; label: string; class: string }[] = [
-  { key: 'name', label: 'Nome', class: 'name' },
-  { key: 'category', label: 'Categoria', class: 'category' },
-  { key: 'state', label: 'Status', class: 'status' },
-  { key: 'priority', label: 'Prioridade', class: 'priority' }
-];
+  public tableHeaders: { key: 'name' | 'category' | 'state' | 'priority'; label: string; class: string }[] = [
+    { key: 'name', label: 'Nome', class: 'name' },
+    { key: 'category', label: 'Categoria', class: 'category' },
+    { key: 'state', label: 'Status', class: 'status' },
+    { key: 'priority', label: 'Prioridade', class: 'priority' }
+  ];
 
 
   private getNextStateYesNo(currentState: HabitData['state']): HabitData['state'] {
@@ -386,7 +386,6 @@ export class HabitPage {
     }
 
     this.applySearchFilter();
-    this.activeListHabits = this.filteredHabits;
     this.hasHabits = this.filteredHabits.length > 0;
     this.loading = false;
   }
@@ -394,8 +393,9 @@ export class HabitPage {
   applySearchFilter() {
     const search = this.searchText.toLowerCase();
     this.filteredHabits = this.habits.filter(habit =>
-      habit.name.toLowerCase().includes(search) || habit.category.toLowerCase().includes(search)
+      habit.name.toLowerCase().includes(search)
     );
+    this.activeListHabits = this.filteredHabits;
   }
 
   public sortState: { key: 'name' | 'category' | 'state' | 'priority'; direction: 'asc' | 'desc' } = {
