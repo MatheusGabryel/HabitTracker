@@ -66,12 +66,14 @@ export class CreateHabitModalComponent implements OnInit {
 
 
   public toggleDay(day: string) {
-    if (this.habit.days.includes(day)) {
-      this.habit.days = this.habit.days.filter(d => d !== day);
-    } else {
-      this.habit.days.push(day);
-    }
+  const updatedDays = new Set(this.habit.days);
+  if (updatedDays.has(day)) {
+    updatedDays.delete(day);
+  } else {
+    updatedDays.add(day);
   }
+  this.habit.days = Array.from(updatedDays);
+}
 
 
   public async createHabit() {
