@@ -72,3 +72,42 @@
     font-family: 'poppinsMedium', sans-serif;
     color: #333333;
 }
+
+.swal2-html-container {
+  display: flex !important;
+  justify-content: center;
+  gap: 2px;
+  padding-top: 10px;
+}
+
+.swal2-input {
+  width: 80px !important;
+  padding: 8px 10px !important;
+  font-size: 1rem !important;
+  border: 1.5px solid #ccc !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  transition: border-color 0.3s ease;
+  text-align: center;
+}
+
+.swal2-input:focus {
+  border-color: #007bff !important;
+  outline: none !important;
+  box-shadow: 0 0 5px #007bff !important;
+}
+
+.swal2-input::placeholder {
+  color: #aaa !important;
+  font-style: italic;
+}
+
+.swal2-input-wide {
+  width: 80% !important;
+  max-width: 80% !important;
+  margin: 12px auto 0 auto !important;
+  display: block !important;
+  font-size: 1.1rem !important;
+  padding: 12px 14px !important;
+  box-sizing: border-box;
+}

@@ -7,6 +7,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { UserData } from '../interfaces/user.interface';
 import { HabitList } from '../interfaces/habitlist.interface';
 import { GoalData } from '../interfaces/goal.interface';
+import { HabitLog } from '../interfaces/habitlog.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class UserService {
     return docRef;
   }
 
-    public async addGoal(uid: string, goal: GoalData) {
+  public async addGoal(uid: string, goal: GoalData) {
     const userDocRef = doc(this.db, 'users', uid);
     const habitsCollectionRef = collection(userDocRef, 'goals');
     const docRef = await addDoc(habitsCollectionRef, goal);
@@ -104,40 +105,82 @@ export class UserService {
     return snapshot.exists() ? snapshot.data() as UserData : null;
   }
 
-async updateHabitState(habitId: string, newState: 'in_progress' | 'completed' | 'not_completed', uid: string): Promise<void> {
-  const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
-  await updateDoc(habitRef, {
-    state: newState,
-    updatedAt: serverTimestamp()
-  });
-}
+  async updateHabitState(habitId: string, newState: 'in_progress' | 'completed' | 'not_completed' | 'failed', uid: string): Promise<void> {
+    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+    await updateDoc(habitRef, {
+      state: newState,
+      updatedAt: serverTimestamp()
+    });
+  }
 
-// Atualiza progresso e estado
-async updateHabitProgress(
+
+  async updateHabitProgress(
+    habitId: string,
+    data: { state: 'in_progress' | 'completed' | 'not_completed' | 'failed', progressValue: number },
+    uid: string
+  ): Promise<void> {
+    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+    await updateDoc(habitRef, {
+      state: data.state,
+      progressValue: data.progressValue,
+      updatedAt: serverTimestamp()
+    });
+  }
+
+  async logHabitCompletion(
+    uid: string,
+    habitId: string,
+    date: string, // formato: '2025-07-01'
+    state: string
+  ): Promise<void> {
+    const logId = `${habitId}_${date}`;
+    const logRef = doc(this.firestore, `users/${uid}/habitLogs/${logId}`);
+
+    await setDoc(logRef, {
+      habitId,
+      date,
+      state,
+      updateAt: serverTimestamp()
+    }, { merge: true })
+  }
+
+async getHabitLogsForDates(
+  uid: string,
   habitId: string,
-  data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number },
-  uid: string
-): Promise<void> {
-  const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
-  await updateDoc(habitRef, {
-    state: data.state,
-    progressValue: data.progressValue,
-    updatedAt: serverTimestamp()
-  });
+  dates: string[]
+): Promise<{ [date: string]: HabitLog }> {
+  const logIds = dates.map(date => `${habitId}_${date}`);
+
+  const promises = logIds.map(logId =>
+    getDoc(doc(this.firestore, `users/${uid}/habitLogs/${logId}`))
+  );
+
+  const snapshots = await Promise.all(promises);
+
+  const result: { [date: string]: HabitLog } = {};
+
+  for (const snap of snapshots) {
+    if (snap.exists()) {
+      const data = snap.data() as HabitLog;
+      result[data.date] = data;
+    }
+  }
+
+  return result;
 }
 
-async updateGoalProgress(
-  goalId: string,
-  data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number },
-  uid: string
-): Promise<void> {
-  const goalRef = doc(this.firestore, `users/${uid}/goals/${goalId}`);
-  await updateDoc(goalRef, {
-    state: data.state,
-    progressValue: data.progressValue,
-    updatedAt: serverTimestamp()
-  });
-}
+  async updateGoalProgress(
+    goalId: string,
+    data: { state: 'in_progress' | 'completed' | 'not_completed', progressValue: number },
+    uid: string
+  ): Promise<void> {
+    const goalRef = doc(this.firestore, `users/${uid}/goals/${goalId}`);
+    await updateDoc(goalRef, {
+      state: data.state,
+      progressValue: data.progressValue,
+      updatedAt: serverTimestamp()
+    });
+  }
 
   async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
@@ -154,7 +197,7 @@ async updateGoalProgress(
     });
   }
 
-  
+
   public async getUserGoals(uid: string) {
     const goalsRef = collection(this.firestore, `users/${uid}/goals`);
     const snapshot = await getDocs(goalsRef);

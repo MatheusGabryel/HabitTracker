@@ -1,0 +1,18 @@
+<div class="days">
+  @for (day of days; track day.iso) {
+
+  <div class="day">
+    <div class="weekday">{{ day.weekday }}</div>
+    <div
+      class="day-box"
+      (click)="selectDay(day.iso)"
+      [ngClass]="[
+        getDayStateClass(logs[day.iso]?.state),
+         day.isHabitDay ? 'habit-day' : 'non-habit-day'
+      ]"
+    >
+      <div class="date">{{ day.formattedDate }}</div>
+    </div>
+  </div>
+  }
+</div>

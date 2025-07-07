@@ -1,8 +1,7 @@
-import { Category } from './../../interfaces/category.interface';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import { IonContent, IonGrid, IonCol, IonRow, IonSpinner } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CreateCardComponent } from "../../components/create-card/create-card.component";
@@ -13,10 +12,10 @@ import { CreateListModalComponent } from "../../components/create-list-modal/cre
 import { Loading } from 'notiflix';
 import Swal from 'sweetalert2';
 import { HabitData } from 'src/app/interfaces/habit.interface';
-import { AlertController } from '@ionic/angular';
 import { HabitList } from 'src/app/interfaces/habitlist.interface';
 import { FormsModule } from '@angular/forms';
 import { register } from 'swiper/element/bundle';
+import { HabitLog } from 'src/app/interfaces/habitlog.interface';
 register()
 
 @Component({
@@ -40,8 +39,9 @@ register()
 })
 export class HabitPage {
 
+  logs: { [date: string]: HabitLog } = {};
+  logsByHabit: { [habitId: string]: { [date: string]: HabitLog } } = {};
   public userService = inject(UserService);
-  public alertController = inject(AlertController)
   public habits: any[] = [];
   public tabs: any[] = [];
   readonly DEFAULT_TAB = 'Ver tudo';
@@ -55,7 +55,7 @@ export class HabitPage {
   // editingListName: string = '';
   // allHabits: HabitData[] = [];
   // selectedHabits: Set<string> = new Set();
-
+  today = new Date();
   constructor() { }
 
   async ngOnInit() {
@@ -76,119 +76,84 @@ export class HabitPage {
     { key: 'priority', label: 'Prioridade', class: 'priority' }
   ];
 
+  onDaySelected(dateIso: string) {
+    console.log('Dia clicado:', dateIso);
+  }
+
 
   private getNextStateYesNo(currentState: HabitData['state']): HabitData['state'] {
-    const states: HabitData['state'][] = ['in_progress', 'completed', 'not_completed'];
+    const states: HabitData['state'][] = ['in_progress', 'completed', 'failed'];
     const nextIndex = (states.indexOf(currentState) + 1) % states.length;
     return states[nextIndex];
   }
   async presentTimesInputAlert(habit: HabitData): Promise<number | null> {
-    return new Promise(async (resolve) => {
-      const maxAllowed = habit.timesTarget!.value * 1000;
-      const alert = await this.alertController.create({
-        header: 'Registrar progresso',
-        message: `Quantas vezes você realizou o hábito "${habit.name}"?`,
-        inputs: [
-          {
-            name: 'times',
-            type: 'number',
-            placeholder: 'Ex: 3',
-            min: 0,
-            max: maxAllowed < 100000 ? maxAllowed : 100000
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            handler: () => resolve(null)
-          },
-          {
-            text: 'OK',
-            handler: (data: { times: string }) => {
-              const inputValue = Number(data.times);
-              if (inputValue >= 0 && inputValue <= (maxAllowed < 1000000 ? maxAllowed : 1000000)) {
+    const maxAllowed = habit.timesTarget!.value * 1000;
+    const maxLimit = maxAllowed < 100000 ? maxAllowed : 100000;
 
-                resolve(inputValue);
-                return true;
-              } else {
-                setTimeout(async () => {
-                  const invalidAlert = await this.alertController.create({
-                    header: 'Valor inválido',
-                    message: 'Insira valores válidos.',
-                    buttons: ['OK']
-                  });
-                  await invalidAlert.present();
-                }, 0);
-
-                return false;
-              }
-            }
-          }
-        ]
-      });
-
-      await alert.present();
+    const { value: inputValue } = await Swal.fire({
+      title: 'Registrar progresso',
+      heightAuto: false,
+      text: `Quantas vezes você realizou o hábito "${habit.name}"?`,
+      input: 'number',
+      inputAttributes: {
+        min: '0',
+        max: maxAllowed < 100000 ? String(maxAllowed) : '100000',
+        placeholder: 'Ex: 3',
+      },
+      inputValidator: (value) => {
+        const num = Number(value);
+        if (isNaN(num) || num < 0 || num > maxLimit) {
+          return `Insira um valor válido entre 0 e ${maxLimit}.`;
+        }
+        return null;
+      },
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
+      didOpen: () => {
+        const input = document.querySelector('.swal2-input');
+        if (input) input.classList.add('swal2-input-wide');
+      }
     });
+
+
+    if (inputValue === undefined) return null;
+    return Number(inputValue);
   }
 
+
   async presentTimeInputAlert(habit: HabitData): Promise<number | null> {
-    return new Promise(async (resolve) => {
-      const alert = await this.alertController.create({
-        header: 'Registrar progresso',
-        message: `Em quanto tempo realizou o hábito "${habit.name}"?`,
-        inputs: [
-          {
-            name: 'hours',
-            type: 'number',
-            placeholder: 'Horas',
-            min: 0,
-          },
-          {
-            name: 'minutes',
-            type: 'number',
-            placeholder: 'Minutos',
-            min: 0,
-          },
-          {
-            name: 'seconds',
-            type: 'number',
-            placeholder: 'Segundos',
-            min: 0,
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            handler: () => resolve(null)
-          },
-          {
-            text: 'OK',
-            handler: (data: { hours?: string; minutes?: string; seconds?: string }) => {
-              const inputValue = (Number(data.hours) || 0) * 3600 + (Number(data.minutes) || 0) * 60 + (Number(data.seconds) || 0);
-              if (inputValue >= 0) {
-                resolve(inputValue);
-                return true;
-              } else {
-                setTimeout(async () => {
-                  const invalidAlert = await this.alertController.create({
-                    header: 'Tempo inválido',
-                    message: 'Insira um tempo válido',
-                    buttons: ['OK']
-                  });
-                  await invalidAlert.present();
-                }, 0);
+    const { value: formValues } = await Swal.fire({
+      title: 'Registrar progresso',
+      heightAuto: false,
+      html: `
+      <input type="number" id="swal-hours" class="swal2-input" placeholder="Horas" min="0" />
+      <input type="number" id="swal-minutes" class="swal2-input" placeholder="Min" min="0" max="59" />
+      <input type="number" id="swal-seconds" class="swal2-input" placeholder="Seg" min="0" max="59" />
+    `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const hours = Number((document.getElementById('swal-hours') as HTMLInputElement).value) || 0;
+        const minutes = Number((document.getElementById('swal-minutes') as HTMLInputElement).value) || 0;
+        const seconds = Number((document.getElementById('swal-seconds') as HTMLInputElement).value) || 0;
 
-                return false;
-              }
-            }
-          }
-        ]
-      });
-
-      await alert.present();
+        if (hours < 0 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+          Swal.showValidationMessage('Insira valores válidos para horas, minutos (0-59) e segundos (0-59).');
+          return null;
+        }
+        return { hours, minutes, seconds };
+      }
     });
+
+    if (!formValues) return null;
+
+    const totalSeconds = formValues.hours * 3600 + formValues.minutes * 60 + formValues.seconds;
+    if (totalSeconds < 0) return null;
+
+    return totalSeconds;
   }
 
 
@@ -207,7 +172,7 @@ export class HabitPage {
         state = inputValue >= target ? 'completed' : 'in_progress';
         break;
       case 'at_most':
-        state = inputValue > target ? 'not_completed' : 'in_progress';
+        state = inputValue > target ? 'failed' : 'in_progress';
         break;
       case 'any':
         state = 'completed';
@@ -234,7 +199,7 @@ export class HabitPage {
         state = inputValue >= targetSeconds ? 'completed' : 'in_progress';
         break;
       case 'at_most':
-        state = inputValue > targetSeconds ? 'not_completed' : 'in_progress';
+        state = inputValue > targetSeconds ? 'failed' : 'in_progress';
         break;
       case 'any':
         state = 'completed';
@@ -244,7 +209,7 @@ export class HabitPage {
     return { state, progressValue: inputValue };
   }
 
-  async completeHabit(habit: HabitData) {
+  async completeHabit(habit: HabitData, dateIso: string) {
     const uid = await this.userService.getUserId();
     if (!uid) return;
 
@@ -285,6 +250,28 @@ export class HabitPage {
       habit.progressValue = progressValue;
       console.log('Novo estado:', habit.state);
     }
+    const logDate = dateIso || new Date().toISOString().split('T')[0];
+
+    await this.userService.logHabitCompletion(uid, habit.id, logDate, habit.state);
+
+    const updatedLogs = {
+      ...this.logsByHabit[habit.id],
+      [logDate]: {
+        habitId: habit.id,
+        date: logDate,
+        state: habit.state,
+        updatedAt: new Date().toISOString(),
+      }
+    };
+
+    this.logsByHabit = {
+      ...this.logsByHabit,
+      [habit.id]: updatedLogs
+    };
+  }
+
+  onLogsUpdated(newLogs: { [date: string]: HabitLog }, habitId: string) {
+    this.logsByHabit[habitId] = newLogs;
   }
 
   public openListModal() {
@@ -445,6 +432,7 @@ export class HabitPage {
   onSearchChange() {
     this.applySearchFilter();
   }
+
 
   //   async openEditModal(list: HabitList) {
   //     this.editingList = list;

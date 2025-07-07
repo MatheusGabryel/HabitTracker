@@ -1,15 +1,15 @@
 <div class="habit-card" @fadeInOut [class.expanded]="showDetails">
   <div class="habit-main">
     <div class="dinamic-status" title="Concluído">
-      @if(habit.state === "in_progress") {
+      @if(getTodayState() === "in_progress") {
       <button class="status-button" (click)="emitMarkHabit()">
         <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
       </button>
-      } @if(habit.state === "completed") {
+      } @if(getTodayState() === "completed") {
       <button class="status-button" (click)="emitMarkHabit()">
         <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
       </button>
-      } @if(habit.state === "not_completed") {
+      } @if(getTodayState() === "failed") {
       <button class="status-button" (click)="emitMarkHabit()">
         <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
       </button>
@@ -30,19 +30,31 @@
         <img [src]="category.icon" [alt]="category.displayName" />
       </div>
     </div>
-    } @if(habit.state === "in_progress") {
+    } @if(getTodayState() === "in_progress") {
     <div class="status">
       <span class="in_progress" @fadeInOut>Em progresso</span>
     </div>
-    } @if(habit.state === "completed") {
+    } @if(getTodayState() === "completed") {
     <div class="status">
       <span class="completed" @fadeInOut>Completo</span>
     </div>
-    } @if(habit.state === "not_completed") {
+    } @if(getTodayState() === "failed") {
     <div class="status">
-      <span class="not_completed" @fadeInOut>Falhado</span>
+      <span class="failed" @fadeInOut>Falhado</span>
     </div>
     }
+
+    <div class="days-mobile">
+      <app-habit-days
+        [centerDate]="today"
+        [daysBefore]="7"
+        [logs]="logs"
+        [habitId]="habit.id"
+        [habitDays]="habit.days"
+        [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
+        (daySelected)="onDaySelected($event)"
+      ></app-habit-days>
+    </div>
 
     <div class="priority">
       @if (habit.priority === 'high') {
@@ -78,13 +90,38 @@
       class="swiper"
     >
       <swiper-slide>
-        <div class="slide-content">Slide 1 - Detalhes do hábito</div>
+        <div class="slide-content">
+          <div>Slide 1 - Detalhes do hábito</div>
+
+          <div class="days-desktop">
+            <app-habit-days
+              [centerDate]="today"
+              [daysBefore]="7"
+              (daySelected)="onDaySelected($event)"
+              [habitDays]="habit.days"
+              [logs]="logs"
+              (logsUpdated)="onLogsUpdated($event)"
+              [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
+              [habitId]="habit.id"
+            ></app-habit-days>
+          </div>
+
+          <div class="summary">
+            Concluído: 57% na semana
+            <button class="calendar-button">📅 Ver calendário</button>
+          </div>
+
+          <div class="created-date">Criado em: 12/06/2025</div>
+
+          @if (habit.description) {
+          <div class="description">Descrição: {{ habit.description }}</div>
+          }
+        </div>
       </swiper-slide>
       <swiper-slide>
-        <div class="slide-content">Slide 2 - Estatísticas</div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="slide-content">Slide 3 - Opções</div>
+        <div class="slide-content">
+          <div>Slide 2 - Estatística</div>
+        </div>
       </swiper-slide>
     </swiper-container>
   </div>

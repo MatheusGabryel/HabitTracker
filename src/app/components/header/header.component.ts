@@ -2,13 +2,13 @@ import { Component, HostListener, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { IonIcon } from "@ionic/angular/standalone";
-import { AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { menuOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { UserService } from 'src/app/services/user.service';
 import { ProfileModalComponent } from '../../components/profile-modal/profile-modal.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +19,6 @@ import { ProfileModalComponent } from '../../components/profile-modal/profile-mo
 export class HeaderComponent {
 
   private menuService = inject(MenuService);
-  private alertController = inject(AlertController);
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private elementRef = inject(ElementRef);
@@ -76,24 +75,21 @@ export class HeaderComponent {
   closeUserMenu() {
     this.isOpen = false;
   }
-
   async logout() {
-    const alert = await this.alertController.create({
-      header: 'Confirmação',
-      message: 'Deseja realmente sair da conta?',
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Sair',
-          handler: async () => {
-            await this.authService.logout();
-            this.router.navigate(['/login']);
-          }
-        }
-      ]
+    const result = await Swal.fire({
+      title: 'Confirmação',
+      text: 'Deseja realmente sair da conta?',
+      icon: 'warning',
+      heightAuto: false,
+      showCancelButton: true,
+      confirmButtonText: 'Sair',
+      cancelButtonText: 'Cancelar',
     });
 
-    await alert.present();
+    if (result.isConfirmed) {
+      await this.authService.logout();
+      this.router.navigate(['/login']);
+    }
   }
 
 

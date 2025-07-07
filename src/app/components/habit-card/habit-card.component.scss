@@ -27,7 +27,7 @@
   swiper-container {
     width: 100% !important;
     max-width: 100%;
-    height: 280px;
+    height: auto;
     display: block;
     box-sizing: border-box;
     overflow: hidden;
@@ -41,15 +41,50 @@
   }
 
   .slide-content {
-    background: #f9f9f9;
-    border-radius: 8px;
-    height: 100%;
-    padding: 16px;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 20px;
     font-family: poppinsRegular;
-    color: #444;
+    color: #333;
     box-sizing: border-box;
     width: 100%;
     margin-top: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  app-habit-days {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .summary {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .calendar-button {
+    background: none;
+    border: none;
+    color: #ff9800;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: color 0.3s ease;
+  }
+
+  .calendar-button:hover {
+    color: #ff5722;
+  }
+
+  .created-date,
+  .description {
+    margin-top: 0.75rem;
+    color: #666;
+    font-size: 13px;
+    text-align: center;
   }
 
   ::part(pagination) {
@@ -68,7 +103,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   img {
     width: 24px;
     height: 24px;
@@ -109,12 +144,12 @@
   color: #ff9800;
 }
 
-.not_completed {
+.failed {
   color: #f44336;
 }
 
 .completed {
-    color: #4caf50;
+  color: #4caf50;
 }
 
 .status-button.parcial {
@@ -125,7 +160,77 @@
   color: #4caf50;
 }
 
-.priority span{
+.priority span {
   font-family: poppinsSemiBold;
 }
 
+.days-desktop {
+  display: block;
+}
+.days-mobile {
+  display: none;
+}
+
+@media (max-width: 578px) {
+  .habit-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "name category"
+      "days days"
+      "priority actions";
+    gap: 12px;
+  }
+
+  .name {
+    grid-area: name;
+    span {
+      font-size: 13px;
+      font-family: poppinsSemiBold;
+      color: #333;
+    }
+  }
+
+  .category {
+    grid-area: category;
+    justify-self: end;
+  }
+
+  .icon-wrapper {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .days-desktop {
+    display: none;
+  }
+  .days-mobile {
+    display: block;
+    grid-area: days;
+  }
+
+  .priority {
+    grid-area: priority;
+    font-size: 11px;
+    color: #777;
+  }
+
+  .habit-actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+
+  .dinamic-status,
+  .status {
+    display: none;
+  }
+}
