@@ -32,11 +32,6 @@ export class AuthService {
       displayName: name,
       photoURL: '',
       createdAt: new Date(),
-      bio: '',
-      phoneNumber: '',
-      birthday: '',
-      gender: '',
-      location: ''
     };
 
     await this.saveUserData(userData);
