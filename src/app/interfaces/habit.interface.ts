@@ -19,7 +19,7 @@ export interface HabitData {
         seconds?: number;
         rule?: 'equal' | 'at_least' | 'at_most' | 'any';
     },
-    state: 'in_progress' | 'completed' | 'not_completed';
+    state: 'in_progress' | 'completed' | 'not_completed' | 'failed';
     currentTimes?: number;
     inputValue?: number;
     progressValue: number;
