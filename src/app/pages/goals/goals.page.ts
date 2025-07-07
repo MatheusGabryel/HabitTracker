@@ -9,7 +9,8 @@ import { CreateGoalModalComponent } from "../../components/create-goal-modal/cre
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UserService } from 'src/app/services/user.service';
 import { GoalData } from 'src/app/interfaces/goal.interface';
-import { AlertController } from '@ionic/angular';
+import Swal from 'sweetalert2';
+import { Loading } from 'notiflix';
 
 @Component({
   selector: 'app-goals',
@@ -33,7 +34,6 @@ export class GoalsPage {
 
   public showGoalModal = false;
   public userService = inject(UserService);
-  public alertController = inject(AlertController)
   public loading: boolean = true;
   public hasGoals: boolean = false;
   public goals: any[] = [];
@@ -68,56 +68,40 @@ export class GoalsPage {
     }
   }
 
-
   async progressGoalInput(goal: GoalData): Promise<number | null> {
-    return new Promise(async (resolve) => {
-      const maxAllowed = goal.targetValue! * 100;
-      const alert = await this.alertController.create({
-        header: 'Registrar progresso',
-        message: `Informe seu progresso na meta: "${goal.name}"?`,
-        inputs: [
-          {
-            name: 'times',
-            type: 'number',
-            placeholder: 'Ex: 3',
-            min: 0,
-            max: maxAllowed < 100000 ? maxAllowed : 100000
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            handler: () => resolve(null)
-          },
-          {
-            text: 'OK',
-            handler: (data: { times: string }) => {
-              const inputValue = Number(data.times);
-              if (inputValue >= 0 && inputValue <= maxAllowed) {
+    const maxAllowed = goal.targetValue! * 100;
 
-                resolve(inputValue);
-                return true;
-              } else {
-                setTimeout(async () => {
-                  const invalidAlert = await this.alertController.create({
-                    header: 'Valor inválido',
-                    message: 'Insira valores válidos.',
-                    buttons: ['OK']
-                  });
-                  await invalidAlert.present();
-                }, 0);
+    const { value: inputValue } = await Swal.fire({
+      title: 'Registrar progresso',
+      heightAuto: false,
+      text: `Informe seu progresso na meta: "${goal.name}"`,
+      input: 'number',
+      inputAttributes: {
+        min: '0',
+        max: maxAllowed < 100000 ? String(maxAllowed) : '100000',
+        placeholder: 'Ex: 3'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancelar',
 
-                return false;
-              }
-            }
-          }
-        ]
-      });
+      inputValidator: (value) => {
+        const num = Number(value);
+        if (isNaN(num) || num <= 0 || num > maxAllowed) {
+          return 'Insira um valor válido.';
+        }
+        return null;
 
-      await alert.present();
+      },
+      didOpen: () => {
+        const input = document.querySelector('.swal2-input');
+        if (input) input.classList.add('swal2-input-wide');
+      }
     });
+    if (inputValue === undefined) return null; // Cancelado
+    return Number(inputValue);
   }
+
 
 
 

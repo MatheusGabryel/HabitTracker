@@ -116,7 +116,13 @@ export class CreateListModalComponent implements OnInit {
           });
         }
       }
-    } else { alert('Por favor, insira um nome a lista.') }
+    } else { Swal.fire({
+            title: 'Erro',
+            text: 'Por favor, insira um nome a lista.',
+            icon: 'error',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          }); }
   }
 
 }

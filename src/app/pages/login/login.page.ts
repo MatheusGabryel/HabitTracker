@@ -7,6 +7,8 @@ import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { Loading } from 'notiflix';
 
 @Component({
   selector: 'app-login',
@@ -30,18 +32,48 @@ export class LoginPage implements OnInit {
 
   async onLogin() {
     try {
+      Loading.circle()
+
       const userCredential = await this.authService.login(this.email, this.password);
-      console.log('Login bem-sucedido!', userCredential);
+      Swal.fire({
+        title: 'Sucesso',
+        text: 'Seja bem vindo de volta!',
+        icon: 'success',
+        heightAuto: false,
+        confirmButtonColor: '#E0004D'
+      });
+      Loading.remove()
       this.router.navigate(['/home']);
     } catch (error: any) {
       console.error('Erro completo:', error);
       console.log('Código do erro:', error.code);
       if (error.code === 'auth/user-not-found') {
-        alert('Usuário não encontrado.');
+        Swal.fire({
+          title: 'Error',
+          text: 'Usuário não encontrado.',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
+        Loading.remove()
       } else if (error.code === 'auth/wrong-password') {
-        alert('Senha incorreta.');
+        Swal.fire({
+          title: 'Error',
+          text: 'Senha incorreta.',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
+        Loading.remove()
       } else {
-        alert('Erro ao fazer login.');
+        Swal.fire({
+          title: 'Error',
+          text: 'Erro ao fazer login.',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
+        Loading.remove()
       }
     }
   }

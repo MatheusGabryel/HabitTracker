@@ -7,6 +7,8 @@ import { addIcons } from 'ionicons';
 import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { Loading } from 'notiflix';
 
 
 @Component({
@@ -19,30 +21,72 @@ import { Router } from '@angular/router';
 export class SignupPage implements OnInit {
   email = '';
   name = '';
-  password= '';
+  password = '';
 
   constructor(private authService: AuthService, private router: Router) {
-    addIcons({arrowBackOutline, logoGoogle});
-   }
+    addIcons({ arrowBackOutline, logoGoogle });
+  }
 
-   async onRegister() {
+  async onRegister() {
     if (!this.email || !this.password || !this.name) {
-      alert('Preencha os campos corretamente.');
+          Swal.fire({
+          title: 'Erro',
+          text: 'Preencha os campos corretamente.',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
       return;
     }
-    
+
     try {
+      Loading.circle()
       const result = await this.authService.register(this.email, this.password, this.name);
-      alert('Registro feito com sucesso!');
+      Swal.fire({
+        title: 'Sucesso',
+        text: 'Login adicionado com sucesso',
+        icon: 'success',
+        heightAuto: false,
+        confirmButtonColor: '#E0004D'
+      });
+      Loading.remove()
+      this.router.navigate(['/home'])
     } catch (error: any) {
+      Loading.remove()
       if (error.code === 'auth/email-already-in-use') {
-        alert('Este e-mail já está sendo usado.');
-      } else if (error.code === 'auth/weak-password') {
-        alert('A senha deve ter pelo menos 6 caracteres.');
-      } else if (error.code === 'auth/invalid-email') {
-        alert('E-mail inválido.');
+        Swal.fire({
+          title: 'Erro',
+          text: 'Este email já esta sendo usado',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
+      }
+      if (error.code === 'auth/weak-password') {
+        Swal.fire({
+          title: 'Erro',
+          text: 'A senha deve ter pelo menos 6 caracteres',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
+      }
+      if (error.code === 'auth/invalid-email') {
+        Swal.fire({
+          title: 'Erro',
+          text: 'Email inválido',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
       } else {
-        alert('Erro ao registrar. Tente novamente.');
+        Swal.fire({
+          title: 'Erro',
+          text: 'Erro ao tentar cadastrar, tente novamente',
+          icon: 'error',
+          heightAuto: false,
+          confirmButtonColor: '#E0004D'
+        });
       }
     }
   }
