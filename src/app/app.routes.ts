@@ -18,22 +18,26 @@ export const routes: Routes = [
   },
   {
     path: 'signup',
-    loadComponent: () => import('./pages/signup/signup.page').then(m => m.SignupPage)
+    loadComponent: () => import('./pages/signup/signup.page').then(m => m.SignupPage),
   },
   {
     path: 'habit',
-    loadComponent: () => import('./pages/habit/habit.page').then(m => m.HabitPage)
+    loadComponent: () => import('./pages/habit/habit.page').then(m => m.HabitPage),
+    canActivate: [authGuard]
   },
   {
     path: 'help',
-    loadComponent: () => import('./pages/help/help.page').then(m => m.HelpPage)
+    loadComponent: () => import('./pages/help/help.page').then(m => m.HelpPage),
+    canActivate: [authGuard]
   },
   {
     path: 'goals',
-    loadComponent: () => import('./pages/goals/goals.page').then(m => m.GoalsPage)
+    loadComponent: () => import('./pages/goals/goals.page').then(m => m.GoalsPage),
+    canActivate: [authGuard]
   },
   {
     path: 'settings',
-    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
+    loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage),
+    canActivate: [authGuard]
   },
 ];
