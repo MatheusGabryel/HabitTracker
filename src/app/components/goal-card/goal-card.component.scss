@@ -34,7 +34,7 @@
   background-image: var(--catIcon);
   background-size: contain;
   background-repeat: no-repeat;
-  opacity: 0.15; /* “enfraquece” o ícone */
+  opacity: 0.15;
   transform: rotate(15deg);
   pointer-events: none;
 }
@@ -46,7 +46,6 @@
   border-top-right-radius: 32px;
 }
 
-/* Nome da meta */
 .goal-name {
   font-size: 16px;
   font-weight: bold;
@@ -97,14 +96,12 @@
   transition: width 0.3s ease, background-color 0.3s ease;
 }
 
-/* Linha de informações */
 .goal-info-row {
   font-size: 14px;
   margin-bottom: 8px;
   color: #444;
 }
 
-/* Rodapé com datas e botão */
 .goal-footer {
   padding-top: 12px;
   font-size: 12px;
@@ -120,7 +117,7 @@
 .goal-footer .date span {
   display: block;
 }
-/* Botão de progresso */
+
 .add-progress-btn {
   background-color: #7964ff;
   color: white;

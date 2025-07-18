@@ -76,7 +76,8 @@ onAddProgressClick(event: MouseEvent): void {
     if (progress >= 10) return '#eb5757';
     return '#f8b195';
   }
-  ngOnInit() { }
+  ngOnInit() {
+   }
 
   get category(): Category | undefined {
     return this.goal
