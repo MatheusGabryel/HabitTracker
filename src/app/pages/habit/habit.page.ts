@@ -1,8 +1,8 @@
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Output, ViewChild } from '@angular/core';
-import { IonContent, IonGrid, IonCol, IonRow, IonSpinner } from '@ionic/angular/standalone';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CreateCardComponent } from "../../components/create-card/create-card.component";
 import { HabitCardComponent } from "../../components/habit-card/habit-card.component";
@@ -24,7 +24,7 @@ register()
   styleUrls: ['./habit.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonRow, FormsModule, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
+  imports: [FormsModule, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [

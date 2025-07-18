@@ -1,59 +1,47 @@
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="auto">
-        <app-menu></app-menu>
-      </ion-col>
+  <div class="app-container">
+    <app-menu></app-menu>
 
-      <ion-col>
-        <main>
-          <app-header class="page-header"></app-header>
+    <div class="main-container">
+      <app-header></app-header>
 
-          <div class="dashboard">
-            <div class="top-cards">
-              <div class="habit">
-                <div class="motivational-card">
-                  Você é Bala
-                </div>
-                <div class="habit-card">
-                  <p>a</p>
-                </div>
-                <div class="habit-card">
-                  <p>b</p>
-                </div>
-                <div class="habit-card">
-                  <p>c</p>
-                </div>
-                <div class="habit-card">
-                  <p>d</p>
-                </div>
+      <main class="page-content">
+        <div class="dashboard">
+          <div class="top-cards">
+            <div class="habit">
+              <div class="motivational-card">Você é Bala</div>
+              <div class="habit-card">
+                <p></p>
               </div>
-              <div class="card calendar">Calendario</div>
+              <div class="habit-card">
+                <p>b</p>
+              </div>
+              <div class="habit-card">
+                <p>c</p>
+              </div>
+              <div class="habit-card">
+                <p>d</p>
+              </div>
             </div>
-            <div class="bottom-cards">
-              <div class="card goal">
-                <div class="header">
-                  <h1>Metas ativas</h1> 
-                  <a>VER TUDO</a>
-                </div>
-                <div class="goal-card">
-                  sla1
-                </div>
-                <div class="goal-card">
-                  sla2
-                </div>
-                <div class="goal-card">
-                  sla3
-                </div>
-                <div class="goal-card">
-                  sla4
-                </div>
-              </div>
-              <div class="card stats">card 4</div>
+            <div class="card calendar">
+              <app-dashboard-day-swiper></app-dashboard-day-swiper>
             </div>
           </div>
-        </main>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          <div class="bottom-cards">
+            <div class="card goal">
+              <div class="header">
+                <h1>Metas ativas</h1>
+                <a>VER TUDO</a>
+              </div>
+              <div class="goal-card">sla1</div>
+              <div class="goal-card">sla2</div>
+              <div class="goal-card">sla3</div>
+              <div class="goal-card">sla4</div>
+            </div>
+            <div class="card stats">card 4</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
 </ion-content>

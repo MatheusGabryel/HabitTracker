@@ -1,52 +1,62 @@
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="auto">
-        <app-menu></app-menu>
-      </ion-col>
+  <div class="app-container">
+    <app-menu></app-menu>
 
-      <ion-col>
-        <main>
-          <app-header></app-header>
-          <section>
-            <div class="text-container">
-              <h1>Fale conosco</h1>
-              <div class="underline"></div>
-              <p>
-                Estamos aqui para ouvir você! Se tiver dúvidas, sugestões ou
-                encontrar algum problema no app, preencha o formulário abaixo e
-                entraremos em contato o mais rápido possível.
-              </p>
-              <br>
-              <p>
-                <span>Quer respostas rápidas?</span> <a href=""> Clique aqui</a> para acessar nossas
-                Perguntas Frequentes.
-              </p>
-            </div>
-            <div class="form-container">
-              <form [formGroup]="formulario" (ngSubmit)="onSubmit($event)" class="contact-form">
-                <label>Nome</label>
-                <input type="text" formControlName="name" required>
+    <div class="main-container">
+      <app-header></app-header>
 
-                <label>Email</label>
-                <input type="email" formControlName="email" required>
+      <main class="page-content">
+        <section>
+          <div class="text-container">
+            <h1>Fale conosco</h1>
+            <div class="underline"></div>
+            <p>
+              Estamos aqui para ouvir você! Se tiver dúvidas, sugestões ou
+              encontrar algum problema no app, preencha o formulário abaixo e
+              entraremos em contato o mais rápido possível.
+            </p>
+            <br />
+            <p>
+              <span>Quer respostas rápidas?</span>
+              <a href=""> Clique aqui</a> para acessar nossas Perguntas
+              Frequentes.
+            </p>
+          </div>
+          <div class="form-container">
+            <form
+              [formGroup]="formulario"
+              (ngSubmit)="onSubmit($event)"
+              class="contact-form"
+            >
+              <label>Nome</label>
+              <input type="text" formControlName="name" required />
 
-                <label>Assunto</label>
-                <input type="text" formControlName="subject" required>
+              <label>Email</label>
+              <input type="email" formControlName="email" required />
 
-                <label>Mensagem</label>
-                <textarea rows="6" formControlName="message" required></textarea>
+              <label>Assunto</label>
+              <input type="text" formControlName="subject" required />
 
-                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+              <label>Mensagem</label>
+              <textarea rows="6" formControlName="message" required></textarea>
 
-                <input type="hidden" name="_captcha" value="false">
+              <input
+                type="text"
+                name="_honey"
+                style="display: none"
+                tabindex="-1"
+                autocomplete="off"
+              />
 
-                <button type="submit" [disabled]="formulario.invalid">Enviar</button>
+              <input type="hidden" name="_captcha" value="false" />
+
+              <button type="submit" [disabled]="formulario.invalid">
+                Enviar
+              </button>
             </form>
-            </div>
-          </section>
-        </main>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
 </ion-content>

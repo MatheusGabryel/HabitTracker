@@ -1,85 +1,85 @@
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="auto">
-        <app-menu></app-menu>
-      </ion-col>
+  <div class="app-container">
+    <app-menu></app-menu>
 
-      <ion-col>
-        <main>
-          <app-header></app-header>
-          @if (showGoalModal) {
-          <app-create-goal-modal
-            (close)="closeModal()"
-            @fadeInOut
-          ></app-create-goal-modal>
-          }
+    <div class="main-container">
+      <app-header></app-header>
 
-          <section class="header-goal">
-            <div class="text">
-              <h1>Transforme seus hábitos em objetivos concretoss!</h1>
-              <p>
-                Conecte seus esforços diários a metas reais e recompensas que
-                fazem sentido pra você.
-              </p>
-            </div>
-            <div class="create-goal">
-              <div class="create-goal-card" (click)="openModal()">
-                <div>
-                  <img
-                    src="./assets/icon/emoji_events_100dp_FFFFFF.png"
-                    alt="a"
-                    class="card-icon"
-                  />
-                  <p>Nova Meta</p>
-                </div>
-                <div>
-                  <img
-                    src="./assets/icon/add_250dp_000000.png"
-                    alt=""
-                    class="add-icon"
-                  />
-                </div>
+      <main class="page-content">
+        @if (showGoalModal) {
+        <app-create-goal-modal
+          (close)="closeModal()"
+          @fadeInOut
+        ></app-create-goal-modal>
+        }
+
+        <section class="header-goal">
+          <div class="text">
+            <h1>Transforme seus hábitos em objetivos concretoss!</h1>
+            <p>
+              Conecte seus esforços diários a metas reais e recompensas que
+              fazem sentido pra você.
+            </p>
+          </div>
+          <div class="create-goal">
+            <div class="create-goal-card" (click)="openModal()">
+              <div>
+                <img
+                  src="./assets/icon/emoji_events_100dp_FFFFFF.png"
+                  alt="a"
+                  class="card-icon"
+                />
+                <p>Nova Meta</p>
+              </div>
+              <div>
+                <img
+                  src="./assets/icon/add_250dp_000000.png"
+                  alt=""
+                  class="add-icon"
+                />
               </div>
             </div>
-          </section>
-          <section class="list-goal">
-            <div class="list-header">
-              <div class="left">
-                <h2>Lista de Metas</h2>
-                <div class="search-bar">
-                  <img
-                    src="./assets/icon/search_100dp_434343.png"
-                    alt=""
-                    width="25px"
-                  />
-                  <input type="text" placeholder="Buscar meta... " />
-                </div>
+          </div>
+        </section>
+        <section class="list-goal">
+          <div class="list-header">
+            <div class="left">
+              <h2>Lista de Metas</h2>
+              <div class="search-bar">
+                <img
+                  src="./assets/icon/search_100dp_434343.png"
+                  alt=""
+                  width="25px"
+                />
+                <input type="text" placeholder="Buscar meta... " />
               </div>
-
-              <button class="filter">
-                <img src="./assets/icon/tune_100dp_434343.png" alt="" />
-                <p>Filters</p>
-              </button>
             </div>
-              <div class="goal-list-card-wrapper">
-                @if (!loading) { @if (hasGoals) {
-                <ul class="goal-list-cards">
-                  @for (goal of goals; track goal.id) {
-                  <li>
-                    <app-goal-card [goal]="goal" (mark)="completeGoal($event)"></app-goal-card>
-                  </li>
-                  }
-                </ul>
-                } @else {
-                <div class="no-goals">
-                  <p>Crie uma meta.</p>
-                </div>
-                } }
-              </div>
-          </section>
-        </main>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+            <button class="filter">
+              <img src="./assets/icon/tune_100dp_434343.png" alt="" />
+              <p>Filters</p>
+            </button>
+          </div>
+          <div class="goal-list-card-wrapper">
+            @if (!loading) { @if (hasGoals) {
+            <ul class="goal-list-cards">
+              @for (goal of goals; track goal.id) {
+              <li>
+                <app-goal-card
+                  [goal]="goal"
+                  (mark)="completeGoal($event)"
+                ></app-goal-card>
+              </li>
+              }
+            </ul>
+            } @else {
+            <div class="no-goals">
+              <p>Crie uma meta.</p>
+            </div>
+            } }
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
 </ion-content>

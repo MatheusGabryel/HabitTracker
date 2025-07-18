@@ -1,10 +1,6 @@
 ion-content {
-    main {
-        padding: min(30px, 7%);
-        height: 100vh;
-    }
-
-    .dashboard .top-cards, .bottom-cards {
+    .dashboard .top-cards,
+    .bottom-cards {
         display: flex;
         flex-direction: row;
         gap: 1.5rem;
@@ -46,11 +42,18 @@ ion-content {
             box-sizing: border-box;
             border-radius: 15px;
         }
-
     }
 
     .calendar {
-        width: 70%;
+        width: 60%;
+        padding: 2rem;
+                   min-width: 480px;
+
+        app-dashboard-day-swiper {
+            width: 100%;
+            overflow-x: hidden;
+            min-width: 440px;
+        }
     }
 
     .goal {
@@ -78,11 +81,11 @@ ion-content {
                     opacity: 0.7;
                 }
             }
-        
         }
     }
 
     .stats {
         width: 40%;
     }
+
 }

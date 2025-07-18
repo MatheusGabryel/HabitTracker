@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
-import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './help.page.html',
   styleUrls: ['./help.page.scss'],
   standalone: true,
-  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, FormsModule, ReactiveFormsModule],
+  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, FormsModule, ReactiveFormsModule],
 })
 export class HelpPage {
   formulario!: FormGroup;

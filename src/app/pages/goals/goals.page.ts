@@ -2,9 +2,8 @@ import { GoalCardComponent } from './../../components/goal-card/goal-card.compon
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
-import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
-import { CreateCardComponent } from "../../components/create-card/create-card.component";
 import { CreateGoalModalComponent } from "../../components/create-goal-modal/create-goal-modal.component";
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UserService } from 'src/app/services/user.service';
@@ -17,7 +16,7 @@ import { Loading } from 'notiflix';
   templateUrl: './goals.page.html',
   styleUrls: ['./goals.page.scss'],
   standalone: true,
-  imports: [IonRow, IonCol, IonGrid, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent],
+  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [

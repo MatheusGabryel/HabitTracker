@@ -1,150 +1,147 @@
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="auto">
-        <app-menu></app-menu>
-      </ion-col>
+  <div class="app-container">
+    <app-menu></app-menu>
 
-      <ion-col>
-        <main>
-          <app-header></app-header>
-          <section>
-            @if (showHabitModal) {
-            <app-create-habit-modal (close)="closeModal()" @fadeInOut />
-            } @if (showListModal) {
-            <app-create-list-modal (close)="closeModal()" @fadeInOut />
-            }
+    <div class="main-container">
+      <app-header></app-header>
 
-            <div class="create-cards">
-              <app-create-card
-                [title]="'Novo Hábito'"
-                [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
-                (click)="openHabitModal()"
-              >
-              </app-create-card>
-              <app-create-card
-                [title]="'Nova Lista'"
-                [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
-                (click)="openListModal()"
-              >
-              </app-create-card>
+      <main class="page-content">
+        <section>
+          @if (showHabitModal) {
+          <app-create-habit-modal (close)="closeModal()" @fadeInOut />
+          } @if (showListModal) {
+          <app-create-list-modal (close)="closeModal()" @fadeInOut />
+          }
+
+          <div class="create-cards">
+            <app-create-card
+              [title]="'Novo Hábito'"
+              [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
+              (click)="openHabitModal()"
+            >
+            </app-create-card>
+            <app-create-card
+              [title]="'Nova Lista'"
+              [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
+              (click)="openListModal()"
+            >
+            </app-create-card>
+          </div>
+        </section>
+        <section>
+          <div class="habit-container">
+            <div class="habit-header">
+              <h2>Lista de Hábitos</h2>
+              <button class="filter">
+                <img src="./assets/icon/tune_100dp_434343.png" alt="" />
+                <p>Editar Listas</p>
+              </button>
             </div>
-          </section>
-          <section>
-            <div class="habit-container">
-              <div class="habit-header">
-                <h2>Lista de Hábitos</h2>
-                <button class="filter">
-                  <img src="./assets/icon/tune_100dp_434343.png" alt="" />
-                  <p>Editar Listas</p>
-                </button>
-              </div>
 
-              <div class="habit-toolbar">
-                <nav class="habit-list-tabs desktop-only">
-                  @for (tab of tabs; track tab.id) {
+            <div class="habit-toolbar">
+              <nav class="habit-list-tabs desktop-only">
+                @for (tab of tabs; track tab.id) {
+                <button
+                  [class.active]="activeTab === tab.name"
+                  (click)="setActive(tab.name)"
+                >
+                  {{ tab.name }}
+                </button>
+                }
+                <button class="new-list" (click)="openListModal()">
+                  + Nova lista
+                </button>
+              </nav>
+
+              <!-- VERSÃO MOBILE COM SWIPER -->
+              <swiper-container
+                class="habit-list-tabs mobile-only"
+                slides-per-view="auto"
+                space-between="10"
+                free-mode="true"
+              >
+                @for (tab of tabs; track tab.id) {
+                <swiper-slide>
                   <button
                     [class.active]="activeTab === tab.name"
                     (click)="setActive(tab.name)"
                   >
                     {{ tab.name }}
                   </button>
-                  }
+                </swiper-slide>
+                }
+
+                <swiper-slide>
                   <button class="new-list" (click)="openListModal()">
                     + Nova lista
                   </button>
-                </nav>
+                </swiper-slide>
+              </swiper-container>
 
-                <!-- VERSÃO MOBILE COM SWIPER -->
-                <swiper-container
-                  class="habit-list-tabs mobile-only"
-                  slides-per-view="auto"
-                  space-between="10"
-                  free-mode="true"
-                >
-                  @for (tab of tabs; track tab.id) {
-                  <swiper-slide>
-                    <button
-                      [class.active]="activeTab === tab.name"
-                      (click)="setActive(tab.name)"
-                    >
-                      {{ tab.name }}
-                    </button>
-                  </swiper-slide>
-                  }
-
-                  <swiper-slide>
-                    <button class="new-list" (click)="openListModal()">
-                      + Nova lista
-                    </button>
-                  </swiper-slide>
-                </swiper-container>
-
-                <div class="search-bar">
-                  <img
-                    src="./assets/icon/search_100dp_434343.png"
-                    alt=""
-                    width="25px"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Buscar hábito... "
-                    [(ngModel)]="searchText"
-                    (ngModelChange)="onSearchChange()"
-                  />
-                </div>
-              </div>
-
-              <div class="habit-list-cards">
-                <div class="list-header">
-                  @for (header of tableHeaders; track header.key) {
-                  <div
-                    class="header-item {{ header.class }}"
-                    [class.active]="sortState.key === header.key"
-                    (click)="sortBy(header.key)"
-                  >
-                    {{ header.label }}
-                    <img
-                      src="./assets/icon/arrow.svg"
-                      alt=""
-                      class="sort-icon"
-                      [class.rotated]="sortState.key === header.key && sortState.direction === 'asc'"
-                      [class.visible]="sortState.key === header.key"
-                      width="12px"
-                      height="12px"
-                    />
-                  </div>
-                  }
-                </div>
-                @if (!loading) { @if (hasHabits) {
-                <ul class="habit-list">
-                  @for (habit of activeListHabits; track habit.id) {
-                  <li>
-                    <app-habit-card
-                      (delete)="deleteHabit($event)"
-                      (mark)="completeHabit($event.habit, $event.date)"
-                      (daySelected)="onDaySelected($event)"
-                      [logs]="logsByHabit[habit.id] || {}"
-                        (logsUpdated)="onLogsUpdated($event, habit.id)"
-                      [habit]="habit"
-                      style="width: 100%"
-                    ></app-habit-card>
-                  </li>
-                  }
-                </ul>
-                } @else {
-                <div class="no-habits">
-                  <p>
-                    @if (activeTab === 'Ver tudo') { Você ainda não criou
-                    hábitos. } @else { Não há hábitos nesta lista. }
-                  </p>
-                </div>
-                } }
+              <div class="search-bar">
+                <img
+                  src="./assets/icon/search_100dp_434343.png"
+                  alt=""
+                  width="25px"
+                />
+                <input
+                  type="text"
+                  placeholder="Buscar hábito... "
+                  [(ngModel)]="searchText"
+                  (ngModelChange)="onSearchChange()"
+                />
               </div>
             </div>
-          </section>
-        </main>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+            <div class="habit-list-cards">
+              <div class="list-header">
+                @for (header of tableHeaders; track header.key) {
+                <div
+                  class="header-item {{ header.class }}"
+                  [class.active]="sortState.key === header.key"
+                  (click)="sortBy(header.key)"
+                >
+                  {{ header.label }}
+                  <img
+                    src="./assets/icon/arrow.svg"
+                    alt=""
+                    class="sort-icon"
+                    [class.rotated]="sortState.key === header.key && sortState.direction === 'asc'"
+                    [class.visible]="sortState.key === header.key"
+                    width="12px"
+                    height="12px"
+                  />
+                </div>
+                }
+              </div>
+              @if (!loading) { @if (hasHabits) {
+              <ul class="habit-list">
+                @for (habit of activeListHabits; track habit.id) {
+                <li>
+                  <app-habit-card
+                    (delete)="deleteHabit($event)"
+                    (mark)="completeHabit($event.habit, $event.date)"
+                    (daySelected)="onDaySelected($event)"
+                    [logs]="logsByHabit[habit.id] || {}"
+                    (logsUpdated)="onLogsUpdated($event, habit.id)"
+                    [habit]="habit"
+                    style="width: 100%"
+                  ></app-habit-card>
+                </li>
+                }
+              </ul>
+              } @else {
+              <div class="no-habits">
+                <p>
+                  @if (activeTab === 'Ver tudo') { Você ainda não criou hábitos.
+                  } @else { Não há hábitos nesta lista. }
+                </p>
+              </div>
+              } }
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
 </ion-content>

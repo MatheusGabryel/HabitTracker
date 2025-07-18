@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 1.5rem;
+    padding: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
 }
 .logo-title {
@@ -115,6 +115,10 @@
 }
 
 @media (max-width: 768px) {
+    .page-header {
+            padding-bottom: 1rem;
+    }
+
     .page-title {
         display: none;
     }

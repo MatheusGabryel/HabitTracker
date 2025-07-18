@@ -1,13 +1,9 @@
 ion-content {
-    main {
-        padding: min(30px, 7%);
-    }
-
     .header-goal {
         display: flex;
         flex-direction: row;
 
-        padding: 3rem;
+        padding: 2rem;
         border-bottom: 1px solid #e5e7eb;
     }
 
@@ -163,10 +159,6 @@ ion-content {
 
         .goal-list-cards {
             grid-template-columns: repeat(2, 1fr);
-        }
-
-        main {
-            padding: min(30px, 5%);
         }
 
         .header-goal {
