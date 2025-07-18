@@ -1,93 +1,87 @@
-<nav  class="sidebar mobile"
-  *ngIf="menuService.isMobile"
-  [ngClass]="{ open: menuService.isOpen }"
->
+@if (!(menuService.isMobile$ | async)) {
+<nav class="sidebar-desktop" [class.closed]="!(menuService.menuOpen$ | async)">
   <ul>
-    <li class="close-btn" (click)="menuService.setMenuOpen(false)">&times;</li>
-    <li class="active">
-      <a [routerLink]="'/home'">
-        <img src="./assets/icon/home.png" alt="" />
-        <span>Início</span>
-      </a>
-    </li>
     <li>
-      <a [routerLink]="'/habit'">
-        <img src="./assets/icon/leaf.png" alt="" />
-        <span>Hábitos</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/goals'">
-        <img src="./assets/icon/red-flag.png" alt="" />
-        <span>Metas</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/help'">
-        <img src="./assets/icon/question.png" alt="" />
-        <span>Ajuda</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/settings'">
-        <img src="./assets/icon/cog-wheel.png" alt="" />
-        <span>Configurações</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/profile'">
+      @if (menuService.menuOpen$ | async) {
+      <span class="logo">HabitTracker</span>
+      }
+      <button class="toggle-btn" (click)="toggleSidebarDesktop()">
         <img
-          src="./assets/icon/person_250dp_E3E3E3_FILL0_wght400_GRAD0_opsz48.png"
-          alt=""
+          src="./assets/icon/arrow-left.svg"
+          [class.rotated]="!(menuService.menuOpen$ | async)"
+          alt="toggle icon"
         />
-        <span>profile</span>
-      </a>
+      </button>
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/home') }">
+      <a routerLink="/home"
+        ><img src="./assets/icon/home.png" /><span class="label"
+          >Início</span
+        ></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/habit') }">
+      <a routerLink="/habit"
+        ><img src="./assets/icon/leaf.png" aria-label="Novo chat"/><span class="label"
+          >Hábitos</span
+        ></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/goals') }">
+      <a routerLink="/goals"
+        ><img src="./assets/icon/red-flag.png" /><span class="label"
+          >Metas</span
+        ></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/help') }">
+      <a routerLink="/help"
+        ><img src="./assets/icon/question.png" /><span class="label"
+          >Ajuda</span
+        ></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/settings') }">
+      <a routerLink="/settings"
+        ><img src="./assets/icon/cog-wheel.png" /><span class="label"
+          >Configurações</span
+        ></a
+      >
+    </li>
+  </ul>
+</nav>
+} @if (menuService.isMobile$ | async) {
+<nav class="sidebar-mobile" [class.open]="menuService.menuOpen$ | async">
+  <ul>
+    <li class="close-btn" (click)="close()">&times;</li>
+    <li [ngClass]="{ active: isRouteActive('/home') }">
+      <a routerLink="/home"
+        ><img src="./assets/icon/home.png" /><span class="label">Início</span></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/habit') }">
+      <a routerLink="/habit"
+        ><img src="./assets/icon/leaf.png" /><span class="label">Hábitos</span></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/goals') }">
+      <a routerLink="/goals"
+        ><img src="./assets/icon/red-flag.png" /><span class="label">Metas</span></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/help') }">
+      <a routerLink="/help"
+        ><img src="./assets/icon/question.png" /><span class="label">Ajuda</span></a
+      >
+    </li>
+    <li [ngClass]="{ active: isRouteActive('/settings') }">
+      <a routerLink="/settings"
+        ><img src="./assets/icon/cog-wheel.png" /><span class="label">Configurações</span></a
+      >
     </li>
   </ul>
 </nav>
 
-<nav
-id="sidebar"
-  class="menu-desktop"
-  *ngIf="!menuService.isMobile"
-  [class.close]="isMenuOpen"
->
-  <ul>
-    <li>
-      <span class="logo">HabitTracker</span>
-      <button id="toggle-btn" (click)="toggleSidebarDesktop()">
-        <ion-icon name="menu-outline" size="large" color="primary"></ion-icon>
-      </button>
-    </li>
-    <li class="active">
-      <a [routerLink]="'/home'">
-        <img src="./assets/icon/home.png" alt="" />
-        <span>Início</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/habit'">
-        <img src="./assets/icon/leaf.png" alt="" />
-        <span>Hábitos</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/goals'">
-        <img src="./assets/icon/red-flag.png" alt="" />
-        <span>Metas</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/help'">
-        <img src="./assets/icon/question.png" alt="" />
-        <span>Ajuda</span>
-      </a>
-    </li>
-    <li>
-      <a [routerLink]="'/settings'">
-        <img src="./assets/icon/cog-wheel.png" alt="" />
-        <span>Configurações</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+@if (menuService.menuOpen$ | async) {
+<div class="menu-overlay" (click)="close()"></div>
+} }

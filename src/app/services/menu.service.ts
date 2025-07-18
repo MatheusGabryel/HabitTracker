@@ -5,19 +5,18 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class MenuService {
-  private _menuOpen = new BehaviorSubject<boolean>(false);
+  private _isMobile = new BehaviorSubject(window.innerWidth <= 768);
+  private _menuOpen = new BehaviorSubject(!this._isMobile.value);
+
   public menuOpen$ = this._menuOpen.asObservable();
-  private _isMobile = new BehaviorSubject<boolean>(window.innerWidth <= 768);
   public isMobile$ = this._isMobile.asObservable();
-  public isMobile = window.innerWidth <= 768;
 
   constructor() {
     window.addEventListener('resize', () => {
-      this.isMobile = window.innerWidth <= 768;
-      this._isMobile.next(this.isMobile);
-      if (!this.isMobile) {
-        this.setMenuOpen(false); // Fecha menu flutuante se voltar pro desktop
-      }
+      const isMobile = window.innerWidth <= 768;
+      this._isMobile.next(isMobile);
+
+      if (!isMobile) this.setMenuOpen(true);
     });
   }
 
@@ -29,8 +28,12 @@ export class MenuService {
     this._menuOpen.next(!this._menuOpen.value);
   }
 
-  get isOpen() {
+  get isOpen(): boolean {
     return this._menuOpen.value;
   }
 
+  get isMobile(): boolean {
+    return this._isMobile.value;
+  }
 }
+
