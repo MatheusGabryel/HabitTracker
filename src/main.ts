@@ -14,6 +14,7 @@ import { register } from 'swiper/element/bundle';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 registerLocaleData(localePt);
 register()
 
@@ -28,6 +29,6 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(), provideCharts(withDefaultRegisterables()),
   ],
 });

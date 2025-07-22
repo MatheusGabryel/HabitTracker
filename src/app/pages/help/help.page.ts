@@ -5,7 +5,6 @@ import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { HttpClient } from '@angular/common/http';
 
 
 @Component({
