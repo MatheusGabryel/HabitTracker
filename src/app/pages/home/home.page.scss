@@ -1,91 +1,37 @@
 ion-content {
-    .dashboard .top-cards,
-    .bottom-cards {
+    .dashboard-top {
         display: flex;
-        flex-direction: row;
-        gap: 1.5rem;
-        height: auto;
+        gap: 24px;
+        align-items: stretch;
     }
 
-    .dashboard .top-cards {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .card {
-        background-color: #ffffff;
-        border-radius: 8px;
-    }
-
-    .habit {
+    .dashboard-bottom {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        width: 40%;
-        height: 100%;
-
-        .motivational-card {
-            background-color: rgb(0, 0, 0);
-            width: 100%;
-            flex: 1.5;
-            padding: 2rem;
-            box-sizing: border-box;
-            border-radius: 15px;
-        }
-
-        .habit-card {
-            background-color: aquamarine;
-            width: 100%;
-            flex: 1;
-            padding: 1.5rem;
-            box-sizing: border-box;
-            border-radius: 15px;
-        }
+        gap: 24px;
+        align-items: stretch;
+        margin-top: 24px;
     }
 
-    .calendar {
-        width: 60%;
-        padding: 2rem;
-                   min-width: 480px;
-
-        app-dashboard-day-swiper {
-            width: 100%;
-            overflow-x: hidden;
-            min-width: 440px;
-        }
+    .dashboard-top .daily-panel {
+        flex: 0 0 40%;
     }
 
-    .goal {
-        display: flex;
-        flex-direction: column;
-        width: 60%;
+    .dashboard-top .calendar-panel {
+        flex: 1 1 auto;
+        min-width: 440px;
+        padding: 1rem;
 
-        .header {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-
-            h1 {
-                margin: 0;
-                font-size: 20px;
-            }
-
-            a {
-                font-family: poppinsSemiBold;
-                color: #333333;
-                cursor: pointer;
-
-                &:hover {
-                    opacity: 0.7;
-                }
-            }
-        }
+        background-color: #fff;
+        border-radius: 16px;
     }
 
-    .stats {
-        width: 40%;
+    .dashboard-bottom .goal-panel {
+        flex: 1 1 60%;
+        min-width: 320px;
     }
 
+    .dashboard-bottom .stats-panel {
+        flex: 0 0 40%;
+        min-width: 260px;
+    }
 }

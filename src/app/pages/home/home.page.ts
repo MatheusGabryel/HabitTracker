@@ -5,13 +5,14 @@ import { AuthService } from 'src/app/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DashboardDaySwiperComponent } from "src/app/components/dashboard-day-swiper/dashboard-day-swiper.component";
+import { DailySummaryComponent } from "src/app/components/daily-summary/daily-summary.component";
 
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, DashboardDaySwiperComponent],
+  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, DashboardDaySwiperComponent, DailySummaryComponent],
 })
 export class HomePage {
 
