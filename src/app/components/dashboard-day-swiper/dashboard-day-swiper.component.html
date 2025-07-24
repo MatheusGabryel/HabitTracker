@@ -1,0 +1,140 @@
+<div class="header">
+  <h2 class="section-title">Compromissos</h2>
+  <div class="button-container">
+    <div (click)="pagination('prev')">
+      <img
+        src="./assets/icon/arrow-left.svg"
+        alt=""
+        width="24px"
+        height="24px"
+      />
+    </div>
+    <div (click)="pagination('next')">
+      <img
+        src="./assets/icon/arrow-right.svg"
+        alt=""
+        width="24px"
+        height="24px"
+      />
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="day-swiper-container">
+    @for (date of allweek; track date.toDateString()) {
+    <div (click)="onDateSelected(date)">
+      <div
+        class="date-item"
+        [class.active]="date.toDateString() === selectedDate.toDateString()"
+      >
+        <div class="date-number">{{ date | date : "dd" }}</div>
+        <div class="date-day">
+          {{ (date | date : "EEE")!.replace(".", "") }}
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<div class="habit-list">
+  @for (habit of filteredHabits.slice(0, 4); track habit.id) {
+
+  <div class="habit-item">
+    <div class="habit-info">
+      @if(habit.categoryObj) {
+      <div
+        [title]="habit.categoryObj.displayName"
+        class="icon-wrapper"
+        [ngStyle]="{ backgroundColor: habit.categoryObj.color }"
+      >
+        <img
+          [src]="habit.categoryObj.icon"
+          [alt]="habit.categoryObj.displayName"
+        />
+      </div>
+      }
+      <p>{{ habit.name }}</p>
+    </div>
+    <div class="dinamic-status" title="Concluído">
+      @if(getTodayState() === "in_progress") {
+      <button class="status-button">
+        <img src="./assets/icon/circle.png" width="30px" alt="" />
+      </button>
+      } @if(getTodayState() === "completed") {
+      <button class="status-button">
+        <img src="./assets/icon/check.png" width="30px" alt="" />
+      </button>
+      } @if(getTodayState() === "failed") {
+      <button class="status-button">
+        <img src="./assets/icon/close.png" width="30px" alt="" />
+      </button>
+      }
+    </div>
+  </div>
+  } @if (filteredHabits.length > 4) {
+  <div class="more-habits">
+    <p (click)="showFullHabits = true">
+      <span>+{{ filteredHabits.length - 4 }}</span> hábitos
+    </p>
+  </div>
+  }
+</div>
+
+@if(showFullHabits) {
+<div
+  class="habit-side-modal"
+  [class.closing]="isClosing"
+  (click)="closeModal($event)"
+>
+  <div
+    class="habit-side-content"
+    (click)="$event.stopPropagation()"
+    [class.closing]="isClosing"
+  >
+    <div class="header-details">
+      <h3>Todos os hábitos</h3>
+      <span> {{ (selectedDate | date)!.replace(".", "") }}</span>
+      <button class="close-button" (click)="closeModal()">✖</button>
+    </div>
+    <div class="habit-list">
+      @for (habit of filteredHabits; track habit.id) {
+
+      <div class="habit-item">
+        <div class="habit-info">
+          @if(habit.categoryObj) {
+          <div
+            [title]="habit.categoryObj.displayName"
+            class="icon-wrapper"
+            [ngStyle]="{ backgroundColor: habit.categoryObj.color }"
+          >
+            <img
+              [src]="habit.categoryObj.icon"
+              [alt]="habit.categoryObj.displayName"
+            />
+          </div>
+          }
+          <p>{{ habit.name }}</p>
+        </div>
+        <div class="dinamic-status" title="Concluído">
+          @if(getTodayState() === "in_progress") {
+          <button class="status-button">
+            <img src="./assets/icon/circle.png" width="30px" alt="" />
+          </button>
+          } @if(getTodayState() === "completed") {
+          <button class="status-button">
+            <img src="./assets/icon/check.png" width="30px" alt="" />
+          </button>
+          } @if(getTodayState() === "failed") {
+          <button class="status-button">
+            <img src="./assets/icon/close.png" width="30px" alt="" />
+          </button>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+}
