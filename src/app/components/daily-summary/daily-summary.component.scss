@@ -1,0 +1,57 @@
+.daily-summary {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: #f9f9f9;
+  height: 575px;
+
+  .daily-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .daily-date {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .daily-quote {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .daily-graphs {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .graph-card {
+      flex: 1 1 250px;
+      max-width: 300px;
+      padding: 1rem;
+      background-color: white;
+      border-radius: 0.8rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: center;
+
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: #444;
+      }
+
+      .chart-placeholder {
+        width: 100%;
+        height: 200px;
+        background-color: #eaeaea;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
