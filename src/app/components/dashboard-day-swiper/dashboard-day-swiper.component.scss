@@ -1,65 +1,84 @@
+.dashboard-days {
+  padding: 1rem;
+  border-radius: 24px;
+  background: #f9f9f9;
+  height: 550px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
 .header {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .section-title {
   font-family: poppinsBold;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #1f2937;
 }
 
 .button-container {
-  display: flex;
+    display: flex;
+  flex-direction: row;
+}
+
+.button-container > div {
   cursor: pointer;
-  width: auto;
+  transition: transform 0.2s ease;
+}
+
+.button-container > div:hover {
+  transform: scale(1.15);
 }
 
 .day-swiper-container {
-  width: auto;
   display: flex;
-  overflow: hidden;
   justify-content: center;
-  padding: 1rem;
-  gap: 1rem;
-  border-radius: 24px;
-  border: 1px solid rgba(128, 128, 128, 0.24);
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-radius: 16px;
+  background-color: #f0f0f0;
+  overflow-x: auto;
 }
 
 .date-item {
-  padding: 8px 12px;
-  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   width: 60px;
   text-align: center;
-  display: inline-block;
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
-  transition: background 0.3s ease;
-}
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transform: translateY(0);
 
-.icon-wrapper {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  img {
-    width: 24px;
-    height: 24px;
+    &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
   }
 }
 
+.date-item.active {
+  background-color: #646cff15;
+  border-color: #646cff;
+  color: #3730a3;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
 .date-number {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1rem;
 }
 
 .date-day {
   font-size: 0.75rem;
-  color: #888;
+  color: #6b7280;
 }
 
 .date-item.active {
@@ -68,58 +87,95 @@
 }
 
 .habit-list {
-  margin-top: 2rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
 .habit-item {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 10px;
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.2s ease;
+}
 
-  p {
-    font-family: poppinsSemiBold;
-    font-size: clamp(13px, 1.2vw, 18px);
-  }
+.habit-item:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
 .habit-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+
+  p {
+    font-family: poppinsSemiBold;
+    font-size: 1rem;
+    color: #111827;
+  }
+}
+
+.icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .dinamic-status {
-  cursor: pointer;
   display: flex;
   align-items: center;
-}
+  justify-content: center;
 
-.status-button {
-  border: none;
-  background: none;
+  .status-button {
+    border: none;
+    background: none;
+    padding: 0;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
 }
 
 .more-habits {
   display: flex;
-  margin-top: 1rem;
   justify-content: center;
+  text-align: center;
+
 
   p {
     cursor: pointer;
-    color: #0c2340;
-    transition: scale 0.3s;
+    font-weight: 500;
+    color: #4b5563;
+    transition: color 0.3s;
 
     &:hover {
-      scale: 1.05;
+      color: #111827;
     }
   }
 
   span {
     color: #a5003a;
+    font-weight: 600;
   }
 }
 
