@@ -1,0 +1,34 @@
+<section class="goals-panel">
+  <div class="goals-header">
+    <h2 class="panel-title">Suas Metas</h2>
+    <button class="view-all">Ver todos</button>
+  </div>
+
+  <div class="goals-list">
+    @for (goal of goals; track goal.id) {
+    <div class="goal-card" [class.completed]="goal.isCompleted">
+      <div class="header">
+        <h3>{{ goal.title }}</h3>
+        <span class="status" *ngIf="isCompleted">✔️ Concluído</span>
+        <button *ngIf="!goal.isCompleted" class="btn-add-progress">
+          + Progresso
+        </button>
+      </div>
+
+      <div class="progress-info">
+        <p>
+          Progresso: {{ goal.current }} / {{ goal.target }}
+          {{ goal.unit || "" }}
+        </p>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="calculateProgress(goal)"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    }
+  </div>
+</section>
