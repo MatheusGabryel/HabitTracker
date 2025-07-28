@@ -1,17 +1,99 @@
 <section class="daily-summary">
   <div class="daily-header">
     <p class="daily-date">{{ todayDate }}</p>
-    <h2 class="daily-quote">“Cada pequeno hábito molda uma grande versão de você.”</h2>
+    <h2 class="daily-quote">
+      “Cada pequeno hábito molda uma grande versão de você.”
+    </h2>
   </div>
 
   <div class="daily-graphs">
     <div class="graph-card">
       <h3>Hábitos concluídos</h3>
-      <div class="chart-placeholder">[gráfico de pizza aqui]</div>
+      <div class="chart-placeholder">
+        <svg
+          class="circular-chart blue"
+          width="200"
+          height="200"
+          viewBox="-25 -25 250 250"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          style="transform: rotate(-90deg)"
+        >
+          <circle
+            r="90"
+            cx="100"
+            cy="100"
+            fill="transparent"
+            stroke="#e0e0e0"
+            stroke-width="16px"
+          ></circle>
+          <circle 
+            r="90"
+            cx="100"
+            cy="100"
+            stroke="#E0004D"
+            stroke-width="16px"
+            stroke-linecap="round"
+            stroke-dashoffset="250px"
+            fill="transparent"
+            stroke-dasharray="565.48px"
+          ></circle>
+          <text
+            x="64px"
+            y="113px"
+            fill="#4d4d4d"
+            font-size="39px"
+            font-weight="bold"
+            style="transform: rotate(90deg) translate(0px, -196px)"
+          >
+            7/10
+          </text>
+        </svg>
+      </div>
     </div>
     <div class="graph-card">
       <h3>Progresso geral</h3>
-      <div class="chart-placeholder">[gráfico de pizza aqui]</div>
+      <div class="chart-placeholder">
+        <svg
+          class="circular-chart blue"
+          width="200"
+          height="200"
+          viewBox="-25 -25 250 250"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          style="transform: rotate(-90deg)"
+        >
+          <circle
+            r="90"
+            cx="100"
+            cy="100"
+            fill="transparent"
+            stroke="#e0e0e0"
+            stroke-width="16px"
+          ></circle>
+          <circle 
+            r="90"
+            cx="100"
+            cy="100"
+            stroke="#E0004D"
+            stroke-width="16px"
+            stroke-linecap="round"
+            stroke-dashoffset="40px"
+            fill="transparent"
+            stroke-dasharray="565.48px"
+          ></circle>
+          <text
+            x="64px"
+            y="113px"
+            fill="#4d4d4d"
+            font-size="39px"
+            font-weight="bold"
+            style="transform: rotate(90deg) translate(0px, -196px)"
+          >
+            78%
+          </text>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
