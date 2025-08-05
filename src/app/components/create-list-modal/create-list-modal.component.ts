@@ -1,11 +1,12 @@
+import { HabitService } from 'src/app/services/habit/habit.service';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { serverTimestamp } from 'firebase/firestore';
 import { Loading } from 'notiflix';
 import { Category } from 'src/app/interfaces/category.interface';
-import { HabitList } from 'src/app/interfaces/habitlist.interface';
-import { UserService } from 'src/app/services/user.service';
+import { HabitList } from 'src/app/interfaces/habit.interface';
+import { UserService } from 'src/app/services/user/user.service';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 import Swal from 'sweetalert2';
 
@@ -17,8 +18,11 @@ import Swal from 'sweetalert2';
 })
 export class CreateListModalComponent implements OnInit {
   public userService = inject(UserService);
-  constructor() { }
-  public uid = this.userService.getUserId();
+  public habitService = inject(HabitService);
+
+   public categories = PREDEFINED_CATEGORIES
+
+  @Output() close = new EventEmitter<void>();
 
   public habitList: HabitList = {
     id: '',
@@ -28,28 +32,36 @@ export class CreateListModalComponent implements OnInit {
     categories: [] as string[],
   }
 
-  @Output() close = new EventEmitter<void>();
+  constructor() { }
+
+
 
   closeModal() {
     this.close.emit();
   }
   ngOnInit() { }
 
-  public categories = PREDEFINED_CATEGORIES
+ 
 
   public toggleCategory(categoryId: string) {
-    const index = this.habitList.categories.indexOf(categoryId);
-    if (index > -1) {
-      this.habitList.categories.splice(index, 1);
+    const updatedDays = new Set(this.habitList.categories);
+    if (updatedDays.has(categoryId)) {
+      updatedDays.delete(categoryId);
     } else {
-      this.habitList.categories.push(categoryId);
+      updatedDays.add(categoryId);
     }
+    this.habitList.categories = Array.from(updatedDays);
+  }
+
+  public isFormValid(): boolean {
+    return !!this.habitList.name &&
+      this.habitList.categories.length > 0
   }
 
   public async createList() {
     if (this.habitList.name !== '') {
       try {
-        Loading.standard('Adicionando hábito...');
+        Loading.standard('Adicionando lista...');
         const uid = await this.userService.getUserId();
         if (!uid) {
           Swal.fire({
@@ -70,7 +82,7 @@ export class CreateListModalComponent implements OnInit {
           });
           Loading.remove()
           return;
-          
+
         }
         if (this.habitList.categories.length === 0) {
           Swal.fire({
@@ -83,7 +95,7 @@ export class CreateListModalComponent implements OnInit {
           return;
         }
 
-        await this.userService.addList(uid, this.habitList);
+        await this.habitService.addHabitList(uid, this.habitList);
 
         Swal.fire({
           title: 'Sucesso',
@@ -116,13 +128,15 @@ export class CreateListModalComponent implements OnInit {
           });
         }
       }
-    } else { Swal.fire({
-            title: 'Erro',
-            text: 'Por favor, insira um nome a lista.',
-            icon: 'error',
-            heightAuto: false,
-            confirmButtonColor: '#E0004D'
-          }); }
+    } else {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Por favor, insira um nome a lista.',
+        icon: 'error',
+        heightAuto: false,
+        confirmButtonColor: '#E0004D'
+      });
+    }
   }
 
 }

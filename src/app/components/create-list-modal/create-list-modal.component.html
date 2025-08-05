@@ -1,32 +1,33 @@
 <div class="modal-container">
-  <div class="modal-header">
-    <h2>Criar lista</h2>
-    <button (click)="closeModal()">X</button>
-  </div>
-
   <form #form="ngForm" action="" (ngSubmit)="createList()">
+    <div class="modal-header">
+      <h2>Criar lista</h2>
+      <button (click)="closeModal()" type="button">×</button>
+    </div>
     <label>Nome</label>
     <input type="text" name="name" [(ngModel)]="habitList.name" required />
 
     <label>Selecione uma categoria</label>
-    <div class="cat-checkboxes">
-      @for (cat of categories; track cat) {
-        <label>
-      <input
-        type="checkbox"
-        name="name"
-        [value]="cat.id"
-        (change)="toggleCategory(cat.id)"
-        [checked]="habitList.categories.includes(cat.id)"
-        required
-      />
-      {{ cat.displayName }} </label>}
-      
+    <div class="category-selector">
+      @for (cat of categories; track cat.id) {
+      <div
+        class="category-item"
+        [class.selected]="habitList.categories.includes(cat.id)"
+      (click)="toggleCategory(cat.id)"
+      >
+        <img
+          [src]="cat.icon"
+          class="category-icon"
+          alt="{{ cat.displayName }}"
+        />
+        <span class="category-name">{{ cat.displayName }}</span>
+      </div>
+      }
     </div>
 
     <div class="modal-footer">
       <button type="button" (click)="closeModal()">Cancelar</button>
-      <button type="submit" [disabled]="form.invalid || habitList.name === '' || habitList.categories.length === 0">Criar</button>
+      <button type="submit" [disabled]="!isFormValid()">Criar</button>
     </div>
   </form>
 </div>
