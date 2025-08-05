@@ -1,13 +1,13 @@
-import { UserService } from './../../services/user.service';
+import { UserService } from './../../services/user/user.service';
 import { Component, OnInit, EventEmitter, Output, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
-import { AuthService } from 'src/app/services/auth.service';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 import { serverTimestamp } from 'firebase/firestore';
+import { HabitService } from 'src/app/services/habit/habit.service';
 
 
 @Component({
@@ -15,13 +15,16 @@ import { serverTimestamp } from 'firebase/firestore';
   templateUrl: './create-habit-modal.component.html',
   styleUrls: ['./create-habit-modal.component.scss'],
   imports: [CommonModule, FormsModule],
+  standalone: true,
 })
 
 export class CreateHabitModalComponent implements OnInit {
 
-  public userDataService = inject(AuthService);
+  public habitService = inject(HabitService)
   public userService = inject(UserService);
   @Output() close = new EventEmitter<void>();
+
+  public currentStep = 1;
 
   public habit: HabitData = {
     id: '',
@@ -35,14 +38,13 @@ export class CreateHabitModalComponent implements OnInit {
       hours: 0,
       minutes: 0,
       seconds: 0,
+      value: 0,
       rule: 'at_least',
     },
     timesTarget: {
       value: 0,
       rule: 'at_least',
     },
-    state: 'in_progress',
-    progressValue: 0,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   }
@@ -50,7 +52,6 @@ export class CreateHabitModalComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-
   }
 
   public closeModal() {
@@ -62,116 +63,123 @@ export class CreateHabitModalComponent implements OnInit {
   public daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   public categories = PREDEFINED_CATEGORIES;
+  public goToStep(step: number) {
+    if (step < this.currentStep || this.canProceed()) {
+      this.currentStep = step;
+    }
+  }
 
+  public nextStep() {
+    if (this.canProceed()) {
+      this.currentStep++;
+    }
+  }
 
+  public previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  public canProceed(): boolean {
+    if (this.currentStep === 1) {
+      return !!this.habit.name && !!this.habit.category;
+    } else if (this.currentStep === 2) {
+      return this.habit.days.length > 0 &&
+        (this.progressType !== 'times' ||
+          this.habit.timesTarget!.rule === 'any' ||
+          this.habit.timesTarget!.value > 0);
+    }
+    return true;
+  }
+
+  public isFormValid(): boolean {
+    return !!this.habit.name &&
+      !!this.habit.category &&
+      this.habit.days.length > 0 &&
+      !!this.habit.priority;
+  }
+
+  public selectCategory(categoryId: string) {
+    this.habit.category = categoryId;
+  }
 
   public toggleDay(day: string) {
-  const updatedDays = new Set(this.habit.days);
-  if (updatedDays.has(day)) {
-    updatedDays.delete(day);
-  } else {
-    updatedDays.add(day);
+    const updatedDays = new Set(this.habit.days);
+    if (updatedDays.has(day)) {
+      updatedDays.delete(day);
+    } else {
+      updatedDays.add(day);
+    }
+    this.habit.days = Array.from(updatedDays);
   }
-  this.habit.days = Array.from(updatedDays);
-}
+
+  public getCategoryIcon(categoryId: string): string {
+    const category = this.categories.find(cat => cat.id === categoryId);
+    return category ? category.icon : '';
+  }
+
+  public getCategoryName(categoryId: string): string {
+    const category = this.categories.find(cat => cat.id === categoryId);
+    return category ? category.displayName : '';
+  }
 
 
   public async createHabit() {
-
     if (this.habit.name === '') {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Insira um nome.',
-        icon: 'warning',
-        heightAuto: false,
-      });
+      Swal.fire({ title: 'Erro', text: 'Insira um nome.', icon: 'warning', heightAuto: false });
       return;
     }
     if (this.habit.category === '') {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Selecione uma categoria.',
-        icon: 'warning',
-        heightAuto: false,
-      });
+      Swal.fire({ title: 'Erro', text: 'Selecione uma categoria.', icon: 'warning', heightAuto: false });
       return;
     }
     if (this.habit.days.length === 0) {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Selecione ao menos um dia.',
-        icon: 'warning',
-        heightAuto: false,
-      });
+      Swal.fire({ title: 'Erro', text: 'Selecione ao menos um dia.', icon: 'warning', heightAuto: false });
       return;
     }
     if (this.habit.priority === '') {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Defina um nivel de prioridade.',
-        icon: 'warning',
-        heightAuto: false,
-      });
+      Swal.fire({ title: 'Erro', text: 'Defina um nível de prioridade.', icon: 'warning', heightAuto: false });
       return;
     }
+
     this.habit.progressType = this.progressType;
 
-    // if (this.formProgress === 'time' && !this.habit.duration) {
-    //   Swal.fire({ title: 'Erro', text: 'Selecione a duração da atividade.', icon: 'warning' });
-    //   return;
-    // }
-    // if (this.formProgress === 'time' && !this.habit.duration) {
-    //   Swal.fire({ title: 'Erro', text: 'Selecione a duração da atividade.', icon: 'warning' });
-    //   return;
-    // }
+    if (this.progressType === 'yes_no') {
+      delete this.habit.timesTarget;
+      delete this.habit.timeTarget;
+    } else if (this.progressType === 'times') {
+      delete this.habit.timeTarget;
+    } else if (this.progressType === 'time') {
+      delete this.habit.timesTarget;
+
+      const { hours = 0, minutes = 0, seconds = 0 } = this.habit.timeTarget || {};
+      this.habit.timeTarget = {
+        hours,
+        minutes,
+        seconds,
+        value: (hours * 3600) + (minutes * 60) + seconds,
+        rule: this.habit.timeTarget?.rule ?? 'at_least',
+      };
+    }
 
     try {
       Loading.standard('Adicionando hábito...');
       const uid = await this.userService.getUserId();
-      if (!uid) {
-        Swal.fire({
-          title: 'Erro',
-          text: 'Usuário não autenticado',
-          icon: 'error',
-          confirmButtonColor: '#E0004D'
-        });
-        throw new Error('Usuário não autenticado');
-      }
+      if (!uid) throw new Error('Usuário não autenticado');
 
-      await this.userService.addHabit(uid, this.habit);
+      await this.habitService.addHabit(uid, this.habit);
 
-      Swal.fire({
-        title: 'Sucesso',
-        text: 'Hábito adicionado com sucesso',
-        icon: 'success',
-        heightAuto: false,
-        confirmButtonColor: '#E0004D'
-      });
-      Loading.remove()
+      Swal.fire({ title: 'Sucesso', text: 'Hábito adicionado com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
+      Loading.remove();
       this.closeModal();
     } catch (err: unknown) {
-      Loading.remove()
-      if (err instanceof Error) {
-        console.error(err);
-        Swal.fire({
-          title: 'Erro',
-          text: err.message,
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
-      } else {
-        console.error('Erro desconhecido', err);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Ocorreu um erro desconhecido',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
-      }
+      Loading.remove();
+      const message = err instanceof Error ? err.message : 'Ocorreu um erro desconhecido';
+      Swal.fire({ title: 'Erro', text: message, icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
     }
   }
+
 
 
 }

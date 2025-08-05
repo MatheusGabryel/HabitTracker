@@ -1,196 +1,340 @@
 <div class="modal-container">
-  <div class="modal-header">
-    <h2>Criar Hábito</h2>
-    <button (click)="closeModal()">X</button>
-  </div>
-
   <form #form="ngForm" (ngSubmit)="createHabit()">
-    <label>Como deseja marcar o progresso?</label>
-    <div class="radio-group">
-      <label>
-        <input
-          type="radio"
-          name="progressType"
-          value="yes_no"
-          [(ngModel)]="progressType"
-          required
-          #progressTypeModel="ngModel"
-        />
-        Sim ou Não
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="progressType"
-          value="time"
-          [(ngModel)]="progressType"
-        />
-        Tempo cronometrado
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="progressType"
-          value="times"
-          [(ngModel)]="progressType"
-        />
-        Vezes realizadas
-      </label>
-    </div>
-
-    <hr />
-
-    <label>Nome do Hábito</label>
-    <input
-      type="text"
-      name="name"
-      [(ngModel)]="habit.name"
-      required
-      #name="ngModel"
-    />
-
-    <label>Categoria</label>
-    <select name="categoria" [(ngModel)]="habit.category" required>
-      @for (cat of categories; track cat.id) {
-      <option [value]="cat.id">{{ cat.displayName }}</option>
-      }
-    </select>
-
-    @if(progressType === 'time') {
-
-    <div>
-      <label>Regra de Conclusão</label>
-      <select [(ngModel)]="habit.timeTarget!.rule" name="progressRule" required>
-        <option value="at_least">Ao menos</option>
-        <option value="any">Qualquer tempo</option>
-        <option value="equal">Exatamente</option>
-        <option value="at_most">Menos que</option>
-      </select>
-    </div>
-
-    <label>Determine o tempo</label>
-    <div class="time-inputs">
-      <input
-        type="number"
-        [(ngModel)]="habit.timeTarget!.hours"
-        name="durationHours"
-        min="0"
-        max="23"
-        placeholder="Horas"
-      />
-      <input
-        type="number"
-        [(ngModel)]="habit.timeTarget!.minutes"
-        name="durationMinutes"
-        min="0"
-        max="59"
-        placeholder="Minutos"
-      />
-      <input
-        type="number"
-        [(ngModel)]="habit.timeTarget!.seconds"
-        name="durationSeconds"
-        min="0"
-        max="59"
-        placeholder="Segundos"
-      />
-    </div>
-    } @if(progressType === 'times') {
-    <div>
-      <label>Regra de Conclusão</label>
-      <select
-        [(ngModel)]="habit.timesTarget!.rule"
-        name="progressRule"
-        required
-      >
-        <option value="at_least">Ao menos</option>
-        <option value="any">Qualquer valor</option>
-        <option value="equal">Exatamente</option>
-        <option value="at_most">No máximo</option>
-      </select>
-
-      @if(habit.timesTarget!.rule !== 'any') {
-      <label>Quantas vezes?</label>
-      <input
-        type="number"
-        name="targetValue"
-        [(ngModel)]="habit.timesTarget!.value"
-        min="1"
-        required
-      />
-      }
-    </div>
-    }
-
-    <label>Dias da Semana</label>
-
-    <div class="days-checkboxes">
-      @for (day of daysOfWeek; track day) {
-      <label>
-        <input
-          type="checkbox"
-          [value]="day"
-          (change)="toggleDay(day)"
-          [checked]="habit.days.includes(day)"
-        />
-        {{ day }}
-      </label>
-      }
-    </div>
-
-    <label>Descrição</label>
-    <textarea [(ngModel)]="habit.description" name="description"></textarea>
-
-    <label>Prioridade</label>
-    <div class="radio-group">
-      <label
-        ><input
-          type="radio"
-          name="priority"
-          value="low"
-          [(ngModel)]="habit.priority"
-          required
-          #priority="ngModel"
-        />
-        Baixa</label
-      >
-      <label
-        ><input
-          type="radio"
-          name="priority"
-          value="medium"
-          [(ngModel)]="habit.priority"
-        />
-        Média</label
-      >
-      <label
-        ><input
-          type="radio"
-          name="priority"
-          value="medium-high"
-          [(ngModel)]="habit.priority"
-        />
-        Média-Alta</label
-      >
-      <label
-        ><input
-          type="radio"
-          name="priority"
-          value="high"
-          [(ngModel)]="habit.priority"
-        />
-        Alta</label
-      >
-    </div>
-
-    <div class="modal-footer">
-      <button type="button" (click)="closeModal()">Cancelar</button>
-      <button
-        type="submit"
-        [disabled]="form.invalid || habit.days.length === 0"
-      >
-        Criar
+    <div class="modal-header">
+      <h2>Criar Hábito</h2>
+      <button class="close-button" type="button" (click)="closeModal()">
+        ×
       </button>
+    </div>
+    <div class="stepper-container">
+      <div class="stepper-progress">
+        <div
+          class="step"
+          [class.active]="currentStep >= 1"
+          (click)="goToStep(1)"
+        >
+          <div class="step-number">1</div>
+          <div class="step-label">Detalhes</div>
+        </div>
+        <div class="step-connector" [class.active]="currentStep >= 2"></div>
+        <div
+          class="step"
+          [class.active]="currentStep >= 2"
+          (click)="goToStep(2)"
+        >
+          <div class="step-number">2</div>
+          <div class="step-label">Data e local</div>
+        </div>
+        <div class="step-connector" [class.active]="currentStep >= 3"></div>
+        <div
+          class="step"
+          [class.active]="currentStep >= 3"
+          (click)="goToStep(3)"
+        >
+          <div class="step-number">3</div>
+          <div class="step-label">Configurações</div>
+        </div>
+      </div>
+
+      @if (currentStep === 1) {
+
+      <div class="step-content">
+        <div class="step-title">Detalhes do hábito</div>
+
+        <label>Nome do Hábito</label>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="habit.name"
+          required
+          #name="ngModel"
+          placeholder="Ex: Ler um livro"
+        />
+
+        <label>Categoria</label>
+        <div class="category-selector">
+          @for (cat of categories; track cat.id) {
+          <div 
+            class="category-item" 
+            [class.selected]="habit.category === cat.id"
+            (click)="selectCategory(cat.id)"
+          >
+            <img [src]="cat.icon" class="category-icon" alt="{{ cat.displayName }}" />
+            <span class="category-name">{{ cat.displayName }}</span>
+          </div>
+          }
+        </div>
+
+        <label>Descrição</label>
+        <textarea
+          [(ngModel)]="habit.description"
+          name="description"
+          placeholder="Descreva seu hábito (opcional)"
+        ></textarea>
+      </div>
+      } @if (currentStep === 2) {
+      <div class="step-content">
+        <div class="step-title">Quando e onde?</div>
+
+        <label>Dias da Semana</label>
+        <div class="days-selector">
+          @for (day of daysOfWeek; track day) {
+          <div
+            class="day-item"
+            [class.selected]="habit.days.includes(day)"
+            (click)="toggleDay(day)"
+          >
+            {{ day }}
+          </div>
+          }
+        </div>
+
+        <label>Como deseja marcar o progresso?</label>
+        <div class="progress-type-selector">
+          <div
+            class="progress-type-item"
+            [class.selected]="progressType === 'yes_no'"
+            (click)="progressType = 'yes_no'"
+          >
+            <div class="progress-type-icon">✓</div>
+            <div class="progress-type-details">
+              <span class="progress-type-name">Sim ou Não</span>
+              <span class="progress-type-desc"
+                >Simplesmente marque como concluído</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="progress-type-item"
+            [class.selected]="progressType === 'time'"
+            (click)="progressType = 'time'"
+          >
+            <div class="progress-type-icon">⏱️</div>
+            <div class="progress-type-details">
+              <span class="progress-type-name">Tempo cronometrado</span>
+              <span class="progress-type-desc"
+                >Registre quanto tempo você dedicou</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="progress-type-item"
+            [class.selected]="progressType === 'times'"
+            (click)="progressType = 'times'"
+          >
+            <div class="progress-type-icon">🔢</div>
+            <div class="progress-type-details">
+              <span class="progress-type-name">Vezes realizadas</span>
+              <span class="progress-type-desc"
+                >Conte quantas vezes você realizou</span
+              >
+            </div>
+          </div>
+        </div>
+        @if(progressType === 'time') {
+        <div class="progress-config">
+          <label>Regra de Conclusão</label>
+          <select
+            [(ngModel)]="habit.timeTarget!.rule"
+            name="progressRule"
+            required
+          >
+            <option value="at_least">Ao menos</option>
+            <option value="any">Qualquer valor</option>
+            <option value="equal">Exatamente</option>
+            <option value="at_most">No máximo</option>
+          </select>
+
+          <label>Determine o tempo</label>
+          <div class="time-inputs">
+            <div class="time-input-group">
+              <input
+                type="number"
+                [(ngModel)]="habit.timeTarget!.hours"
+                name="durationHours"
+                min="0"
+                max="23"
+                placeholder="0"
+              />
+              <span>horas</span>
+            </div>
+            <div class="time-input-group">
+              <input
+                type="number"
+                [(ngModel)]="habit.timeTarget!.minutes"
+                name="durationMinutes"
+                min="0"
+                max="59"
+                placeholder="0"
+              />
+              <span>min</span>
+            </div>
+            <div class="time-input-group">
+              <input
+                type="number"
+                [(ngModel)]="habit.timeTarget!.seconds"
+                name="durationSeconds"
+                min="0"
+                max="59"
+                placeholder="0"
+              />
+              <span>seg</span>
+            </div>
+          </div>
+        </div>
+        } @if(progressType === 'times') {
+        <div class="progress-config">
+          <label>Regra de Conclusão</label>
+          <select
+            [(ngModel)]="habit.timesTarget!.rule"
+            name="progressRule"
+            required
+          >
+            <option value="at_least">Ao menos</option>
+            <option value="any">Qualquer valor</option>
+            <option value="equal">Exatamente</option>
+            <option value="at_most">No máximo</option>
+          </select>
+
+          @if(habit.timesTarget!.rule !== 'any') {
+          <label>Quantas vezes?</label>
+          <div class="times-input">
+            <input
+              type="number"
+              name="targetValue"
+              [(ngModel)]="habit.timesTarget!.value"
+              min="1"
+              required
+              placeholder="1"
+            />
+            <span>vezes</span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      } @if(currentStep === 3) {
+      <div class="step-content">
+        <div class="step-title">Configurações adicionais</div>
+
+        <label>Prioridade</label>
+        <div class="priority-selector">
+          <div
+            class="priority-item"
+            [class.selected]="habit.priority === 'low'"
+            (click)="habit.priority = 'low'"
+          >
+            <div class="priority-color low"></div>
+            <span>Baixa</span>
+          </div>
+          <div
+            class="priority-item"
+            [class.selected]="habit.priority === 'medium'"
+            (click)="habit.priority = 'medium'"
+          >
+            <div class="priority-color medium"></div>
+            <span>Média</span>
+          </div>
+          <div
+            class="priority-item"
+            [class.selected]="habit.priority === 'medium-high'"
+            (click)="habit.priority = 'medium-high'"
+          >
+            <div class="priority-color medium-high"></div>
+            <span>Média-Alta</span>
+          </div>
+          <div
+            class="priority-item"
+            [class.selected]="habit.priority === 'high'"
+            (click)="habit.priority = 'high'"
+          >
+            <div class="priority-color high"></div>
+            <span>Alta</span>
+          </div>
+        </div>
+
+        <div class="habit-summary">
+          <h3>Resumo do hábito</h3>
+          <div class="summary-item">
+            <strong>Nome:</strong> {{ habit.name || "Não definido" }}
+          </div>
+          <div class="summary-item">
+            <strong>Categoria:</strong>
+            @if (habit.category; as category) {
+            <span>
+              <img
+                [src]="getCategoryIcon(category)"
+                class="summary-category-icon"
+                alt="Ícone da categoria"
+              />
+              {{ getCategoryName(category) }}
+            </span>
+            } @else {
+            <span>Não definida</span>
+            }
+          </div>
+          <div class="summary-item">
+            <strong>Dias:</strong>
+            @if (habit.days.length > 0) {
+            <span>{{ habit.days.join(", ") }}</span>
+            } @else {
+            <span>Nenhum dia selecionado</span>
+            }
+          </div>
+          <div class="summary-item">
+            <strong>Tipo de progresso:</strong>
+            @if (progressType === 'yes_no') {
+            <span>Sim ou Não</span>
+            } @else if (progressType === 'time') {
+            <span>Tempo cronometrado</span>
+            } @else if (progressType === 'times') {
+            <span>Vezes realizadas</span>
+            }
+          </div>
+          <div class="summary-item">
+            <strong>Prioridade:</strong>
+            @if (habit.priority === 'low') {
+            <span>Baixa</span>
+            } @else if (habit.priority === 'medium') {
+            <span>Média</span>
+            } @else if (habit.priority === 'medium-high') {
+            <span>Média-Alta</span>
+            } @else if (habit.priority === 'high') {
+            <span>Alta</span>
+            } @else {
+            <span>Não definida</span>
+            }
+          </div>
+        </div>
+      </div>
+      }
+
+      <div class="step-navigation">
+        @if(currentStep > 1 ) {
+        <button type="button" class="nav-button back" (click)="previousStep()">
+          Voltar
+        </button>
+        } @if (currentStep < 3) {
+        <button
+          type="button"
+          class="nav-button next"
+          (click)="nextStep()"
+          [disabled]="!canProceed()"
+        >
+          Próximo
+        </button>
+        } @if (currentStep === 3) {
+        <button
+          type="submit"
+          class="nav-button create"
+          [disabled]="!isFormValid()"
+        >
+          Criar Hábito
+        </button>
+        }
+      </div>
     </div>
   </form>
 </div>
