@@ -1,28 +1,46 @@
 import { serverTimestamp } from 'firebase/firestore';
 
-export interface HabitData {
-    id: string,
-    name: string,
-    category: string,
-    days: string[],
-    description?: string,
-    priority: string,
-    progressType: 'yes_no' | 'time' | 'times',
+export type ProgressHabitType = 'yes_no' | 'time' | 'times';
+export type CompletionRulesHabiType = 'equal' | 'at_least' | 'at_most' | 'any';
+export type StateHabitType = 'in_progress' | 'completed' | 'not_completed' | 'failed';
 
-    timesTarget?: {
-        value: number;
-        rule: 'equal' | 'at_least' | 'at_most' | 'any';
-    },
-    timeTarget?: {
-        hours?: number;
-        minutes?: number;
-        seconds?: number;
-        rule?: 'equal' | 'at_least' | 'at_most' | 'any';
-    },
-    state: 'in_progress' | 'completed' | 'not_completed' | 'failed';
-    currentTimes?: number;
-    inputValue?: number;
-    progressValue: number;
-    createdAt: Date | ReturnType<typeof serverTimestamp>;
-    updatedAt: Date | ReturnType<typeof serverTimestamp>
+export interface HabitData {
+  id: string,
+  name: string,
+  category: string,
+  days: string[],
+  description?: string,
+  priority: string,
+  progressType: ProgressHabitType,
+  timesTarget?: {
+    value: number;
+    rule: CompletionRulesHabiType;
+  },
+  timeTarget?: {
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+    value?: number;
+    rule?: CompletionRulesHabiType;
+  },
+  createdAt: Date | ReturnType<typeof serverTimestamp>;
+  updatedAt: Date | ReturnType<typeof serverTimestamp>
 }
+
+export interface HabitLog {
+  habitId: string;
+  date: string;
+  state: StateHabitType;
+  updatedAt: any;
+  progressValue: number;
+}
+
+export interface HabitList {
+  id?: string;
+  name: string;
+  createdAt: any;
+  updatedAt: any;
+  categories: string[];
+}
+
+export interface HabitLogMap { [date: string]: HabitLog | null };
