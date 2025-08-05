@@ -1,18 +1,16 @@
-import { HabitLog } from 'src/app/interfaces/habitlog.interface';
+import { HabitLog } from 'src/app/interfaces/habit.interface';
 import { Category } from './../../interfaces/category.interface';
-import { Loading } from 'notiflix';
-import { UserService } from './../../services/user.service';
+import { UserService } from './../../services/user/user.service';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
 import { HabitData } from 'src/app/interfaces/habit.interface';
-import { UserData } from 'src/app/interfaces/user.interface';
-import { AuthService } from 'src/app/services/auth.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 import { register } from 'swiper/element/bundle';
 import { HabitDaysComponent } from '../habit-days/habit-days.component';
+import { HabitService } from 'src/app/services/habit/habit.service';
+import { generateDays } from 'src/app/shared/utils/date.utils';
 register()
 
 @Component({
@@ -51,25 +49,26 @@ register()
 })
 export class HabitCardComponent implements OnInit {
   @Input() habit: any;
+  public habitService = inject(HabitService)
   @Output() delete = new EventEmitter<string>();
   @Output() mark = new EventEmitter<{ habit: HabitData, date: string }>();
-  @Output() daySelected = new EventEmitter<string>();
-  @Output() logsUpdated = new EventEmitter<{ [date: string]: HabitLog }>();
-  @Input() logs: { [date: string]: HabitLog } = {};
-
+  public logs: { [date: string]: HabitLog | null } = {};
+  private dateRange: string[] = [];
+  public days: {
+    date: Date;
+    iso: string;
+    weekday: string;
+    formattedDate: string;
+    isHabitDay: boolean;
+  }[] = [];
   public userService = inject(UserService);
-  today = new Date();
-
-  emitDelete() {
-    this.delete.emit(this.habit.id);
-  }
-  emitMarkHabit() {
-    this.mark.emit({ habit: this.habit, date: new Date().toISOString().split('T')[0] });
-  }
-
   public showDetails: boolean = false;
 
-  toggleDetails() {
+  public emitDelete() {
+    this.delete.emit(this.habit.id);
+  }
+
+  public toggleDetails() {
     this.showDetails = !this.showDetails;
   }
 
@@ -81,22 +80,34 @@ export class HabitCardComponent implements OnInit {
       : undefined;
   }
 
-  getTodayState(): string {
+  public getTodayState(): string {
     const todayIso = new Date().toISOString().split('T')[0];
     const todayLog = this.logs?.[todayIso];
+
     return todayLog?.state || 'in_progress';
   }
 
-  onLogsUpdated(newLogs: { [date: string]: HabitLog }) {
-    this.logsUpdated.emit(newLogs);
+  async markHabit() {
+    await this.habitService.completeHabit(this.habit, new Date().toISOString().split('T')[0]);
+    await this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit).then(() => {
+      this.logs = this.habitService.logs[this.habit.id] || {};
+      console.log('novo log', this.logs)
+    });
+
+  }
+  async ngOnInit() {
+    const today = new Date();
+    this.days = generateDays(today, 7, this.habit.days)
+    this.dateRange = generateDays(today, 7, this.habit.days).map(d => d.iso);
+    this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit).then(() => {
+      this.logs = this.habitService.logs[this.habit.id] || {};
+    });
+    console.log(this.logs)
   }
 
-
-  ngOnInit() {
-  }
-
-  onDaySelected(dateIso: string) {
-    this.mark.emit({ habit: this.habit, date: dateIso });
-  }
+async reloadLogs() {
+  await this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit);
+  this.logs = this.habitService.logs[this.habit.id] || {};
+}
 
 }

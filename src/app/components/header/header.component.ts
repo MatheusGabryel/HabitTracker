@@ -4,9 +4,9 @@ import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { IonIcon } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { menuOutline } from 'ionicons/icons';
-import { AuthService } from 'src/app/services/auth.service';
-import { MenuService } from 'src/app/services/menu.service';
-import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { MenuService } from 'src/app/services/menu/menu.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { ProfileModalComponent } from '../../components/profile-modal/profile-modal.component';
 import Swal from 'sweetalert2';
 

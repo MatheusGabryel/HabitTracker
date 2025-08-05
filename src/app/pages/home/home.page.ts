@@ -1,7 +1,7 @@
 import { MenuComponent } from './../../components/menu/menu.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../components/header/header.component";
 import { DashboardDaySwiperComponent } from "src/app/components/dashboard-day-swiper/dashboard-day-swiper.component";
@@ -18,7 +18,9 @@ import { DashboardStatsComponent } from "src/app/components/dashboard-stats/dash
 })
 export class HomePage {
 
-  constructor(private authService: AuthService) {
+  private authService = inject(AuthService)
+
+  constructor() {
   }
   ngOnInit() {
   }

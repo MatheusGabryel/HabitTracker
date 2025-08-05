@@ -2,15 +2,15 @@
   <div class="habit-main">
     <div class="dinamic-status" title="Concluído">
       @if(getTodayState() === "in_progress") {
-      <button class="status-button" (click)="emitMarkHabit()">
+      <button class="status-button" (click)="markHabit()">
         <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
       </button>
       } @if(getTodayState() === "completed") {
-      <button class="status-button" (click)="emitMarkHabit()">
+      <button class="status-button" (click)="markHabit()">
         <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
       </button>
       } @if(getTodayState() === "failed") {
-      <button class="status-button" (click)="emitMarkHabit()">
+      <button class="status-button" (click)="markHabit()">
         <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
       </button>
       }
@@ -46,13 +46,12 @@
 
     <div class="days-mobile">
       <app-habit-days
-        [centerDate]="today"
-        [daysBefore]="7"
         [logs]="logs"
+        [habit]="habit"
         [habitId]="habit.id"
-        [habitDays]="habit.days"
         [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
-        (daySelected)="onDaySelected($event)"
+        [days]="days"
+        (logUpdated)="reloadLogs()"
       ></app-habit-days>
     </div>
 
@@ -95,14 +94,12 @@
 
           <div class="days-desktop">
             <app-habit-days
-              [centerDate]="today"
-              [daysBefore]="7"
-              (daySelected)="onDaySelected($event)"
-              [habitDays]="habit.days"
               [logs]="logs"
-              (logsUpdated)="onLogsUpdated($event)"
-              [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
+              [habit]="habit"
               [habitId]="habit.id"
+              [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
+              [days]="days"
+              (logUpdated)="reloadLogs()"
             ></app-habit-days>
           </div>
 

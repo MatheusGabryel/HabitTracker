@@ -1,11 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
@@ -18,11 +18,11 @@ import { Loading } from 'notiflix';
   imports: [IonIcon, IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
-  passwordFieldType: string = 'password';
-  password: string = '';
-  email = '';
+  public passwordFieldType: string = 'password';
+  public password: string = '';
+  public email = '';
 
-  togglePasswordVisibility() {
+  public togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
@@ -30,11 +30,11 @@ export class LoginPage implements OnInit {
     addIcons({ eyeOffOutline, eyeOutline })
   }
 
-  async onLogin() {
+  public async onLogin() {
     try {
       Loading.circle()
 
-      const userCredential = await this.authService.login(this.email, this.password);
+      await this.authService.login(this.email, this.password);
       Swal.fire({
         title: 'Sucesso',
         text: 'Seja bem vindo de volta!',

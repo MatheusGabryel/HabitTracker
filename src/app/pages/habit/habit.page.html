@@ -120,10 +120,7 @@
                 <li>
                   <app-habit-card
                     (delete)="deleteHabit($event)"
-                    (mark)="completeHabit($event.habit, $event.date)"
-                    (daySelected)="onDaySelected($event)"
                     [logs]="logsByHabit[habit.id] || {}"
-                    (logsUpdated)="onLogsUpdated($event, habit.id)"
                     [habit]="habit"
                     style="width: 100%"
                   ></app-habit-card>

@@ -1,5 +1,4 @@
-import { UserService } from 'src/app/services/user.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './../../components/menu/menu.component';
 
@@ -7,7 +6,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { menuOutline, } from 'ionicons/icons';
-import { MenuService } from 'src/app/services/menu.service';
+import { MenuService } from 'src/app/services/menu/menu.service';
 import { HeaderComponent } from "../../components/header/header.component";
 import { ToggleThemeComponent } from "../../shared/ui/toggle-theme/toggle-theme.component";
 import { SwitchComponent } from "../../shared/ui/switch/switch.component";

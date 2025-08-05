@@ -6,10 +6,11 @@ import { IonContent } from '@ionic/angular/standalone';
 import { HeaderComponent } from "../../components/header/header.component";
 import { CreateGoalModalComponent } from "../../components/create-goal-modal/create-goal-modal.component";
 import { animate, style, transition, trigger } from '@angular/animations';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { GoalData } from 'src/app/interfaces/goal.interface';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
+import { GoalService } from 'src/app/services/goal/goal.service';
 
 @Component({
   selector: 'app-goals',
@@ -33,6 +34,7 @@ export class GoalsPage {
 
   public showGoalModal = false;
   public userService = inject(UserService);
+  public goalService = inject(GoalService);
   public loading: boolean = true;
   public hasGoals: boolean = false;
   public goals: any[] = [];
@@ -58,7 +60,7 @@ export class GoalsPage {
       const uid = await this.userService.getUserId();
       if (!uid) throw new Error('Usuário não autenticado');
 
-      this.goals = await this.userService.getUserGoals(uid);
+      this.goals = await this.goalService.getUserGoals(uid);
       console.log(this.goals)
       this.hasGoals = this.goals.length > 0;
       this.loading = false;
@@ -97,7 +99,7 @@ export class GoalsPage {
         if (input) input.classList.add('swal2-input-wide');
       }
     });
-    if (inputValue === undefined) return null; // Cancelado
+    if (inputValue === undefined) return null;
     return Number(inputValue);
   }
 
@@ -115,7 +117,7 @@ export class GoalsPage {
     const state: GoalData['state'] = progressValue >= target ? 'completed' : 'in_progress';
 
 
-    await this.userService.updateGoalProgress(goal.id, {
+    await this.goalService.updateGoalProgress(goal.id, {
       state,
       progressValue,
     }, uid);

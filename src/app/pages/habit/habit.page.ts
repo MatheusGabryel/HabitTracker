@@ -1,4 +1,4 @@
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user/user.service';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
@@ -12,10 +12,11 @@ import { CreateListModalComponent } from "../../components/create-list-modal/cre
 import { Loading } from 'notiflix';
 import Swal from 'sweetalert2';
 import { HabitData } from 'src/app/interfaces/habit.interface';
-import { HabitList } from 'src/app/interfaces/habitlist.interface';
+import { HabitList } from 'src/app/interfaces/habit.interface';
 import { FormsModule } from '@angular/forms';
 import { register } from 'swiper/element/bundle';
-import { HabitLog } from 'src/app/interfaces/habitlog.interface';
+import { HabitLog } from 'src/app/interfaces/habit.interface';
+import { HabitService } from 'src/app/services/habit/habit.service';
 register()
 
 @Component({
@@ -37,10 +38,10 @@ register()
     ])
   ]
 })
-export class HabitPage {
 
-  logs: { [date: string]: HabitLog } = {};
-  logsByHabit: { [habitId: string]: { [date: string]: HabitLog } } = {};
+export class HabitPage {
+  public habitService = inject(HabitService)
+  public logsByHabit: { [habitId: string]: { [date: string]: HabitLog } } = {};
   public userService = inject(UserService);
   public habits: any[] = [];
   public tabs: any[] = [];
@@ -56,7 +57,9 @@ export class HabitPage {
   // allHabits: HabitData[] = [];
   // selectedHabits: Set<string> = new Set();
   today = new Date();
-  constructor() { }
+  constructor() { 
+;
+  }
 
   async ngOnInit() {
     this.loadLists();
@@ -76,202 +79,8 @@ export class HabitPage {
     { key: 'priority', label: 'Prioridade', class: 'priority' }
   ];
 
-  onDaySelected(dateIso: string) {
-    console.log('Dia clicado:', dateIso);
-  }
-
-
-  private getNextStateYesNo(currentState: HabitData['state']): HabitData['state'] {
-    const states: HabitData['state'][] = ['in_progress', 'completed', 'failed'];
-    const nextIndex = (states.indexOf(currentState) + 1) % states.length;
-    return states[nextIndex];
-  }
-  async presentTimesInputAlert(habit: HabitData): Promise<number | null> {
-    const maxAllowed = habit.timesTarget!.value * 1000;
-    const maxLimit = maxAllowed < 100000 ? maxAllowed : 100000;
-
-    const { value: inputValue } = await Swal.fire({
-      title: 'Registrar progresso',
-      heightAuto: false,
-      text: `Quantas vezes você realizou o hábito "${habit.name}"?`,
-      input: 'number',
-      inputAttributes: {
-        min: '0',
-        max: maxAllowed < 100000 ? String(maxAllowed) : '100000',
-        placeholder: 'Ex: 3',
-      },
-      inputValidator: (value) => {
-        const num = Number(value);
-        if (isNaN(num) || num < 0 || num > maxLimit) {
-          return `Insira um valor válido entre 0 e ${maxLimit}.`;
-        }
-        return null;
-      },
-      showCancelButton: true,
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancelar',
-      didOpen: () => {
-        const input = document.querySelector('.swal2-input');
-        if (input) input.classList.add('swal2-input-wide');
-      }
-    });
-
-
-    if (inputValue === undefined) return null;
-    return Number(inputValue);
-  }
-
-
-  async presentTimeInputAlert(habit: HabitData): Promise<number | null> {
-    const { value: formValues } = await Swal.fire({
-      title: 'Registrar progresso',
-      heightAuto: false,
-      html: `
-      <input type="number" id="swal-hours" class="swal2-input" placeholder="Horas" min="0" />
-      <input type="number" id="swal-minutes" class="swal2-input" placeholder="Min" min="0" max="59" />
-      <input type="number" id="swal-seconds" class="swal2-input" placeholder="Seg" min="0" max="59" />
-    `,
-      focusConfirm: false,
-      showCancelButton: true,
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancelar',
-      preConfirm: () => {
-        const hours = Number((document.getElementById('swal-hours') as HTMLInputElement).value) || 0;
-        const minutes = Number((document.getElementById('swal-minutes') as HTMLInputElement).value) || 0;
-        const seconds = Number((document.getElementById('swal-seconds') as HTMLInputElement).value) || 0;
-
-        if (hours < 0 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
-          Swal.showValidationMessage('Insira valores válidos para horas, minutos (0-59) e segundos (0-59).');
-          return null;
-        }
-        return { hours, minutes, seconds };
-      }
-    });
-
-    if (!formValues) return null;
-
-    const totalSeconds = formValues.hours * 3600 + formValues.minutes * 60 + formValues.seconds;
-    if (totalSeconds < 0) return null;
-
-    return totalSeconds;
-  }
-
-
-  private calcNewStateTimes(habit: HabitData, inputValue: number) {
-    const rule = habit.timesTarget?.rule;
-    const target = habit.timesTarget?.value ?? 0;
-    let progressValue = inputValue;
-
-    let state: HabitData['state'] = 'in_progress';
-
-    switch (rule) {
-      case 'equal':
-        state = inputValue === target ? 'completed' : 'in_progress';
-        break;
-      case 'at_least':
-        state = inputValue >= target ? 'completed' : 'in_progress';
-        break;
-      case 'at_most':
-        state = inputValue > target ? 'failed' : 'in_progress';
-        break;
-      case 'any':
-        state = 'completed';
-        break;
-    }
-
-    return { state, progressValue };
-  }
-
-  private calcNewStateTime(habit: HabitData, inputValue: number) {
-
-    const rule = habit.timeTarget?.rule;
-    const targetSeconds = ((habit.timeTarget?.hours ?? 0) * 3600) +
-      ((habit.timeTarget?.minutes ?? 0) * 60) +
-      (habit.timeTarget?.seconds ?? 0);
-
-    let state: HabitData['state'] = 'in_progress';
-
-    switch (rule) {
-      case 'equal':
-        state = inputValue === targetSeconds ? 'completed' : 'in_progress';
-        break;
-      case 'at_least':
-        state = inputValue >= targetSeconds ? 'completed' : 'in_progress';
-        break;
-      case 'at_most':
-        state = inputValue > targetSeconds ? 'failed' : 'in_progress';
-        break;
-      case 'any':
-        state = 'completed';
-        break;
-    }
-
-    return { state, progressValue: inputValue };
-  }
-
-  async completeHabit(habit: HabitData, dateIso: string) {
-    const uid = await this.userService.getUserId();
-    if (!uid) return;
-
-    if (habit.progressType === 'yes_no') {
-      const newState = this.getNextStateYesNo(habit.state);
-      await this.userService.updateHabitState(habit.id, newState, uid);
-      habit.state = newState;
-      console.log('Novo estado:', habit.state);
-    }
-
-    if (habit.progressType === 'times') {
-      const inputValue = await this.presentTimesInputAlert(habit);
-      if (inputValue == null) return;
-
-      const { state, progressValue } = this.calcNewStateTimes(habit, inputValue);
-      await this.userService.updateHabitProgress(habit.id, {
-        state,
-        progressValue,
-      }, uid);
-
-      habit.state = state;
-      habit.progressValue = progressValue;
-      console.log('Novo estado:', habit.state);
-    }
-
-    if (habit.progressType === 'time') {
-      const inputValue = await this.presentTimeInputAlert(habit);
-      if (inputValue == null) return;
-
-      const { state, progressValue } = this.calcNewStateTime(habit, inputValue);
-      console.log(state, progressValue)
-      await this.userService.updateHabitProgress(habit.id, {
-        state,
-        progressValue,
-      }, uid);
-
-      habit.state = state;
-      habit.progressValue = progressValue;
-      console.log('Novo estado:', habit.state);
-    }
-    const logDate = dateIso || new Date().toISOString().split('T')[0];
-
-    await this.userService.logHabitCompletion(uid, habit.id, logDate, habit.state);
-
-    const updatedLogs = {
-      ...this.logsByHabit[habit.id],
-      [logDate]: {
-        habitId: habit.id,
-        date: logDate,
-        state: habit.state,
-        updatedAt: new Date().toISOString(),
-      }
-    };
-
-    this.logsByHabit = {
-      ...this.logsByHabit,
-      [habit.id]: updatedLogs
-    };
-  }
-
-  onLogsUpdated(newLogs: { [date: string]: HabitLog }, habitId: string) {
-    this.logsByHabit[habitId] = newLogs;
+  completeHabit(habit: any, dateIso: string) {
+      this.habitService.completeHabit(habit, dateIso);
   }
 
   public openListModal() {
@@ -309,7 +118,7 @@ export class HabitPage {
         confirmButtonText: "Sim, desejo deletar."
       }).then((result) => {
         if (result.isConfirmed) {
-          this.userService.deleteHabit(uid, habitId);
+          this.habitService.deleteHabit(uid, habitId);
           this.activeListHabits = this.activeListHabits.filter(h => h.id !== habitId);
 
           Swal.fire({
@@ -349,7 +158,7 @@ export class HabitPage {
   async loadLists() {
     const uid = await this.userService.getUserId();
     if (uid) {
-      const lists = await this.userService.getUserLists(uid);
+      const lists = await this.habitService.getHabitLists(uid);
       this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...lists];
     }
     console.log('tabs carregadas', this.tabs);
@@ -365,9 +174,9 @@ export class HabitPage {
     }
 
     if (tabName === this.DEFAULT_TAB) {
-      this.habits = await this.userService.getUserHabits(uid);
+      this.habits = await this.habitService.getUserHabits(uid);
     } else if (list) {
-      this.habits = await this.userService.getHabitsByCategories(uid, list.categories);
+      this.habits = await this.habitService.getHabitsByCategories(uid, list.categories);
     } else {
       this.habits = [];
     }

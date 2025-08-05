@@ -5,7 +5,7 @@ import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/sta
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
