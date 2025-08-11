@@ -16,6 +16,18 @@ export class HabitService {
 
   constructor() { }
 
+  async updateHabit(newHabit: any, habitId: string) {
+    const uid = await this.userService.getUserId();
+    if (!uid) return;
+    const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`)
+    try {
+      await updateDoc(habitRef, newHabit);
+    } catch (error) {
+      alert(`Erro desconhecido: ${error}`);
+    }
+  }
+
+
 
   async loadLogsForHabit(habitId: string, dates: string[] | string, habit: HabitData): Promise<void> {
     const uid = await this.userService.getUserId();
@@ -63,7 +75,6 @@ export class HabitService {
     }
 
     this.logs[habitId] = logs;
-
   }
 
   async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
@@ -81,7 +92,8 @@ export class HabitService {
     });
   }
 
-  public async getUserHabits(uid: string) {
+  public async getUserHabits() {
+    const uid = await this.userService.getUserId()
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
     const snapshot = await getDocs(habitsRef)
     if (!snapshot.empty) {
@@ -93,6 +105,33 @@ export class HabitService {
     } else {
       return [];
     }
+  }
+
+  async getUserHabitsWithLogs(): Promise<any[]> {
+    const uid = await this.userService.getUserId();
+    const habitsRef = collection(this.firestore, `users/${uid}/habits`);
+    const snapshot = await getDocs(habitsRef);
+
+
+    if (snapshot.empty) return [];
+
+    const habits = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as HabitData[];
+    const habitsWithLogs: any[] = await Promise.all(
+      habits.map(async habit => {
+        const logsRef = collection(this.firestore, `users/${uid}/habits/${habit.id}/habitsLogs`);
+        const logsSnap = await getDocs(logsRef);
+        const logs = logsSnap.docs.map(d => d.data()) as HabitLog[];
+        return {
+          ...habit,
+          logs
+        };
+      })
+    );
+    console.log(habitsWithLogs)
+    return habitsWithLogs;
   }
 
   public async getHabitById(habitId: string) {
@@ -108,10 +147,52 @@ export class HabitService {
 
   async deleteHabit(uid: string, habitId: string): Promise<void> {
     const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
+    const logsRef = collection(this.firestore, `users/${uid}/habits/${habitId}/habitlogs`);
+    const logsSnapshot = await getDocs(logsRef);
+    const deletions = logsSnapshot.docs.map(logDoc => deleteDoc(logDoc.ref));
+    await Promise.all(deletions);
     await deleteDoc(habitRef);
   }
 
-  public async addHabit(uid: string, habit: HabitData) {
+  async addNewEditHabit(oldHabit: HabitData) {
+    const uid = await this.userService.getUserId();
+    if (!uid) return;
+
+    console.log('oldHabit.id:', oldHabit.id);
+
+    const userDocRef = doc(this.firestore, 'users', uid);
+    const habitsCollectionRef = collection(userDocRef, 'habits');
+    const oldHabitRef = doc(this.firestore, `users/${uid}/habits/${oldHabit.id}`);
+    const oldLogsRef = collection(this.firestore, `users/${uid}/habits/${oldHabit.id}/habitsLogs`);
+
+    const oldLogs = await getDocs(oldLogsRef);
+    console.log('oldLogs.size:', oldLogs.size);
+    console.log('oldLogs docs:', oldLogs.docs.map(d => d.data()));
+
+    if (oldLogs.empty) {
+      console.warn('Nenhum log encontrado para o hábito antigo');
+    }
+
+    const logs = oldLogs.docs.map(d => d.data());
+    console.log(logs)
+
+    const { id, ...habitDataToAdd } = oldHabit;
+
+    const newHabit = await addDoc(habitsCollectionRef, habitDataToAdd);
+
+    await updateDoc(newHabit, { id: newHabit.id, historicalLogs: logs });
+
+    await deleteDoc(oldHabitRef);
+
+    return newHabit;
+  }
+
+
+
+
+  public async addHabit(habit: HabitData) {
+    const uid = await this.userService.getUserId()
+    if (!uid) return;
     const userDocRef = doc(this.db, 'users', uid);
     const habitsCollectionRef = collection(userDocRef, 'habits');
     const docRef = await addDoc(habitsCollectionRef, habit);
@@ -369,19 +450,28 @@ export class HabitService {
     return docRef;
   }
 
-  public async getHabitLists(uid: string) {
+  public async getHabitLists(uid: string): Promise<HabitList[]> {
     const listRef = collection(this.firestore, `users/${uid}/list`);
     const snapshot = await getDocs(listRef);
 
     if (!snapshot.empty) {
-      const lists = snapshot.docs.map(doc => {
+      const lists: HabitList[] = snapshot.docs.map(doc => {
         const data = doc.data();
-        return { id: doc.id, ...data };
+        return { id: doc.id, ...data } as HabitList;
       });
-      return lists;
+      return lists
     } else {
       return [];
     }
   }
-}
+  public async updateListVisibility(uid: string, listId: string, isVisible: boolean) {
+    const listDocRef = doc(this.firestore, `users/${uid}/list/${listId}`);
+    await updateDoc(listDocRef, { isVisible: isVisible });
+  }
 
+  public async deleteHabitList(habitListId: string): Promise<void> {
+    const uid = await this.userService.getUserId()
+    const listRef = doc(this.firestore, `users/${uid}/list/${habitListId}`);
+    await deleteDoc(listRef);
+  }
+}

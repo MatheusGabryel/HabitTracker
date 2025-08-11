@@ -8,9 +8,28 @@
       <main class="page-content">
         <section>
           @if (showHabitModal) {
-          <app-create-habit-modal (close)="closeModal()" @fadeInOut />
+          <app-create-habit-modal
+            (close)="closeModal()"
+            @fadeInOut
+          ></app-create-habit-modal>
           } @if (showListModal) {
-          <app-create-list-modal (close)="closeModal()" @fadeInOut />
+          <app-create-list-modal
+            (close)="closeModal()"
+            @fadeInOut
+          ></app-create-list-modal>
+          } @if (showEditHabitModal) {
+          <app-edit-habit-modal
+            [habitToEdit]="habitToEdit"
+            (close)="closeModal()"
+            @fadeInOut
+          ></app-edit-habit-modal>
+          } @if (showEditListModal) {
+          <app-edit-list-modal
+            (close)="closeModal()"
+            @fadeInOut
+            (delete)="deleteList($event)"
+            (toggle)="toggleVisibility($event)"
+          ></app-edit-list-modal>
           }
 
           <div class="create-cards">
@@ -18,21 +37,21 @@
               [title]="'Novo Hábito'"
               [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
               (click)="openHabitModal()"
-            >
-            </app-create-card>
+            ></app-create-card>
+
             <app-create-card
               [title]="'Nova Lista'"
               [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
               (click)="openListModal()"
-            >
-            </app-create-card>
+            ></app-create-card>
           </div>
         </section>
+
         <section>
           <div class="habit-container">
             <div class="habit-header">
               <h2>Lista de Hábitos</h2>
-              <button class="filter">
+              <button class="filter" (click)="openEditListModal()">
                 <img src="./assets/icon/tune_100dp_434343.png" alt="" />
                 <p>Editar Listas</p>
               </button>
@@ -70,7 +89,6 @@
                   </button>
                 </swiper-slide>
                 }
-
                 <swiper-slide>
                   <button class="new-list" (click)="openListModal()">
                     + Nova lista
@@ -106,7 +124,9 @@
                     src="./assets/icon/arrow.svg"
                     alt=""
                     class="sort-icon"
-                    [class.rotated]="sortState.key === header.key && sortState.direction === 'asc'"
+                    [class.rotated]="
+                        sortState.key === header.key && sortState.direction === 'asc'
+                      "
                     [class.visible]="sortState.key === header.key"
                     width="12px"
                     height="12px"
@@ -114,6 +134,7 @@
                 </div>
                 }
               </div>
+
               @if (!loading) { @if (hasHabits) {
               <ul class="habit-list">
                 @for (habit of activeListHabits; track habit.id) {
@@ -122,6 +143,7 @@
                     (delete)="deleteHabit($event)"
                     [logs]="logsByHabit[habit.id] || {}"
                     [habit]="habit"
+                    (open)="openEditHabitModal($event)"
                     style="width: 100%"
                   ></app-habit-card>
                 </li>

@@ -17,7 +17,8 @@ import { FormsModule } from '@angular/forms';
 import { register } from 'swiper/element/bundle';
 import { HabitLog } from 'src/app/interfaces/habit.interface';
 import { HabitService } from 'src/app/services/habit/habit.service';
-register()
+import { EditHabitModalComponent } from "../../components/edit-habit-modal/edit-habit-modal.component";
+import { EditListModalComponent } from "src/app/components/edit-list-modal/edit-list-modal.component";
 
 @Component({
   selector: 'app-habit',
@@ -25,7 +26,7 @@ register()
   styleUrls: ['./habit.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FormsModule, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent],
+  imports: [FormsModule, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent, EditHabitModalComponent, EditListModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -52,13 +53,10 @@ export class HabitPage {
   public loading: boolean = true;
   public searchText: string = '';
   public filteredHabits: any[] = [];
-  // editingList: HabitList | null = null;
-  // editingListName: string = '';
-  // allHabits: HabitData[] = [];
-  // selectedHabits: Set<string> = new Set();
+  public filteredLists: any[] = []
   today = new Date();
-  constructor() { 
-;
+  constructor() {
+    ;
   }
 
   async ngOnInit() {
@@ -67,6 +65,9 @@ export class HabitPage {
   }
   public showHabitModal = false;
   public showListModal = false;
+  public showEditHabitModal = false;
+  public showEditListModal = false
+  public habitToEdit: any = null;
 
   openHabitModal() {
     this.showHabitModal = true;
@@ -80,19 +81,30 @@ export class HabitPage {
   ];
 
   completeHabit(habit: any, dateIso: string) {
-      this.habitService.completeHabit(habit, dateIso);
+    this.habitService.completeHabit(habit, dateIso);
   }
 
   public openListModal() {
     this.showListModal = true;
   }
 
+  public openEditListModal() {
+    this.showEditListModal = true;
+  }
   public closeModal() {
     this.showHabitModal = false;
     this.showListModal = false;
+    this.showEditHabitModal = false;
+    this.showEditListModal = false;
+    this.habitToEdit = null;
 
     this.loadLists();
     this.loadHabitsForActiveTab(this.activeTab);
+  }
+
+  public openEditHabitModal(habit: HabitData) {
+    this.habitToEdit = habit;
+    this.showEditHabitModal = true;
   }
 
   async setActive(tabName: string) {
@@ -155,14 +167,83 @@ export class HabitPage {
     }
   }
 
+  async deleteList(event: any) {
+    const listId = event as string;
+    console.log(event)
+    console.log(listId)
+
+    const uid = await this.userService.getUserId();
+    if (!uid) return;
+    Swal.fire({
+      title: "Tem certeza?",
+      text: "Deseja deletar esta lista?",
+      icon: "warning",
+      heightAuto: false,
+      showCancelButton: true,
+      confirmButtonColor: "#1976d2",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sim, desejo deletar."
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          this.habitService.deleteHabitList(listId);
+          this.tabs = this.tabs.filter(h => h.id !== listId);
+          Swal.fire({
+            title: 'Excluido',
+            text: 'Lista excluido com sucesso',
+            icon: 'success',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          });
+          Loading.remove()
+        } catch (error) {
+          Swal.fire({
+            title: 'Falhou',
+            text: 'Falhou',
+            icon: 'success',
+            heightAuto: false,
+            confirmButtonColor: '#E0004D'
+          });
+          Loading.remove()
+        }
+      }
+
+    });
+  }
+
   async loadLists() {
     const uid = await this.userService.getUserId();
     if (uid) {
       const lists = await this.habitService.getHabitLists(uid);
-      this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...lists];
+
+      const filteredLists = lists.filter(l => l.isVisible !== false);
+      this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...filteredLists];
     }
-    console.log('tabs carregadas', this.tabs);
   }
+
+
+  async toggleVisibility(listId: string) {
+    const uid = await this.userService.getUserId();
+    if (!uid) return;
+
+    const lists = await this.habitService.getHabitLists(uid);
+    const list = lists.find(tab => tab.id === listId);
+    console.log(list)
+    if (!list) return;
+
+    const newVisibility = !list.isVisible;
+
+    try {
+      await this.habitService.updateListVisibility(uid, listId, newVisibility);
+      if (!newVisibility && this.activeTab === list.name) {
+        this.setActive(this.DEFAULT_TAB);
+      }
+      this.loadLists()
+    } catch (error) {
+      console.error('Erro ao atualizar visibilidade:', error);
+    }
+  }
+
 
   async loadHabitsForActiveTab(tabName: string, list?: HabitList) {
     this.loading = true
@@ -174,7 +255,7 @@ export class HabitPage {
     }
 
     if (tabName === this.DEFAULT_TAB) {
-      this.habits = await this.habitService.getUserHabits(uid);
+      this.habits = await this.habitService.getUserHabits();
     } else if (list) {
       this.habits = await this.habitService.getHabitsByCategories(uid, list.categories);
     } else {
@@ -184,6 +265,7 @@ export class HabitPage {
     this.applySearchFilter();
     this.hasHabits = this.filteredHabits.length > 0;
     this.loading = false;
+    console.log(this.habits)
   }
 
   applySearchFilter() {
@@ -241,55 +323,4 @@ export class HabitPage {
   onSearchChange() {
     this.applySearchFilter();
   }
-
-
-  //   async openEditModal(list: HabitList) {
-  //     this.editingList = list;
-  //     this.editingListName = list.name;
-
-  //     const uid = await this.userService.getUserId();
-  //     if (!uid) return;
-  //     const allHabits = await this.userService.getUserHabits(uid);
-  //     this.habits = allHabits;
-
-  //     this.selectedHabits = new Set(list.habitIds);
-  //   }
-
-  //   toggleHabitSelection(habitId: string) {
-  //     if (this.selectedHabits.has(habitId)) {
-  //       this.selectedHabits.delete(habitId);
-  //     } else {
-  //       this.selectedHabits.add(habitId);
-  //     }
-  //   }
-  //   cancelEdit() {
-  //     this.editingList = null;
-  //     this.editingListName = '';
-  //     this.selectedHabits.clear();
-  //   }
-
-  //   async saveListChanges() {
-  //     if (!this.editingList) return;
-
-  // const uid = await this.userService.getUserId();
-  // if (!uid) return;
-  //     const updatedList: HabitList = {
-  //       ...this.editingList,
-  //       name: this.editingListName,
-  //       habitIds: Array.from(this.selectedHabits),
-  //       updatedAt: new Date()
-  //     };
-
-  //     await this.userService.updateUserList(uid, updatedList);
-
-  //     // atualizar localmente
-  //     this.editingList = null;
-  //     this.editingListName = '';
-  //     this.selectedHabits.clear();
-
-  //     // recarregar listas e hábitos
-  //     await this.loadLists();
-  //     await this.setActive(updatedList.name);
-  //   }
-
 }

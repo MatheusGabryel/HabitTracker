@@ -24,7 +24,9 @@ export interface HabitData {
     rule?: CompletionRulesHabiType;
   },
   createdAt: Date | ReturnType<typeof serverTimestamp>;
-  updatedAt: Date | ReturnType<typeof serverTimestamp>
+  updatedAt: Date | ReturnType<typeof serverTimestamp>;
+  logs: HabitLog[];
+  historicalLogs?: HabitLog[];
 }
 
 export interface HabitLog {
@@ -41,6 +43,7 @@ export interface HabitList {
   createdAt: any;
   updatedAt: any;
   categories: string[];
+  isVisible?: boolean;
 }
 
 export interface HabitLogMap { [date: string]: HabitLog | null };
