@@ -23,13 +23,14 @@
             (close)="closeModal()"
             @fadeInOut
           ></app-edit-habit-modal>
-          } @if (showEditListModal) {
-          <app-edit-list-modal
+          } @if (showEditListsModal) {
+          <app-edit-lists-modal
             (close)="closeModal()"
             @fadeInOut
             (delete)="deleteList($event)"
+            [lists]="lists"
             (toggle)="toggleVisibility($event)"
-          ></app-edit-list-modal>
+          ></app-edit-lists-modal>
           }
 
           <div class="create-cards">
@@ -51,7 +52,7 @@
           <div class="habit-container">
             <div class="habit-header">
               <h2>Lista de Hábitos</h2>
-              <button class="filter" (click)="openEditListModal()">
+              <button class="filter" (click)="openEditListsModal()">
                 <img src="./assets/icon/tune_100dp_434343.png" alt="" />
                 <p>Editar Listas</p>
               </button>
@@ -72,7 +73,7 @@
                 </button>
               </nav>
 
-              <!-- VERSÃO MOBILE COM SWIPER -->
+              <!-- MOBILE VERSION WITH SWIPER -->
               <swiper-container
                 class="habit-list-tabs mobile-only"
                 slides-per-view="auto"
@@ -113,6 +114,7 @@
 
             <div class="habit-list-cards">
               <div class="list-header">
+                <div class="icon-col"></div>
                 @for (header of tableHeaders; track header.key) {
                 <div
                   class="header-item {{ header.class }}"
@@ -133,6 +135,7 @@
                   />
                 </div>
                 }
+                <div class="actions-col"></div>
               </div>
 
               @if (!loading) { @if (hasHabits) {

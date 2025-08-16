@@ -1,5 +1,8 @@
-ion-content {
+.page-content {
+    padding: min(30px, 4%);
+}
 
+ion-content {
     .create-cards {
         display: grid;
         flex-wrap: wrap;
@@ -21,9 +24,15 @@ ion-content {
         align-items: center;
     }
 
+    .habit-toolbar {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
     .habit-header h2 {
         font-family: poppinsSemiBold;
-        font-size: 20px;
+        font-size: clamp(18px, 1.2vw, 20px);
     }
 
     .filter {
@@ -50,64 +59,70 @@ ion-content {
         }
     }
 
-    .habit-list-tabs.mobile-only {
-        display: none;
-    }
-
-    .habit-list-tabs.desktop-only {
-        display: flex;
-    }
-
     .habit-list-tabs {
         display: flex;
         gap: 1rem;
         background: #e5e7eb;
         padding: 5px;
         border-radius: 8px;
-    }
+        min-width: 200px;
+        flex-wrap: wrap;
 
-    .habit-list-tabs button {
-        background: none;
-        padding: 6px 12px;
-        border-radius: 5px;
-        background: transparent;
-        border: none;
-        font-size: 14px;
-        color: #6b7280;
-        cursor: pointer;
-        transition:
-            background-color 0.2s,
-            color 0.2s;
-
-        &:hover {
-            background: #d3d3d3;
+        &.mobile-only {
+            display: none;
         }
 
-        &.active {
-            background: white;
-            color: #333333;
-            font-weight: 600;
-            box-shadow: 0 0 0 1px #d1d5db;
+        &.desktop-only {
+            display: flex;
         }
 
-        &.new-list {
-            background-color: crimson;
+        button {
+            padding: 6px 12px;
             border-radius: 5px;
-            color: #e5e7eb;
-            font-weight: 600;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
             transition:
                 background-color 0.2s,
                 color 0.2s,
                 transform 0.2s;
 
             &:hover {
-                transform: scale(1.03);
+                background: #d3d3d3;
             }
 
-            &:active {
-                transform: scale(0.98);
+            &.active {
+                background: white;
+                color: #333;
+                font-weight: 600;
+                box-shadow: 0 0 0 1px #d1d5db;
+            }
+
+            &.new-list {
+                background-color: crimson;
+                color: #e5e7eb;
+                font-weight: 600;
+
+                &:hover {
+                    transform: scale(1.03);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
             }
         }
+    }
+
+    .habit-list-tabs.mobile-only swiper-container {
+        width: max-content;
+        max-width: 100%;
+    }
+
+    .habit-list-tabs swiper-slide {
+        width: auto !important;
     }
 
     .search-bar {
@@ -118,6 +133,8 @@ ion-content {
         border-radius: 5px;
         padding: 7px;
         gap: 5px;
+        flex: 0 0 clamp(200px, 25%, 300px);
+        max-width: 100%;
 
         input {
             background-color: rgb(242, 244, 248);
@@ -125,6 +142,11 @@ ion-content {
             border: none;
             width: 100%;
         }
+    }
+
+    .habit-toolbar .search-bar:only-child,
+    .habit-toolbar .search-bar:nth-child(3) {
+        width: 100%;
     }
 
     .habit-list-cards {
@@ -142,15 +164,14 @@ ion-content {
     .list-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 16px;
         background-color: #f9f9f9;
-        padding: 12px 20px;
+        padding: 12px 20px; /* 🔑 igual ao habit-main */
         border-radius: 8px;
         font-family: poppinsBold;
-        font-size: 14px;
+        font-size: clamp(12px, 1vw, 14px);
         color: #666;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        gap: 16px;
         margin-top: 2rem;
 
         .header-item {
@@ -184,18 +205,26 @@ ion-content {
 
         .name {
             flex: 3.5;
-            padding-left: 27px;
         }
-
-        .category,
-        .status,
+        .category {
+            flex: 0.7;
+            text-align: left;
+        }
+        .status {
+            flex: 0.8;
+            text-align: left;
+        }
         .priority {
             flex: 0.7;
             text-align: left;
         }
+        .icon-col {
+            flex: 0 0 30px; /* mesma largura do ícone do card */
+        }
 
-        .priority {
-            padding-right: 70px;
+        .actions-col {
+            flex: 0 0 92px; /* mesma largura do bloco de botões no card */
+            text-align: right;
         }
 
         .header-item:hover {
@@ -204,110 +233,45 @@ ion-content {
         }
     }
 
-}
-
-// .modal-backdrop {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background: rgba(0, 0, 0, 0.6);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
-
-// .modal {
-//   background: white;
-//   padding: 2rem;
-//   border-radius: 8px;
-//   width: 90%;
-//   max-width: 500px;
-// }
-
-@media (max-width: 768px) {
-    ion-content {
+    /* ===== MEDIA QUERIES ===== */
+    @media (max-width: 1000px) {
         .habit-toolbar {
-            display: flex;
             flex-direction: column-reverse;
-            justify-content: space-between;
             align-items: flex-start;
+        }
 
-            .search-bar {
-                width: 100%;
-                margin-bottom: 1rem;
-                margin-top: 0.5rem;
-            }
+        .habit-toolbar .search-bar {
+            width: 100%;
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
         }
-        .list-header {
-            display: none;
-        }
+
         .habit-list-tabs.mobile-only {
             display: flex;
+            width: max-content;
+            max-width: 100%;
+            overflow-x: auto;
         }
 
         .habit-list-tabs.desktop-only {
             display: none;
         }
 
-        .habit-list-tabs.mobile-only swiper-container {
-            width: max-content;
-            max-width: 100%;
-        }
-
-        .habit-list-tabs swiper-slide {
-            width: auto !important;
-        }
-
         .habit-list-tabs button {
             white-space: nowrap;
-            padding: 6px 12px;
-            border: none;
-            background: transparent;
-            border-radius: 5px;
-            color: #6b7280;
-            font-size: 14px;
         }
+    }
 
-        .habit-list-tabs button.active {
-            background: white;
-            color: #333;
-            font-weight: 600;
-            box-shadow: 0 0 0 1px #d1d5db;
+    @media (max-width: 900px) {
+        .list-header .priority,
+        .list-header .status {
+            display: none;
         }
+    }
 
-        .habit-list-tabs button.new-list {
-            background-color: crimson;
-            color: white;
-            font-weight: 600;
-        }
-
-        swiper-container.habit-list-tabs.mobile-only {
-            width: max-content;
-            max-width: 100%;
-        }
-
-        swiper-slide button {
-            white-space: nowrap;
-            padding: 6px 12px;
-            background: transparent;
-            border: none;
-            font-size: 14px;
-            color: #6b7280;
-            border-radius: 5px;
-        }
-
-        swiper-slide button.active {
-            background: white;
-            color: #333;
-            font-weight: 600;
-            box-shadow: 0 0 0 1px #d1d5db;
-        }
-
-        .new-list {
-            background-color: crimson;
-            color: #fff;
+    @media (max-width: 578px) {
+        .list-header {
+            display: none;
         }
     }
 }

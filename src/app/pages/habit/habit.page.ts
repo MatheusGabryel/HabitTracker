@@ -18,7 +18,7 @@ import { register } from 'swiper/element/bundle';
 import { HabitLog } from 'src/app/interfaces/habit.interface';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { EditHabitModalComponent } from "../../components/edit-habit-modal/edit-habit-modal.component";
-import { EditListModalComponent } from "src/app/components/edit-list-modal/edit-list-modal.component";
+import { EditListsModalComponent } from "src/app/components/edit-lists-modal/edit-lists-modal.component";
 
 @Component({
   selector: 'app-habit',
@@ -26,7 +26,7 @@ import { EditListModalComponent } from "src/app/components/edit-list-modal/edit-
   styleUrls: ['./habit.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FormsModule, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent, EditHabitModalComponent, EditListModalComponent],
+  imports: [FormsModule, IonContent, MenuComponent, CommonModule, HeaderComponent, CreateCardComponent, HabitCardComponent, CreateHabitModalComponent, CreateListModalComponent, EditHabitModalComponent, EditListsModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -46,6 +46,7 @@ export class HabitPage {
   public userService = inject(UserService);
   public habits: any[] = [];
   public tabs: any[] = [];
+  public lists: HabitList[] =[]
   readonly DEFAULT_TAB = 'Ver tudo';
   public activeTab: string = this.DEFAULT_TAB;
   public activeListHabits: any[] = [];
@@ -66,7 +67,7 @@ export class HabitPage {
   public showHabitModal = false;
   public showListModal = false;
   public showEditHabitModal = false;
-  public showEditListModal = false
+  public showEditListsModal = false
   public habitToEdit: any = null;
 
   openHabitModal() {
@@ -88,14 +89,14 @@ export class HabitPage {
     this.showListModal = true;
   }
 
-  public openEditListModal() {
-    this.showEditListModal = true;
+  public openEditListsModal() {
+    this.showEditListsModal = true;
   }
   public closeModal() {
     this.showHabitModal = false;
     this.showListModal = false;
     this.showEditHabitModal = false;
-    this.showEditListModal = false;
+    this.showEditListsModal = false;
     this.habitToEdit = null;
 
     this.loadLists();
@@ -187,7 +188,9 @@ export class HabitPage {
       if (result.isConfirmed) {
         try {
           this.habitService.deleteHabitList(listId);
-          this.tabs = this.tabs.filter(h => h.id !== listId);
+          this.tabs = this.tabs.filter(l => l.id !== listId);
+          this.lists = this.lists.filter(l => l.id !== listId)
+          
           Swal.fire({
             title: 'Excluido',
             text: 'Lista excluido com sucesso',
@@ -215,7 +218,7 @@ export class HabitPage {
     const uid = await this.userService.getUserId();
     if (uid) {
       const lists = await this.habitService.getHabitLists(uid);
-
+      this.lists = lists
       const filteredLists = lists.filter(l => l.isVisible !== false);
       this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...filteredLists];
     }
@@ -306,6 +309,7 @@ export class HabitPage {
         const order = ['completed', 'not_completed', 'in_progress'];
         const aIndex = order.indexOf(a.state);
         const bIndex = order.indexOf(b.state);
+        console.log((aIndex - bIndex) * directionFactor)
         return (aIndex - bIndex) * directionFactor;
       }
 
@@ -313,7 +317,9 @@ export class HabitPage {
         const order = ['high', 'medium-high', 'medium', 'low'];
         const aIndex = order.indexOf(a.priority);
         const bIndex = order.indexOf(b.priority);
+                console.log((aIndex - bIndex) * directionFactor)
         return (aIndex - bIndex) * directionFactor;
+
       }
 
       return 0;
