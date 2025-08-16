@@ -60,7 +60,7 @@ export class GoalsPage {
       const uid = await this.userService.getUserId();
       if (!uid) throw new Error('Usuário não autenticado');
 
-      this.goals = await this.goalService.getUserGoals(uid);
+      this.goals = await this.goalService.getUserGoals();
       console.log(this.goals)
       this.hasGoals = this.goals.length > 0;
       this.loading = false;

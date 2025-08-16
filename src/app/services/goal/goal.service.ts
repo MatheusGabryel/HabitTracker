@@ -1,3 +1,4 @@
+import { UserService } from 'src/app/services/user/user.service';
 import { inject, Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { addDoc, collection, doc, getDocs, getFirestore, serverTimestamp, updateDoc } from 'firebase/firestore';
@@ -9,6 +10,7 @@ import { GoalData } from 'src/app/interfaces/goal.interface';
 export class GoalService {
 
   private firestore = inject(Firestore)
+  private userService = inject(UserService)
   private db = getFirestore();
 
   constructor() { }
@@ -36,7 +38,8 @@ export class GoalService {
   }
 
 
-  public async getUserGoals(uid: string) {
+  public async getUserGoals() {
+    const uid = await this.userService.getUserId();
     const goalsRef = collection(this.firestore, `users/${uid}/goals`);
     const snapshot = await getDocs(goalsRef);
 
