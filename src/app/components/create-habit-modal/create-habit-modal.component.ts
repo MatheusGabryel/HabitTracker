@@ -47,6 +47,7 @@ export class CreateHabitModalComponent implements OnInit {
     },
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
+    logs: []
   }
 
   constructor() { }
@@ -144,6 +145,7 @@ export class CreateHabitModalComponent implements OnInit {
     }
 
     this.habit.progressType = this.progressType;
+      this.habit.days = this.habit.days.sort((a, b) => this.daysOfWeek.indexOf(a) - this.daysOfWeek.indexOf(b));
 
     if (this.progressType === 'yes_no') {
       delete this.habit.timesTarget;
@@ -168,7 +170,7 @@ export class CreateHabitModalComponent implements OnInit {
       const uid = await this.userService.getUserId();
       if (!uid) throw new Error('Usuário não autenticado');
 
-      await this.habitService.addHabit(uid, this.habit);
+      await this.habitService.addHabit(this.habit);
 
       Swal.fire({ title: 'Sucesso', text: 'Hábito adicionado com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
       Loading.remove();

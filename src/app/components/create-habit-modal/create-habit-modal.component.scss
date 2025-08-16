@@ -13,16 +13,24 @@
 }
 
 .modal-container {
+    margin: auto;
+    overflow-y: auto;
+    height: 100%;
     background: #fff;
     border-radius: 16px;
-    max-width: 600px;
     width: 100%;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    margin: auto;
+    max-width: 600px;
     max-height: 90vh;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 
     .modal-header {
         display: flex;
@@ -44,10 +52,22 @@
         font-size: 1.5rem;
         cursor: pointer;
         color: #666;
-        transition: color 0.2s;
+        display: flex;
+        align-items: center;
 
         &:hover {
             color: #333;
+        }
+
+        &.exit {
+            background: none;
+            transition: background-color 0.3s;
+            padding: 6px;
+            border-radius: 50%;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
         }
     }
 
@@ -55,14 +75,23 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-        padding: 0 24px 24px;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .stepper-content {
+        flex: 1;
+        overflow-y: auto;
     }
 
     .stepper-progress {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-top: 24px;
         margin-bottom: 20px;
+        flex-shrink: 0;
+        padding: 0 24px;
     }
 
     .step {
@@ -122,8 +151,10 @@
     }
 
     .step-content {
-        padding: 10px 0;
         animation: fadeIn 0.3s ease;
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 24px 24px;
     }
 
     .step-title {
@@ -442,9 +473,12 @@
     .step-navigation {
         display: flex;
         justify-content: space-between;
-        margin-top: 24px;
         padding-top: 16px;
+        flex-shrink: 0;
+        padding: 16px 24px;
         border-top: 1px solid #eee;
+        background-color: white;
+        z-index: 1;
 
         .nav-button {
             padding: 12px 24px;
@@ -487,24 +521,6 @@
                 cursor: not-allowed;
             }
         }
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-    h2 {
-        margin: 0;
-        font-size: 1.5rem;
-    }
-
-    button {
-        background: transparent;
-        border: none;
-        font-size: 1.2rem;
     }
 }
 
@@ -651,8 +667,8 @@ textarea {
 }
 
 @media screen and (max-width: 900px) {
-  .modal-container {
-    max-height: 100%;
-    border-radius: 0;
-  }
+    .modal-container {
+        max-height: 100%;
+        border-radius: 0;
+    }
 }

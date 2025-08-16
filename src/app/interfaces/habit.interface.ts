@@ -38,7 +38,7 @@ export interface HabitLog {
 }
 
 export interface HabitList {
-  id?: string;
+  id: string;
   name: string;
   createdAt: any;
   updatedAt: any;

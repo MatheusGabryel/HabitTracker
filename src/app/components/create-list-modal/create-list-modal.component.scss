@@ -1,6 +1,6 @@
 :host {
     position: fixed;
-    top: -3%;
+    top: 0%;
     left: 0;
     width: 100vw;
     height: 100vh;
@@ -13,60 +13,73 @@
 }
 
 .modal-container {
+    margin: auto;
+    overflow-y: auto;
     background: #fff;
     border-radius: 16px;
-    padding: 24px;
-    max-width: 600px;
     width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    margin: auto;
+    overflow: hidden;
+    
 }
 
-    .category-selector {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 12px;
-        margin-top: 1rem;
-        margin-bottom: 20px;
+    form {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 
-        .category-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 12px 8px;
-            border-radius: 12px;
-            border: 1px solid #eee;
-            cursor: pointer;
-            transition: all 0.2s;
 
-            &:hover {
-                background-color: #f5f5f5;
-            }
+.category-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    margin-top: 1rem;
+    margin-bottom: 20px;
 
-            &.selected {
-                border-color: #007bff;
-                background-color: rgba(0, 123, 255, 0.05);
-            }
+    .category-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 8px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        cursor: pointer;
+        transition: all 0.2s;
 
-            .category-icon {
-                width: 32px;
-                height: 32px;
-                margin-bottom: 8px;
-            }
+        &:hover {
+            background-color: #f5f5f5;
+        }
 
-            .category-name {
-                font-size: 0.85rem;
-                text-align: center;
-                color: #555;
-            }
+        &.selected {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 0.85rem;
+            text-align: center;
+            color: #555;
         }
     }
+}
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
 
     h2 {
         margin: 0;
@@ -74,18 +87,34 @@
     }
 
     button {
-        background: transparent;
-        border: none;
-        font-size: 1.2rem;
-        cursor: pointer;
+        background: none;
+        transition: background-color 0.3s;
+        padding: 6px;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
     }
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24px;
 }
 
 label {
     display: block;
     margin-top: 16px;
-    font-weight: 500;
-    font-size: 0.95rem;
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 input[type="text"],
@@ -102,14 +131,18 @@ select {
 
 .modal-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
+    justify-content: space-between;
+    padding-top: 16px;
+    flex-shrink: 0;
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    background-color: white;
+    z-index: 1;
 
     button {
         padding: 10px 20px;
         border: none;
-        border-radius: 12px;
+        border-radius: 8px;
         font-weight: 500;
         cursor: pointer;
         font-size: 0.95rem;
@@ -123,7 +156,7 @@ select {
     button[type="submit"] {
         background-color: #1976d2;
         color: white;
-        
+
         &:disabled {
             opacity: 0.5;
         }
@@ -131,5 +164,13 @@ select {
 
     button:hover {
         opacity: 0.9;
+    }
+}
+
+@media (max-width: 900px) {
+    .modal-container {
+        height: 100%;
+        border-radius: 0;
+        max-height: 100vh;
     }
 }

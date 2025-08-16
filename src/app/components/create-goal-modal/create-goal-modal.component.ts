@@ -137,7 +137,7 @@ export class CreateGoalModalComponent implements OnInit {
     try {
       const uid = await this.userService.getUserId();
       if (uid) {
-        this.userHabits = await this.habitService.getUserHabits(uid) as HabitData[];
+        this.userHabits = await this.habitService.getUserHabits() as HabitData[];
       }
     } catch (error) {
       console.error('Erro ao carregar hábitos:', error);

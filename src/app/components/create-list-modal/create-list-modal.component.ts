@@ -30,6 +30,7 @@ export class CreateListModalComponent implements OnInit {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     categories: [] as string[],
+    isVisible: true
   }
 
   constructor() { }
@@ -44,13 +45,13 @@ export class CreateListModalComponent implements OnInit {
  
 
   public toggleCategory(categoryId: string) {
-    const updatedDays = new Set(this.habitList.categories);
-    if (updatedDays.has(categoryId)) {
-      updatedDays.delete(categoryId);
+    const updatedCategories = new Set(this.habitList.categories);
+    if (updatedCategories.has(categoryId)) {
+      updatedCategories.delete(categoryId);
     } else {
-      updatedDays.add(categoryId);
+      updatedCategories.add(categoryId);
     }
-    this.habitList.categories = Array.from(updatedDays);
+    this.habitList.categories = Array.from(updatedCategories);
   }
 
   public isFormValid(): boolean {

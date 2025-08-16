@@ -2,29 +2,40 @@
   <form #form="ngForm" action="" (ngSubmit)="createList()">
     <div class="modal-header">
       <h2>Criar lista</h2>
-      <button (click)="closeModal()" type="button">×</button>
+      <button (click)="closeModal()" type="button">
+        <img src="./assets/icon/exit.svg" alt="" width="18px" />
+      </button>
     </div>
-    <label>Nome</label>
-    <input type="text" name="name" [(ngModel)]="habitList.name" required />
-
-    <label>Selecione uma categoria</label>
-    <div class="category-selector">
-      @for (cat of categories; track cat.id) {
-      <div
-        class="category-item"
-        [class.selected]="habitList.categories.includes(cat.id)"
-      (click)="toggleCategory(cat.id)"
-      >
-        <img
-          [src]="cat.icon"
-          class="category-icon"
-          alt="{{ cat.displayName }}"
+    <div class="modal-content">
+      <div class="input-group">
+        <label>Nome</label>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="habitList.name"
+          required
+          maxlength="20"
         />
-        <span class="category-name">{{ cat.displayName }}</span>
-      </div>
-      }
-    </div>
 
+        <label>Selecione uma categoria</label>
+        <div class="category-selector">
+          @for (cat of categories; track cat.id) {
+          <div
+            class="category-item"
+            [class.selected]="habitList.categories.includes(cat.id)"
+            (click)="toggleCategory(cat.id)"
+          >
+            <img
+              [src]="cat.icon"
+              class="category-icon"
+              alt="{{ cat.displayName }}"
+            />
+            <span class="category-name">{{ cat.displayName }}</span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button type="button" (click)="closeModal()">Cancelar</button>
       <button type="submit" [disabled]="!isFormValid()">Criar</button>
