@@ -27,6 +27,17 @@ export class HabitService {
     }
   }
 
+    async updateHabitList(newList: any, listId: string) {
+    const uid = await this.userService.getUserId();
+    if (!uid) return;
+    const listRef = doc(this.firestore, `users/${uid}/list/${listId}`)
+    try {
+      await updateDoc(listRef, newList);
+    } catch (error) {
+      alert(`Erro desconhecido: ${error}`);
+    }
+  }
+
 
 
   async loadLogsForHabit(habitId: string, dates: string[] | string, habit: HabitData): Promise<void> {
@@ -107,6 +118,14 @@ export class HabitService {
     }
   }
 
+  public async getHabitLogs(habit: HabitData) {
+    const uid = await this.userService.getUserId()
+    const logsRef = collection(this.firestore, `users/${uid}/habits/${habit.id}/habitsLogs`)
+    const logsSnap = await getDocs(logsRef)
+    const logs = logsSnap.docs.map(d => d.data())
+    return logs
+  }
+
   async getUserHabitsWithLogs(): Promise<any[]> {
     const uid = await this.userService.getUserId();
     const habitsRef = collection(this.firestore, `users/${uid}/habits`);
@@ -130,7 +149,7 @@ export class HabitService {
         };
       })
     );
-    console.log(habitsWithLogs)
+
     return habitsWithLogs;
   }
 
