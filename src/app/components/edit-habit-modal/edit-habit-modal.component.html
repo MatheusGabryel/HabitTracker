@@ -327,11 +327,14 @@
       </div>
     </div>
     <div class="step-navigation">
-      @if(currentStep > 1 ) {
+      @if (currentStep > 1) {
       <button type="button" class="nav-button back" (click)="previousStep()">
         Voltar
       </button>
-      } @if (currentStep < 3) {
+      } @else {
+      <button type="button" class="nav-button back" (click)="closeModal()">
+        Cancelar</button
+      >} @if (currentStep < 3) {
       <button type="button" class="nav-button next" (click)="nextStep()">
         Próximo
       </button>

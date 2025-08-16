@@ -8,6 +8,7 @@ import { Loading } from 'notiflix';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 import { FieldValue, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { HabitService } from 'src/app/services/habit/habit.service';
+import { normalizeFirestoreDate } from 'src/app/shared/utils/timestamp.utils';
 
 @Component({
   selector: 'app-edit-habit-modal',
@@ -34,17 +35,13 @@ export class EditHabitModalComponent implements OnInit {
     this.habit = structuredClone(this.habitToEdit);
 
     for (const h of [this.originalHabit, this.habit]) {
-      h.createdAt = this.normalizeFirestoreDate(h.createdAt);
-      h.updatedAt = this.normalizeFirestoreDate(h.updatedAt);
+      h.createdAt = normalizeFirestoreDate(h.createdAt);
+      h.updatedAt = normalizeFirestoreDate(h.updatedAt);
     }
 
     this.progressType = this.habit.progressType;
     console.log(this.habit);
   }
-  public isTimestampPlain(obj: any): obj is { seconds: number; nanoseconds: number } {
-    return obj && typeof obj.seconds === 'number' && typeof obj.nanoseconds === 'number';
-  }
-
 
   public closeModal() {
     this.close.emit();
@@ -56,7 +53,6 @@ export class EditHabitModalComponent implements OnInit {
 
   public categories = PREDEFINED_CATEGORIES;
 
-  // Permite navegação livre entre os steps
   public goToStep(step: number) {
     this.currentStep = step;
   }
@@ -69,15 +65,6 @@ export class EditHabitModalComponent implements OnInit {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
-  }
-
-  private normalizeFirestoreDate(value: any): Date {
-    if (value instanceof Timestamp) return value.toDate();
-    if (this.isTimestampPlain(value)) {
-      return new Timestamp(value.seconds, value.nanoseconds).toDate();
-    }
-    if (value instanceof Date) return value;
-    return new Date();
   }
 
   public onTimesTargetValueChange(newValue: number) {
@@ -170,7 +157,7 @@ export class EditHabitModalComponent implements OnInit {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, criar novo',
-        cancelButtonText: 'Não, cancelar edição.',
+        cancelButtonText: 'Cancelar.',
         heightAuto: false,
         confirmButtonColor: '#E0004D'
       });
@@ -221,7 +208,6 @@ export class EditHabitModalComponent implements OnInit {
       const uid = await this.userService.getUserId();
       if (!uid) throw new Error('Usuário não autenticado');
 
-      // Aqui você implementaria a lógica para criar um novo hábito
       await this.habitService.addNewEditHabit(this.habit);
 
       Swal.fire({ title: 'Sucesso', text: 'Novo hábito criado com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });

@@ -27,6 +27,7 @@
     "@ionic/angular": "^8.0.0",
     "apexcharts": "^5.3.1",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "entities": "^6.0.0",
     "fflate": "^0.8.1",
     "firebase": "^11.6.0",
