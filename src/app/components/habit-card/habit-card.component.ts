@@ -11,6 +11,10 @@ import { register } from 'swiper/element/bundle';
 import { HabitDaysComponent } from '../habit-days/habit-days.component';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { generateDays } from 'src/app/shared/utils/date.utils';
+import { Timestamp } from 'firebase/firestore';
+import { addDays, format, startOfWeek } from 'date-fns';
+import { StatisticsService } from 'src/app/services/statistics/statistics.service';
+import { normalizeFirestoreDate } from 'src/app/shared/utils/timestamp.utils';
 register()
 
 @Component({
@@ -50,8 +54,11 @@ register()
 export class HabitCardComponent implements OnInit {
   @Input() habit: any;
   public habitService = inject(HabitService)
+  public statisticsService = inject(StatisticsService)
+  public userService = inject(UserService);
   @Output() delete = new EventEmitter<string>();
   @Output() mark = new EventEmitter<{ habit: HabitData, date: string }>();
+  @Output() open = new EventEmitter<HabitData>();
   public logs: { [date: string]: HabitLog | null } = {};
   private dateRange: string[] = [];
   public days: {
@@ -61,13 +68,40 @@ export class HabitCardComponent implements OnInit {
     formattedDate: string;
     isHabitDay: boolean;
   }[] = [];
-  public userService = inject(UserService);
+
   public showDetails: boolean = false;
+
+  public daysCompleted: number = 0;
+  public totalExecutionsInTheWeek: number = 0;
+  public weekCompletionRate: number = 0;
+
+  public currentStreak: number = 0;
+  public bestStreak: number = 0;
+
+  public completionForWeek: number = 0;
+  public completionForMonth: number = 0;
+  public completionForYear: number = 0;
+  public totalCompletion: number = 0;
+
+  public totalCount: number = 0;
+  public successCount: number = 0;
+  public pendingCount: number = 0;
+  public failCount: number = 0
+  public percentSuccess: number = 0
+  public percentPending: number = 0
+  public percentFailed: number = 0
+
+  public unitsValue: any = [];
+  timeValue: any = []
+
 
   public emitDelete() {
     this.delete.emit(this.habit.id);
   }
 
+  public emitEdit() {
+    this.open.emit(this.habit);
+  }
   public toggleDetails() {
     this.showDetails = !this.showDetails;
   }
@@ -80,6 +114,12 @@ export class HabitCardComponent implements OnInit {
       : undefined;
   }
 
+  formatTime(seconds: number): string {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
   public getTodayState(): string {
     const todayIso = new Date().toISOString().split('T')[0];
     const todayLog = this.logs?.[todayIso];
@@ -89,25 +129,116 @@ export class HabitCardComponent implements OnInit {
 
   async markHabit() {
     await this.habitService.completeHabit(this.habit, new Date().toISOString().split('T')[0]);
-    await this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit).then(() => {
-      this.logs = this.habitService.logs[this.habit.id] || {};
-      console.log('novo log', this.logs)
-    });
+    await this.habitService.loadLogsForHabit(
+      this.habit.id,
+      this.dateRange,
+      this.habit
+    );
 
-  }
-  async ngOnInit() {
-    const today = new Date();
-    this.days = generateDays(today, 7, this.habit.days)
-    this.dateRange = generateDays(today, 7, this.habit.days).map(d => d.iso);
-    this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit).then(() => {
-      this.logs = this.habitService.logs[this.habit.id] || {};
-    });
-    console.log(this.logs)
+    this.logs = this.habitService.logs[this.habit.id] || {};
+
+        const totalLogs = await this.habitService.getHabitLogs(this.habit)
+
+    const habitWithLogs = {
+      ...this.habit,
+      logs: totalLogs
+    }
+this.updateHabitStatistics(habitWithLogs, this.dateRange);
   }
 
-async reloadLogs() {
-  await this.habitService.loadLogsForHabit(this.habit.id, this.dateRange, this.habit);
-  this.logs = this.habitService.logs[this.habit.id] || {};
+  getPieGradient() {
+  const successDeg = this.percentSuccess * 3.6;
+  const pendingDeg = this.percentPending * 3.6;
+  const failedDeg = this.percentFailed * 3.6;
+
+  return `conic-gradient(
+    #4caf50 0deg ${successDeg}deg,
+    #ff9800 ${successDeg}deg ${successDeg + pendingDeg}deg,
+    #f44336 ${successDeg + pendingDeg}deg 360deg
+  )`;
+  }
+
+  updateHabitStatistics(habitWithLogs: HabitData, weekRange: string[]) {
+  const habitStats = this.statisticsService.getIndivualHabitCompletionRate(habitWithLogs, weekRange);
+  this.weekCompletionRate = habitStats.rate;
+  this.daysCompleted = habitStats.completed;
+
+  this.currentStreak = this.statisticsService.calculateHabitCurrentStreak(habitWithLogs);
+  this.bestStreak = this.statisticsService.calculateHabitBestStreak(habitWithLogs);
+
+  const habitCompletion = this.statisticsService.getHabitCompletion(habitWithLogs);
+  this.completionForWeek = habitCompletion.week;
+  this.completionForMonth = habitCompletion.month;
+  this.completionForYear = habitCompletion.year;
+  this.totalCompletion = habitCompletion.total;
+
+  const perfomance = this.statisticsService.getPerfomanceHabit(habitWithLogs);
+  this.totalCount = perfomance.total;
+  this.successCount = perfomance.success;
+  this.pendingCount = perfomance.pending;
+  this.failCount = perfomance.failed;
+  this.percentSuccess = perfomance.percentSuccess;
+  this.percentPending = perfomance.percentPending;
+  this.percentFailed = perfomance.percentFailed;
+
+  const progress = this.statisticsService.getProgressValueHabit(habitWithLogs);
+  this.unitsValue = progress;
+  this.timeValue = progress;
 }
 
+  async ngOnInit() {
+    const today = new Date();
+
+    for (const h of [this.habit]) {
+      h.createdAt = normalizeFirestoreDate(h.createdAt);
+      h.updatedAt = normalizeFirestoreDate(h.updatedAt);
+    }
+
+    this.days = generateDays(today, 6, this.habit.days);
+    this.dateRange = generateDays(today, 6, this.habit.days).map(d => d.iso);
+
+
+    await this.habitService.loadLogsForHabit(
+      this.habit.id,
+      this.dateRange,
+      this.habit
+    );
+
+    this.logs = this.habitService.logs[this.habit.id] || {};
+
+    this.totalExecutionsInTheWeek = this.habit.days.length;
+    const totalLogs = await this.habitService.getHabitLogs(this.habit)
+
+    const habitWithLogs = {
+      ...this.habit,
+      logs: totalLogs
+    }
+this.updateHabitStatistics(habitWithLogs, this.dateRange);
+  }
+
+
+  async reloadLogs() {
+    await this.habitService.loadLogsForHabit(
+      this.habit.id,
+      this.dateRange,
+      this.habit
+    );
+
+    this.logs = this.habitService.logs[this.habit.id] || {};
+
+    const totalLogs = await this.habitService.getHabitLogs(this.habit)
+
+    const habitWithLogs = {
+      ...this.habit,
+      logs: totalLogs
+    };
+this.updateHabitStatistics(habitWithLogs, this.dateRange);
+  }
+
+  getCurrentWeekRange(): string[] {
+    const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+    return Array.from({ length: 7 }, (_, i) =>
+      format(addDays(start, i), 'yyyy-MM-dd')
+    );
+  }
 }

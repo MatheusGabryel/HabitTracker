@@ -31,15 +31,15 @@
       </div>
     </div>
     } @if(getTodayState() === "in_progress") {
-    <div class="status">
+    <div class="state-info">
       <span class="in_progress" @fadeInOut>Em progresso</span>
     </div>
     } @if(getTodayState() === "completed") {
-    <div class="status">
+    <div class="state-info">
       <span class="completed" @fadeInOut>Completo</span>
     </div>
     } @if(getTodayState() === "failed") {
-    <div class="status">
+    <div class="state-info">
       <span class="failed" @fadeInOut>Falhado</span>
     </div>
     }
@@ -69,18 +69,22 @@
 
     <div class="habit-actions">
       <button class="delete-button" title="Deletar" (click)="emitDelete()">
-        🗑
+        <img src="./assets/icon/delete.svg" alt="Deletar" width="20px" />
+      </button>
+      <button class="edit-button" title="Editar hábito" (click)="emitEdit()">
+        <img src="./assets/icon/edit.svg" alt="Editar" width="20px" />
       </button>
       <button class="expand-button" title="Ver mais" (click)="toggleDetails()">
-        ⤢
+        <img
+          src="./assets/icon/arrow.svg"
+          alt="Expandir"
+          width="20px"
+          [class.rotated]="showDetails"
+        />
       </button>
-      <button class="edit-button" title="Editar hábito">⋮</button>
     </div>
   </div>
-  <div
-    class="details"
-    [@expandCollapse]="showDetails ? 'expanded' : 'collapsed'"
-  >
+  <div class="details" [@expandCollapse]="showDetails ? 'expanded' : 'collapsed'">
     <swiper-container
       slides-per-view="1"
       loop="false"
@@ -89,10 +93,78 @@
       class="swiper"
     >
       <swiper-slide>
-        <div class="slide-content">
-          <div>Slide 1 - Detalhes do hábito</div>
+        <div class="slide-content details-slide">
+          <div class="details-header">
+            <h3 class="details-title">Detalhes do Hábito</h3>
+          </div>
 
-          <div class="days-desktop">
+          <div class="details-info-grid">
+            <div class="details-info-item">
+              <div class="info-label">Prioridade</div>
+              <div class="info-value priority-value" [ngClass]="habit.priority">
+                @if (habit.priority === 'high') { Alta } @if (habit.priority ===
+                'medium-high') { Média-Alta } @if (habit.priority === 'medium')
+                { Média } @if (habit.priority === 'low') { Baixa }
+              </div>
+            </div>
+
+            <div class="details-info-item">
+              <div class="info-label">Tipo de Progresso</div>
+              <div class="info-value">
+                @if (habit.progressType === 'yes_no') { Sim/Não } @if
+                (habit.progressType === 'time') { Tempo } @if
+                (habit.progressType === 'times') { Vezes }
+              </div>
+            </div>
+
+            @if (habit.timesTarget) {
+            <div class="details-info-item">
+              <div class="info-label">Meta</div>
+              <div class="info-value">
+                @if (habit.timesTarget.rule === 'equal') { Exatamente } @if
+                (habit.timesTarget.rule === 'at_least') { Pelo menos } @if
+                (habit.timesTarget.rule === 'at_most') { No máximo } @if
+                (habit.timesTarget.rule === 'any') { Qualquer }
+                {{ habit.timesTarget.value }} vezes
+              </div>
+            </div>
+            } @if (habit.timeTarget) {
+            <div class="details-info-item">
+              <div class="info-label">Meta de Tempo</div>
+              <div class="info-value">
+                @if (habit.timeTarget.rule === 'equal') { Exatamente } @if
+                (habit.timeTarget.rule === 'at_least') { Pelo menos } @if
+                (habit.timeTarget.rule === 'at_most') { No máximo } @if
+                (habit.timeTarget.rule === 'any') { Qualquer } @if
+                (habit.timeTarget.hours) { {{ habit.timeTarget.hours }}h } @if
+                (habit.timeTarget.minutes) { {{ habit.timeTarget.minutes }}m }
+                @if (habit.timeTarget.seconds) { {{ habit.timeTarget.seconds }}s
+                }
+              </div>
+            </div>
+            }
+
+            <div class="details-info-item">
+              <div class="info-label">Dias da Semana</div>
+              <div class="info-value days-value">
+                @for (day of habit.days; track day) {
+                <span class="day-badge">{{ day }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="details-info-item">
+              <div class="info-label">Criado em:</div>
+              <div class="info-value days-value">
+                <span class="day-badge">
+                  {{ habit.createdAt | date : "dd/MM/yyyy" }}</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="days-desktop habit-days-container">
+            <h4 class="days-title">Registro Diário</h4>
             <app-habit-days
               [logs]="logs"
               [habit]="habit"
@@ -103,21 +175,158 @@
             ></app-habit-days>
           </div>
 
-          <div class="summary">
-            Concluído: 57% na semana
-            <button class="calendar-button">📅 Ver calendário</button>
+          <div class="stat-card progress-card">
+            <div class="stat-header">
+              <h4>Progresso Semanal</h4>
+              <div class="progress-percentage">{{ weekCompletionRate }}%</div>
+            </div>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                [ngStyle]="{ width: weekCompletionRate + '%' }"
+              ></div>
+            </div>
+
+            <div class="progress-details">
+              <span
+                >{{ daysCompleted }} de {{ totalExecutionsInTheWeek }} dias
+                concluídos</span
+              >
+            </div>
           </div>
 
-          <div class="created-date">Criado em: 12/06/2025</div>
-
           @if (habit.description) {
-          <div class="description">Descrição: {{ habit.description }}</div>
+          <div class="description-section">
+            <div class="info-label">Descrição</div>
+            <div class="description-content">{{ habit.description }}</div>
+          </div>
           }
         </div>
       </swiper-slide>
       <swiper-slide>
-        <div class="slide-content">
-          <div>Slide 2 - Estatística</div>
+        <div class="slide-content statistics-slide">
+          <div class="statistics-header">
+            <h3 class="statistics-title">Estatísticas</h3>
+            <div class="statistics-period">Última atualização: hoje</div>
+          </div>
+
+ 
+          <div class="stat-card series-card">
+            <h4>Séries</h4>
+            <div class="series-content">
+              <div class="series-item">
+                <div class="series-label">Série Atual</div>
+                <div class="series-value current">
+                  🔥 {{ currentStreak }} dias
+                </div>
+              </div>
+              <div class="series-item">
+                <div class="series-label">Melhor Série</div>
+                <div class="series-value best">🏆 {{ bestStreak }} dias</div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="stat-card completion-card">
+            <h4>Vezes Concluídas</h4>
+            <div class="completion-grid">
+              <div class="completion-item">
+                <div class="completion-value">{{ completionForWeek }}</div>
+                <div class="completion-label">Esta Semana</div>
+              </div>
+              <div class="completion-item">
+                <div class="completion-value">{{ completionForMonth }}</div>
+                <div class="completion-label">Este Mês</div>
+              </div>
+              <div class="completion-item">
+                <div class="completion-value">{{ completionForYear }}</div>
+                <div class="completion-label">Este Ano</div>
+              </div>
+              <div class="completion-item">
+                <div class="completion-value">{{ totalCompletion }}</div>
+                <div class="completion-label">Total</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card chart-card">
+            <h4>Desempenho Geral</h4>
+            <div class="chart-container">
+<div class="pie-chart" [ngStyle]="{ background: getPieGradient() }">
+                <div class="pie-center">
+                  <div class="pie-total">{{ totalCount }}</div>
+                  <div class="pie-label">dias</div>
+                </div>
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-color success"></div>
+                  <span>Sucesso ({{ successCount }})</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color pending"></div>
+                  <span>Pendente ({{ pendingCount }})</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-color failed"></div>
+                  <span>Falha ({{ failCount }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          @if (habit.progressType === 'time') {
+          <div class="stat-card extra-stat-card">
+            <h4>Tempo Total Investido</h4>
+            <div class="extra-stat-content">
+              <div class="extra-stat-main">
+                <div class="extra-stat-value">
+                  {{ formatTime(timeValue.totalValue) }}
+                </div>
+                <div class="extra-stat-label">Total acumulado</div>
+              </div>
+              <div class="extra-stat-breakdown">
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Esta semana:</span>
+                  <span class="breakdown-value">{{
+                    formatTime(timeValue.weekValue)
+                  }}</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Média diária:</span>
+                  <span class="breakdown-value">{{
+                    formatTime(timeValue.almostValue)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          } @if (habit.progressType === 'times') {
+          <div class="stat-card extra-stat-card">
+            <h4>Unidades totais</h4>
+            <div class="extra-stat-content">
+              <div class="extra-stat-main">
+                <div class="extra-stat-value">{{ unitsValue.totalValue }}</div>
+                <div class="extra-stat-label">Total</div>
+              </div>
+              <div class="extra-stat-breakdown">
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Esta semana:</span>
+                  <span class="breakdown-value">{{
+                    unitsValue.weekValue
+                  }}</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Média diária:</span>
+                  <span class="breakdown-value">{{
+                    unitsValue.almostValue
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
         </div>
       </swiper-slide>
     </swiper-container>
