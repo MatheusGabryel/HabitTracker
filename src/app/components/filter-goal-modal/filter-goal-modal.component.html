@@ -1,0 +1,210 @@
+<div class="modal-container">
+  <div class="modal-header">
+    <h2>Filtrar Metas</h2>
+    <button class="close-button" type="button" (click)="closeModal()">
+      <img src="./assets/icon/exit.svg" alt="" width="18px" />
+    </button>
+  </div>
+
+  <div class="modal-content">
+    <div class="filter-section">
+      <h3 class="filter-title">Ordenar por</h3>
+      <div class="sort-options">
+        <select
+          [(ngModel)]="sortBy"
+          class="sort-select"
+        >
+          <option value="name">Nome (A-Z)</option>
+          <option value="name-desc">Nome (Z-A)</option>
+          <option value="created-newest">Mais recentes</option>
+          <option value="created-oldest">Mais antigas</option>
+          <option value="deadline-nearest">Vencimento mais próximo</option>
+          <option value="progress-highest">Maior progresso</option>
+          <option value="progress-lowest">Menor progresso</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3 class="filter-title">Categoria</h3>
+      <div class="category-grid">
+        <div
+          class="category-item"
+          [class.selected]="selectedCategories.includes('all')"
+          (click)="toggleCategory('all')"
+        >
+          <div class="category-icon all-icon">🎯</div>
+          <span class="category-name">Todas</span>
+        </div>
+        @for (category of categories; track category.id) {
+        <div
+          class="category-item"
+          [class.selected]="selectedCategories.includes(category.id)"
+          (click)="toggleCategory(category.id)"
+        >
+          <img
+            [src]="category.icon"
+            class="category-icon"
+            [alt]="category.displayName"
+          />
+          <span class="category-name">{{ category.displayName }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3 class="filter-title">Tipo de Meta</h3>
+      <div class="goal-type-options">
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="goalTypeFilters.unit"
+            (change)="onGoalTypeChange('unit', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">📊</span>
+            <span class="option-text">Contagem de Unidades</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="goalTypeFilters.habit"
+            (change)="onGoalTypeChange('habit', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">🔄</span>
+            <span class="option-text">Conclusão de Hábito</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="goalTypeFilters.yes_no"
+            (change)="onGoalTypeChange('yes_no', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">✅</span>
+            <span class="option-text">Sim/Não</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3 class="filter-title">Status</h3>
+      <div class="status-options">
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="statusFilters.in_progress"
+            (change)="onStatusChange('in_progress', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="status-indicator in-progress"></span>
+            <span class="option-text">Em Progresso</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="statusFilters.completed"
+            (change)="onStatusChange('completed', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="status-indicator completed"></span>
+            <span class="option-text">Concluída</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="statusFilters.not_completed"
+            (change)="onStatusChange('not_completed', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="status-indicator not-completed"></span>
+            <span class="option-text">Não Concluída</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="statusFilters.cancelled"
+            (change)="onStatusChange('cancelled', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="status-indicator cancelled"></span>
+            <span class="option-text">Cancelada</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3 class="filter-title">Data de Vencimento</h3>
+      <div class="deadline-options">
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="deadlineFilters.hasDeadline"
+            (change)="onDeadlineChange('hasDeadline', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">📅</span>
+            <span class="option-text">Com data de vencimento</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="deadlineFilters.overdue"
+            (change)="onDeadlineChange('overdue', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">⚠️</span>
+            <span class="option-text">Vencidas</span>
+          </div>
+        </label>
+
+        <label class="checkbox-option">
+          <input
+            type="checkbox"
+            [(ngModel)]="deadlineFilters.dueThisWeek"
+            (change)="onDeadlineChange('dueThisWeek', $event)"
+          />
+          <span class="checkmark"></span>
+          <div class="option-content">
+            <span class="option-icon">📆</span>
+            <span class="option-text">Vencem esta semana</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn-secondary" (click)="clearAllFilters()">
+      Limpar Filtros
+    </button>
+    <button type="button" class="btn-primary" (click)="applyFilters()">
+      Aplicar Filtros
+    </button>
+  </div>
+</div>
