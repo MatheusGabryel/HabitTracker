@@ -1,11 +1,11 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from 'src/app/interfaces/category.interface';
 import { GoalData } from 'src/app/interfaces/goal.interface';
+import { HabitService } from 'src/app/services/habit/habit.service';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
-import { register } from 'swiper/element/bundle';
-register()
 
 @Component({
   selector: 'app-goal-card',
@@ -13,22 +13,37 @@ register()
   styleUrls: ['./goal-card.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, FormsModule],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'scale(0.95)' }))
+      ])
+    ])
+  ]
 })
 export class GoalCardComponent implements OnInit {
   @Input() goal: any;
   @Output() mark = new EventEmitter<GoalData>();
+  @Output() delete = new EventEmitter<GoalData>();
+  @Output() complete = new EventEmitter<GoalData>();
+  @Output() restore = new EventEmitter<GoalData>();
+  @Output() cancel = new EventEmitter<GoalData>();
+  @Output() edit = new EventEmitter<GoalData>();
+  public habitService = inject(HabitService)
   public showGoalModal = false;
 
-  constructor() { }
+  habitName?: string;
 
-onAddProgressClick(event: MouseEvent): void {
-  event.stopPropagation();
-  this.mark.emit(this.goal);
-}
+  constructor() { }
 
   openModal() {
     this.showGoalModal = true;
   }
+
   closeModal() {
     this.showGoalModal = false;
   }
@@ -44,19 +59,25 @@ onAddProgressClick(event: MouseEvent): void {
 
     return translations[status] || status;
   }
+
   calculateProgress(): number {
     const current = this.goal.progressValue;
     const target = this.goal.targetValue;
+
     if (!target || target === 0) return 0;
 
-    if (current >= target) return 100;
 
-    const percentage = (current / target) * 100;
+
+    let percentage = (current / target) * 100;
+
+    if (this.goal.goalType === 'habit' && percentage > 100) {
+      percentage = 100;
+    }
 
     if (percentage >= 99) return Math.floor(percentage * 10) / 10;
+
     return Math.floor(percentage);
   }
-
 
   getProgressColor(progress: number): string {
     const status = this.goal.state;
@@ -76,8 +97,62 @@ onAddProgressClick(event: MouseEvent): void {
     if (progress >= 10) return '#eb5757';
     return '#f8b195';
   }
-  ngOnInit() {
-   }
+
+  getRemainingValue(): number {
+    const remaining = this.goal.targetValue - this.goal.progressValue;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  getExtraValue(): number {
+    const extra = this.goal.progressValue - this.goal.targetValue;
+    return extra
+  }
+
+  getGoalTypeDisplay(): string {
+    const types: Record<string, string> = {
+      unit: 'Contagem de Unidades',
+      habit: 'Baseada em Hábito',
+      yes_no: 'Sim ou Não'
+    };
+    return types[this.goal.goalType] || this.goal.goalType;
+  }
+
+  editGoal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.closeModal();
+    this.edit.emit(this.goal);
+
+  }
+
+  deleteGoal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.delete.emit(this.goal);
+  }
+
+  restoreGoal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.restore.emit(this.goal);
+  }
+
+  cancelGoal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.cancel.emit(this.goal);
+  }
+
+  public addProgress(event: MouseEvent): void {
+    event.stopPropagation();
+    this.mark.emit(this.goal);
+  }
+
+  public completeGoal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.complete.emit(this.goal);
+  }
+
+  async ngOnInit() {
+    const habit = await this.habitService.getHabitById(this.goal.linkedHabit)
+    this.habitName = habit?.name ?? '';
+  }
 
   get category(): Category | undefined {
     return this.goal
@@ -89,8 +164,6 @@ onAddProgressClick(event: MouseEvent): void {
     const color = this.category?.color;
     if (!color) return undefined;
 
-    // Transforma: rgb(255, 0, 0) → rgba(255, 0, 0, 0.)
-    return color.replace('rgb', 'rgba').replace(')', ', 0.7)');
+    return color.replace('rgb', 'rgba').replace(')', ', 0.8)');
   }
-
 }

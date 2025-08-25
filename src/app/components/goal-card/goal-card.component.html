@@ -1,4 +1,9 @@
-<div class="goal-card" [ngStyle]="{ 'background-color': rgbaCatColor }" (click)="openModal()">
+<div
+  class="goal-card"
+  @fadeInOut
+  [ngStyle]="{ 'background-color': rgbaCatColor }"
+  (click)="openModal()"
+>
   <div
     class="goal-category-banner"
     [ngStyle]="{
@@ -8,15 +13,14 @@
 
   <div class="goal-content">
     <div class="goal-name">{{ goal.name }}</div>
+
     @if (goal.state) {
-    <div
-      class="goal-status neutral"
-    >
+    <div class="goal-status neutral">
       <div
-        class="bola"
-        [ngStyle]="{ 'background-color': getProgressColor(
-            calculateProgress()
-          ) }"
+        class="status-indicator"
+        [ngStyle]="{
+          'background-color': getProgressColor(calculateProgress())
+        }"
       ></div>
       {{ translateStatus() }}: {{ calculateProgress() }}%
     </div>
@@ -27,67 +31,359 @@
         class="goal-progress-fill"
         [ngStyle]="{
           'width.%': calculateProgress(),
-          'background-color': getProgressColor(
-            calculateProgress()
-          )
+          'background-color': getProgressColor(calculateProgress())
         }"
       ></div>
     </div>
 
-    <div class="goal-info-row">Unidade: {{ goal.progressValueType }}</div>
-    <div class="goal-info-row">
-      Progresso: {{ goal.progressValue }} / {{ goal.targetValue }}
+    <div class="goal-details">
+      @if(goal.goalType === 'unit') {
+      <div class="goal-info-item">
+        <span class="info-label">Meta:</span>
+        <span class="info-value"
+          >{{ goal.targetValue }}
+          {{ goal.progressValueType || goal.customProgressType }}</span
+        >
+      </div>
+      <div class="goal-info-item">
+        <span class="info-label">Progresso:</span>
+        <span class="info-value"
+          >{{ goal.progressValue }} / {{ goal.targetValue }}</span
+        >
+      </div>
+      @if (goal.progressValue <= goal.targetValue) {
+      <div class="goal-info-item">
+        <span class="info-label">Restante:</span>
+        <span class="info-value"
+          >{{ getRemainingValue() }}
+          {{ goal.progressValueType || goal.customProgressType }}</span
+        >
+      </div>
+      } @else if (goal.progressValue > goal.targetValue){
+      <div class="goal-info-item">
+        <span class="info-label">Extra:</span>
+        <span class="info-value"
+          >{{ getExtraValue() }}
+          {{ goal.progressValueType || goal.customProgressType }}</span
+        >
+      </div>
+      } } @else if (goal.goalType === 'habit') {
+      <div class="goal-info-item">
+        <span class="info-label">Hábito:</span>
+        <span class="info-value">{{ habitName }}</span>
+      </div>
+      <div class="goal-info-item">
+        <span class="info-label">Meta:</span>
+        <span class="info-value"
+          >{{ goal.targetValue }}
+          {{ goal.targetValue === 1 ? "conclusão" : "conclusões" }}</span
+        >
+      </div>
+      <div class="goal-info-item">
+        <span class="info-label">Concluído:</span>
+        <span class="info-value"
+          >{{ goal.progressValue }}
+          {{ goal.progressValue === 1 ? "vez" : "vezes" }}</span
+        >
+      </div>
+      } @else if (goal.goalType === 'yes_no') {
+      <div class="goal-info-item">
+        <span class="info-label">Tipo:</span>
+        <span class="info-value">Meta Sim/Não</span>
+      </div>
+      <div class="goal-info-item">
+        <span class="info-label">Status:</span>
+        <span class="info-value">{{ translateStatus() }}</span>
+      </div>
+      @if (goal.hasEndDate) {
+      <div class="goal-info-item">
+        <span class="info-label">Prazo:</span>
+        <span class="info-value">{{ goal.endDate | date : "dd/MM/yyyy" }}</span>
+      </div>
+      } }
     </div>
-    <div class="goal-info-row">Recompensa: Não há</div>
 
     <div class="goal-footer">
-      @if (goal?.createdAt) {
-      <div class="date">
-        <span
-          >Criada em: {{ goal.createdAt.toDate() | date : "dd-MM-yyyy" }}</span
-        >
-        @if (goal.hasEndDate) {
-        <span>Prazo final: {{ goal.endDate | date : "dd-MM-yyyy" }}</span>
-        } @else {
-        <span>Prazo final: Não há</span>
+      <div class="goal-dates">
+        @if (goal?.updatedAt.toMillis() !== goal?.createdAt.toMillis()) {
+        <div class="date-info">
+          <span class="date-label">Editado:</span>
+          <span class="date-value">{{
+            goal.updatedAt.toDate() | date : "dd/MM"
+          }}</span>
+        </div>
+        } 
+        @else if (goal?.createdAt) {
+        <div class="date-info">
+          <span class="date-label">Criada:</span>
+          <span class="date-value">{{
+            goal.createdAt.toDate() | date : "dd/MM"
+          }}</span>
+        </div>
+        } 
+        @if (goal.hasEndDate && goal.goalType !== 'yes_no') {
+        <div class="date-info">
+          <span class="date-label">Prazo:</span>
+          <span class="date-value">{{ goal.endDate | date : "dd/MM" }}</span>
+        </div>
         }
       </div>
-      }
-      <button class="add-progress-btn" (click)="onAddProgressClick($event)">
-        + Progresso
-      </button>
+
+      <div class="goal-actions">
+        @if(goal.state === 'not_completed') {
+        <button
+          class="action-btn failed-btn"
+          [disabled]="goal.state === 'not_completed'"
+        >
+          <span class="btn-icon">×</span>
+          <span class="btn-text">Falhado</span>
+        </button>
+
+        } @else if (goal.state === 'cancelled') {
+        <button
+          class="action-btn cancel-btn"
+          [disabled]="goal.state === 'cancelled'"
+        >
+          <span class="btn-icon">×</span>
+          <span class="btn-text">Cancelado</span>
+        </button>
+        } @else if(goal.goalType === 'unit') {
+        <button class="action-btn progress-btn" (click)="addProgress($event)">
+          <span class="btn-icon">+</span>
+          <span class="btn-text">Progresso</span>
+        </button>
+        } @else if(goal.goalType === 'yes_no') {
+        <button
+          class="action-btn complete-btn"
+          (click)="addProgress($event)"
+          [disabled]="goal.progressValue >= 1"
+        >
+          <span class="btn-icon">✓</span>
+          <span class="btn-text">{{
+            goal.progressValue >= 1 ? "Concluída" : "Completar"
+          }}</span>
+        </button>
+        }
+      </div>
     </div>
   </div>
 </div>
+
 @if (showGoalModal) {
 <div class="goal-modal-backdrop" (click)="closeModal()"></div>
 
 <div class="goal-modal">
   <div class="goal-modal-header">
-    <h2>{{ goal.name }}</h2>
-    <button class="close-btn" (click)="closeModal()">✕</button>
+    <div class="modal-title-section">
+      <h2>{{ goal.name }}</h2>
+      <div class="goal-type-badge" [class]="'type-' + goal.goalType">
+        {{ getGoalTypeDisplay() }}
+      </div>
+    </div>
+    <button class="close-btn" (click)="closeModal()">
+      <span>✕</span>
+    </button>
   </div>
 
-  <div class="goal-modal-swiper">
-    <swiper-container
-      slides-per-view="1"
-      loop="false"
-      pagination="true"
-      space-between="16"
-      class="swiper"
-    >
-      <swiper-slide>
-        <div class="slide-content">Slide 1 – Detalhes da meta</div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="slide-content">Slide 2 – Estatísticas</div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="slide-content">Slide 3 – Opções</div>
-      </swiper-slide>
-    </swiper-container>
+  <div class="goal-modal-content">
+    <div class="modal-section progress-section">
+      <h3>Progresso Atual</h3>
+      <div class="progress-display">
+        <div class="progress-circle">
+          <div
+            class="circle-progress"
+            [ngStyle]="{
+              background:
+                'conic-gradient(from 0deg, ' +
+                getProgressColor(calculateProgress()) +
+                ' ' +
+                calculateProgress() * 3.6 +
+                'deg, #f0f0f0 0deg)'
+            }"
+          >
+            <div class="circle-inner">
+              <span class="progress-percentage"
+                >{{ calculateProgress() }}%</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="progress-details">
+          @if(goal.goalType === 'unit') {
+          <div class="progress-item">
+            <span class="label">Atual:</span>
+            <span class="value"
+              >{{ goal.progressValue }}
+              {{ goal.progressValueType || goal.customProgressType }}</span
+            >
+          </div>
+          <div class="progress-item">
+            <span class="label">Meta:</span>
+            <span class="value"
+              >{{ goal.targetValue }}
+              {{ goal.progressValueType || goal.customProgressType }}</span
+            >
+          </div>
+          @if (goal.progressValue <= goal.targetValue) {
+          <div class="progress-item">
+            <span class="label">Restante:</span>
+            <span class="value"
+              >{{ getRemainingValue() }}
+              {{ goal.progressValueType || goal.customProgressType }}</span
+            >
+          </div>
+          } @else if (goal.progressValue > goal.targetValue){
+          <div class="progress-item">
+            <span class="label">Extra:</span>
+            <span class="value"
+              >{{ getExtraValue() }}
+              {{ goal.progressValueType || goal.customProgressType }}</span
+            >
+          </div>
+          } } @else if (goal.goalType === 'habit') {
+          <div class="progress-item">
+            <span class="label">Hábito:</span>
+            <span class="value">{{ habitName }}</span>
+          </div>
+          <div class="progress-item">
+            <span class="label">Concluído:</span>
+            <span class="value"
+              >{{ goal.progressValue }} de {{ goal.targetValue }} vezes</span
+            >
+          </div>
+          } @else if (goal.goalType === 'yes_no') {
+          <div class="progress-item">
+            <span class="label">Status:</span>
+            <span class="value">{{ translateStatus() }}</span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section details-section">
+      <h3>Detalhes da Meta</h3>
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Categoria:</span>
+          <div class="detail-value category-value">
+            <img
+              [src]="category?.icon"
+              class="category-icon"
+              [alt]="category?.displayName"
+            />
+            <span>{{ category?.displayName }}</span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Tipo:</span>
+          <span class="detail-value">{{ getGoalTypeDisplay() }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span
+            class="detail-value status-value"
+            [ngStyle]="{ color: getProgressColor(calculateProgress()) }"
+          >
+            {{ translateStatus() }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Criada em:</span>
+          <span class="detail-value">{{
+            goal.createdAt?.toDate() | date : "dd/MM/yyyy"
+          }}</span>
+        </div>
+        @if (goal.hasEndDate) {
+        <div class="detail-item">
+          <span class="detail-label">Prazo final:</span>
+          <span class="detail-value">{{
+            goal.endDate | date : "dd/MM/yyyy"
+          }}</span>
+        </div>
+        } @if (goal.updatedAt.toMillis() !== goal.createdAt.toMillis()) {
+        <div class="detail-item">
+          <span class="detail-label">Editado em:</span>
+          <span class="detail-value">{{
+            goal.updatedAt?.toDate() | date : "dd/MM/yyyy"
+          }}</span>
+        </div>
+        } @if (goal.state === 'completed') {
+        <div class="detail-item">
+          <span class="detail-label">Concluído em:</span>
+          <span class="detail-value">
+            {{
+              (goal.completedAt.toDate
+                ? goal.completedAt.toDate()
+                : goal.completedAt
+              ) | date : "dd/MM/yyyy"
+            }}</span
+          >
+        </div>
+        } @if (goal.description) {
+        <div class="detail-item full-width">
+          <span class="detail-label">Descrição:</span>
+          <span class="detail-value">{{ goal.description }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="modal-section actions-section">
+      <h3>Ações</h3>
+      <div class="actions-grid">
+        <button class="modal-action-btn edit-btn" (click)="editGoal($event)">
+          <span class="action-icon"><img src="./assets/icon/edit-white.svg" alt="Editar" width="20px" /></span>
+          <span class="action-text">Editar Meta</span>
+        </button>
+
+        @if (goal.goalType !== 'habit' && goal.state === 'completed' ||
+        goal.state === 'not_completed' || goal.state === 'cancelled' ){
+        <button
+          class="modal-action-btn restore-btn"
+          (click)="restoreGoal($event)"
+        >
+          <span class="action-icon">🔄</span>
+          <span class="action-text">Restaurar Meta</span>
+        </button>
+        } @if (goal.goalType === 'unit' && goal.state === 'in_progress') {
+        <button
+          class="modal-action-btn progress-btn"
+          (click)="addProgress($event)"
+        >
+          <span class="action-icon"><img src="./assets/icon/plus.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-text">Adicionar Progresso</span>
+        </button>
+        } @if (goal.goalType === 'yes_no' && goal.state === 'in_progress' &&
+        goal.progressValue < 1) {
+        <button
+          class="modal-action-btn complete-btn"
+          (click)="completeGoal($event)"
+        >
+          <span class="action-icon"><img src="./assets/icon/check-white.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-text">Marcar como Concluída</span>
+        </button>
+        }
+
+        <button
+          class="modal-action-btn delete-btn"
+          (click)="deleteGoal($event)"
+        >
+          <span class="action-icon"><img src="./assets/icon/delete-white.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-text">Excluir Meta</span>
+        </button>
+
+        @if(goal.state === 'in_progress') {
+        <button
+          class="modal-action-btn cancel-btn"
+          (click)="cancelGoal($event)"
+        >
+          <span class="action-icon"><img src="./assets/icon/exit.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-text">Cancelar Meta</span>
+        </button>
+        }
+      </div>
+    </div>
   </div>
 </div>
 }
-
-
