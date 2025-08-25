@@ -1,4 +1,5 @@
-import { serverTimestamp } from 'firebase/firestore';
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
+
 
 export type GoalType = 'unit' | 'habit' | 'yes_no';
 export type StateGoalType = 'in_progress' | 'completed' | 'not_completed' | 'cancelled'
@@ -16,7 +17,8 @@ export interface GoalData {
     targetValue?: number,
     linkedHabit?: string,
     state: StateGoalType,
-    progressValue: number,
+    progressValue?: number,
     createdAt?: Date | ReturnType<typeof serverTimestamp>,
     updatedAt?: Date | ReturnType<typeof serverTimestamp>,
+    completedAt?: Date | ReturnType<typeof serverTimestamp> | null
 }

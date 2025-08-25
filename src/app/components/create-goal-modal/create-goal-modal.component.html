@@ -2,310 +2,325 @@
   <form #form="ngForm" (ngSubmit)="createGoal()">
     <div class="modal-header">
       <h2>Criar Meta</h2>
-      <button class="close-button" type="button" (click)="closeModal()">
-                <img src="./assets/icon/exit.svg" alt="" width="18px">
+      <button class="close-button exit" type="button" (click)="closeModal()">
+        <img src="./assets/icon/exit.svg" alt="" width="18px" />
       </button>
     </div>
 
     <div class="stepper-container">
-      <div class="stepper-progress">
-        <div
-          class="step"
-          [class.active]="currentStep >= 1"
-          (click)="goToStep(1)"
-        >
-          <div class="step-number">1</div>
-          <div class="step-label">Detalhes</div>
-        </div>
-        <div class="step-connector" [class.active]="currentStep >= 2"></div>
-        <div
-          class="step"
-          [class.active]="currentStep >= 2"
-          (click)="goToStep(2)"
-        >
-          <div class="step-number">2</div>
-          <div class="step-label">Configuração</div>
-        </div>
-        <div class="step-connector" [class.active]="currentStep >= 3"></div>
-        <div
-          class="step"
-          [class.active]="currentStep >= 3"
-          (click)="goToStep(3)"
-        >
-          <div class="step-number">3</div>
-          <div class="step-label">Finalização</div>
-        </div>
-      </div>
-
-      @if (currentStep === 1) {
       <div class="step-content">
-        <h3 class="step-title">Detalhes da Meta</h3>
-
-        <label>Nome da Meta</label>
-        <input
-          type="text"
-          [(ngModel)]="goal.name"
-          name="name"
-          required
-          placeholder="Ex: Perder 10kg"
-          #name="ngModel"
-        />
-
-        <label>Categoria</label>
-        <div class="category-selector">
-          @for (cat of categories; track cat.id) {
+        <div class="stepper-progress">
           <div
-            class="category-item"
-            [class.selected]="goal.category === cat.id"
-            (click)="selectCategory(cat.id)"
+            class="step"
+            [class.active]="currentStep >= 1"
+            (click)="goToStep(1)"
           >
-            <img
-              [src]="cat.icon"
-              class="category-icon"
-              alt="{{ cat.displayName }}"
-            />
-            <span class="category-name">{{ cat.displayName }}</span>
+            <div class="step-number">1</div>
+            <div class="step-label">Detalhes</div>
           </div>
-          }
-        </div>
-
-        <label>Tipo de Meta</label>
-        <div class="progress-type-selector">
+          <div class="step-connector" [class.active]="currentStep >= 2"></div>
           <div
-            class="progress-type-item"
-            [class.selected]="goal.goalType === 'unit'"
-            (click)="selectGoalType('unit')"
+            class="step"
+            [class.active]="currentStep >= 2"
+            (click)="goToStep(2)"
           >
-            <div class="progress-type-icon">📊</div>
-            <div class="progress-type-details">
-              <span class="progress-type-name">Contagem de Unidades</span>
-              <span class="progress-type-desc"
-                >Acompanhe seu progresso com unidades contáveis (kg, km,
-                etc)</span
-              >
-            </div>
+            <div class="step-number">2</div>
+            <div class="step-label">Configuração</div>
           </div>
-
+          <div class="step-connector" [class.active]="currentStep >= 3"></div>
           <div
-            class="progress-type-item"
-            [class.selected]="goal.goalType === 'habit'"
-            (click)="selectGoalType('habit')"
+            class="step"
+            [class.active]="currentStep >= 3"
+            (click)="goToStep(3)"
           >
-            <div class="progress-type-icon">🔄</div>
-            <div class="progress-type-details">
-              <span class="progress-type-name">Conclusão de Hábito</span>
-              <span class="progress-type-desc"
-                >Vincule sua meta à conclusão de um hábito específico</span
-              >
-            </div>
-          </div>
-
-          <div
-            class="progress-type-item"
-            [class.selected]="goal.goalType === 'yes_no'"
-            (click)="selectGoalType('yes_no')"
-          >
-            <div class="progress-type-icon">✓</div>
-            <div class="progress-type-details">
-              <span class="progress-type-name">Sim/Não</span>
-              <span class="progress-type-desc"
-                >Meta simples que pode ser marcada como concluída ou não</span
-              >
-            </div>
+            <div class="step-number">3</div>
+            <div class="step-label">Finalização</div>
           </div>
         </div>
-      </div>
 
-      } @if(currentStep === 2) {
-      <div class="step-content">
-        <h3 class="step-title">Configuração da Meta</h3>
-        @if (goal.goalType === 'unit') {
-        <div class="progress-config">
-          <label>Como deseja marcar o progresso?</label>
-          <div class="toggle-options">
-            @for (type of progressTypes; track type) {
-            <label>
-              <input
-                type="radio"
-                name="progressValueType"
-                [(ngModel)]="goal.progressValueType"
-                [value]="type"
+        @if (currentStep === 1) {
+        <div class="step-content">
+          <h3 class="step-title">Detalhes da Meta</h3>
+
+          <label>Nome da Meta</label>
+          <input
+            type="text"
+            [(ngModel)]="goal.name"
+            maxlength="50"
+            name="name"
+            required
+            placeholder="Ex: Perder 10kg"
+            #name="ngModel"
+          />
+
+          <label>Categoria</label>
+          <div class="category-selector">
+            @for (cat of categories; track cat.id) {
+            <div
+              class="category-item"
+              [class.selected]="goal.category === cat.id"
+              (click)="selectCategory(cat.id)"
+            >
+              <img
+                [src]="cat.icon"
+                class="category-icon"
+                alt="{{ cat.displayName }}"
               />
-              {{ type }}
-            </label>
+              <span class="category-name">{{ cat.displayName }}</span>
+            </div>
             }
           </div>
 
-          @if (goal.progressValueType === 'Outro') {
-          <label>Descreva este tipo de marcação</label>
-          <input
-            type="text"
-            [(ngModel)]="goal.customProgressType"
-            name="customProgressType"
-            placeholder="Ex: Capítulos"
-            required
-          />
-          }
-
-          <label>Valor mínimo para conclusão da meta</label>
-          <div class="times-input">
-            <input
-              type="number"
-              name="targetValue"
-              [(ngModel)]="goal.targetValue"
-              min="1"
-              required
-            />
-            <span>{{
-              goal.progressValueType === "Outro"
-                ? goal.customProgressType
-                : goal.progressValueType
-            }}</span>
-          </div>
-        </div>
-        } @if (goal.goalType === 'habit') {
-        <div class="progress-config">
-          <label>Selecione um hábito para vincular a esta meta</label>
-          <div class="habits-selector">
-            @if (userHabits.length === 0) {
-            <p class="no-habits-message">
-              Você ainda não tem hábito cadastrado. Crie um hábito primeiro para
-              vinculá-lo a esta meta.
-            </p>
-            } @else { @for (habit of userHabits; track habit.id) {
+          <label>Tipo de Meta</label>
+          <div class="progress-type-selector">
             <div
-              class="habit-item"
-              [class.selected]="isHabitSelected(habit.id)"
-              (click)="toggleHabitSelection(habit.id)"
+              class="progress-type-item"
+              [class.selected]="goal.goalType === 'unit'"
+              (click)="selectGoalType('unit')"
             >
-              <div
-                class="habit-icon"
-                [ngStyle]="{
-                  'background-color': getCategoryColor(habit.category)
-                }"
-              >
-                <img [src]="getCategoryIcon(habit.category)" alt="Categoria" />
-              </div>
-              <div class="habit-details">
-                <span class="habit-name">{{ habit.name }}</span>
-                <span class="habit-category">{{
-                  getCategoryName(habit.category)
-                }}</span>
-              </div>
-              <div class="habit-checkbox">
-                <span *ngIf="isHabitSelected(habit.id)">✓</span>
+              <div class="progress-type-icon">📊</div>
+              <div class="progress-type-details">
+                <span class="progress-type-name">Contagem de Unidades</span>
+                <span class="progress-type-desc"
+                  >Acompanhe seu progresso com unidades contáveis (kg, km,
+                  etc)</span
+                >
               </div>
             </div>
-            } }
-          </div>
 
-          @if (selectedHabit) {
-          <label>Quantas vezes o hábito precisa ser concluido??</label>
-          <div class="times-input">
+            <div
+              class="progress-type-item"
+              [class.selected]="goal.goalType === 'habit'"
+              (click)="selectGoalType('habit')"
+            >
+              <div class="progress-type-icon">🔄</div>
+              <div class="progress-type-details">
+                <span class="progress-type-name">Conclusão de Hábito</span>
+                <span class="progress-type-desc"
+                  >Vincule sua meta à conclusão de um hábito específico</span
+                >
+              </div>
+            </div>
+
+            <div
+              class="progress-type-item"
+              [class.selected]="goal.goalType === 'yes_no'"
+              (click)="selectGoalType('yes_no')"
+            >
+              <div class="progress-type-icon">✓</div>
+              <div class="progress-type-details">
+                <span class="progress-type-name">Sim/Não</span>
+                <span class="progress-type-desc"
+                  >Meta simples que pode ser marcada como concluída ou não</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        } @if(currentStep === 2) {
+        <div class="step-content">
+          <h3 class="step-title">Configuração da Meta</h3>
+          @if (goal.goalType === 'unit') {
+          <div class="progress-config">
+            <label>Como deseja marcar o progresso?</label>
+            <div class="toggle-options">
+              @for (type of progressTypes; track type) {
+              <label>
+                <input
+                  type="radio"
+                  name="progressValueType"
+                  [(ngModel)]="goal.progressValueType"
+                  [value]="type"
+                  
+                />
+                {{ type }}
+              </label>
+              }
+            </div>
+
+            @if (goal.progressValueType === 'Outro') {
+            <label>Descreva este tipo de marcação</label>
             <input
-              type="number"
-              name="targetValue"
-              [(ngModel)]="goal.targetValue"
-              min="1"
+              type="text"
+              [(ngModel)]="goal.customProgressType"
+              name="customProgressType"
+              placeholder="Ex: Capítulos"
               required
             />
-            <span>vezes</span>
-          </div>
-          }
-        </div>
-        } @if (goal.goalType === 'yes_no') {
-        <div class="progress-config">
-          <p class="yes-no-description">
-            Esta meta será marcada manualmente como concluída quando você
-            atingir seu objetivo.
-          </p>
-        </div>
-        }
+            }
 
-        <label>Você quer definir uma data final?</label>
-        <div class="toggle-options">
-          <label
-            ><input
-              type="radio"
-              [(ngModel)]="goal.hasEndDate"
-              [value]="true"
-              name="hasEndDate"
-            />Sim</label
-          >
-          <label
-            ><input
-              type="radio"
-              [(ngModel)]="goal.hasEndDate"
-              [value]="false"
-              name="hasEndDate"
-            />Não</label
-          >
-        </div>
-
-        @if (goal.hasEndDate) {
-        <div>
-          <label>Data final prevista</label>
-          <input type="date" [(ngModel)]="goal.endDate" name="dataFinalInput" />
-        </div>
-        }
-      </div>
-      } @if(currentStep === 3) {
-      <div class="step-content">
-        <h3 class="step-title">Finalizar Meta</h3>
-
-        <label>Descrição da Meta (opcional)</label>
-        <textarea
-          [(ngModel)]="goal.description"
-          name="description"
-          placeholder="Descreva detalhes adicionais sobre sua meta..."
-        ></textarea>
-
-        <div class="habit-summary">
-          <h3>Resumo da Meta</h3>
-          <div class="summary-item"><strong>Nome:</strong> {{ goal.name }}</div>
-          <div class="summary-item">
-            <strong>Categoria:</strong>
-            <img
-              [src]="getCategoryIcon(goal.category)"
-              class="summary-category-icon"
-              alt="Categoria"
-            />
-            {{ getCategoryName(goal.category) }}
-          </div>
-          <div class="summary-item">
-            <strong>Tipo de Meta:</strong> {{ getGoalTypeDisplay() }}
-          </div>
-
-          @if (goal.goalType === 'unit') {
-          <div class="summary-item">
-            <strong>Progresso:</strong> {{ goal.targetValue }}
-            {{
-              goal.progressValueType === "Outro"
-                ? goal.customProgressType
-                : goal.progressValueType
-            }}
+            <label>Valor mínimo para conclusão da meta</label>
+            <div class="times-input">
+              <input
+                type="number"
+                name="targetValue"
+                [(ngModel)]="goal.targetValue"
+                min="1"
+                required
+              />
+              <span>{{
+                goal.progressValueType === "Outro"
+                  ? goal.customProgressType
+                  : goal.progressValueType
+              }}</span>
+            </div>
           </div>
           } @if (goal.goalType === 'habit') {
-          <div class="summary-item">
-            <strong>Hábito:</strong> "{{ getHabitName(selectedHabit) }}"
+          <div class="progress-config">
+            <label>Selecione um hábito para vincular a esta meta</label>
+            <div class="habits-selector">
+              @if (userHabits.length === 0) {
+              <p class="no-habits-message">
+                Você ainda não tem hábito cadastrado. Crie um hábito primeiro
+                para vinculá-lo a esta meta.
+              </p>
+              } @else { @for (habit of userHabits; track habit.id) {
+              <div
+                class="habit-item"
+                [class.selected]="isHabitSelected(habit.id)"
+                (click)="toggleHabitSelection(habit.id)"
+              >
+                <div
+                  class="habit-icon"
+                  [ngStyle]="{
+                    'background-color': getCategoryColor(habit.category)
+                  }"
+                >
+                  <img
+                    [src]="getCategoryIcon(habit.category)"
+                    alt="Categoria"
+                  />
+                </div>
+                <div class="habit-details">
+                  <span class="habit-name">{{ habit.name }}</span>
+                  <span class="habit-category">{{
+                    getCategoryName(habit.category)
+                  }}</span>
+                </div>
+                <div class="habit-checkbox">
+                  <span *ngIf="isHabitSelected(habit.id)">✓</span>
+                </div>
+              </div>
+              } }
+            </div>
+
+            @if (selectedHabit) {
+            <label>Quantas vezes o hábito precisa ser concluido??</label>
+            <div class="times-input">
+              <input
+                type="number"
+                name="targetValue"
+                [(ngModel)]="goal.targetValue"
+                min="1"
+                required
+              />
+              <span>vezes</span>
+            </div>
+            }
           </div>
-          <div class="summary-item">
-            @if(goal.targetValue === 1) {
-            <strong>Meta:</strong> Concluir {{ goal.targetValue }} vez. } @else
-            { <strong>Meta:</strong> Concluir {{ goal.targetValue }} vezes. }
+          } @if (goal.goalType === 'yes_no') {
+          <div class="progress-config">
+            <p class="yes-no-description">
+              Esta meta será marcada manualmente como concluída quando você
+              atingir seu objetivo.
+            </p>
           </div>
-          } @if (goal.hasEndDate) {
-          <div class="summary-item">
-            <strong>Data final:</strong>
-            {{ goal.endDate | date : "dd/MM/yyyy" }}
+          }
+
+          <label>Você quer definir uma data final?</label>
+          <div class="toggle-options">
+            <label
+              ><input
+                type="radio"
+                [(ngModel)]="goal.hasEndDate"
+                [value]="true"
+                name="hasEndDate"
+              />Sim</label
+            >
+            <label
+              ><input
+                type="radio"
+                [(ngModel)]="goal.hasEndDate"
+                [value]="false"
+                name="hasEndDate"
+              />Não</label
+            >
+          </div>
+
+          @if (goal.hasEndDate) {
+          <div>
+            <label>Data final prevista</label>
+            <input
+              type="date"
+              [(ngModel)]="goal.endDate"
+              name="dataFinalInput"
+            />
           </div>
           }
         </div>
+        } @if(currentStep === 3) {
+        <div class="step-content">
+          <h3 class="step-title">Finalizar Meta</h3>
+
+          <label>Descrição da Meta (opcional)</label>
+          <textarea
+            [(ngModel)]="goal.description"
+            name="description"
+            placeholder="Descreva detalhes adicionais sobre sua meta..."
+          ></textarea>
+
+          <div class="habit-summary">
+            <h3>Resumo da Meta</h3>
+            <div class="summary-item">
+              <strong>Nome:</strong> {{ goal.name }}
+            </div>
+            <div class="summary-item">
+              <strong>Categoria:</strong>
+              <img
+                [src]="getCategoryIcon(goal.category)"
+                class="summary-category-icon"
+                alt="Categoria"
+              />
+              {{ getCategoryName(goal.category) }}
+            </div>
+            <div class="summary-item">
+              <strong>Tipo de Meta:</strong> {{ getGoalTypeDisplay() }}
+            </div>
+
+            @if (goal.goalType === 'unit') {
+            <div class="summary-item">
+              <strong>Progresso:</strong> {{ goal.targetValue }}
+              {{
+                goal.progressValueType === "Outro"
+                  ? goal.customProgressType
+                  : goal.progressValueType
+              }}
+            </div>
+            } @if (goal.goalType === 'habit') {
+            <div class="summary-item">
+              <strong>Hábito:</strong> "{{ getHabitName(selectedHabit) }}"
+            </div>
+            <div class="summary-item">
+              @if(goal.targetValue === 1) {
+              <strong>Meta:</strong> Concluir {{ goal.targetValue }} vez. }
+              @else { <strong>Meta:</strong> Concluir
+              {{ goal.targetValue }} vezes. }
+            </div>
+            } @if (goal.hasEndDate) {
+            <div class="summary-item">
+              <strong>Data final:</strong>
+              {{ goal.endDate | date : "dd/MM/yyyy" }}
+            </div>
+            }
+          </div>
+        </div>
+
+        }
       </div>
 
-      }
-
-      <div class="step-navigation">
+    </div>
+          <div class="step-navigation">
         @if (currentStep > 1) {
         <button type="button" class="nav-button back" (click)="previousStep()">
           Voltar
@@ -333,6 +348,5 @@
         </button>
         }
       </div>
-    </div>
   </form>
 </div>

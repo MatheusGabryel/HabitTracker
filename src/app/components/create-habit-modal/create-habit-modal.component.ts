@@ -143,6 +143,10 @@ export class CreateHabitModalComponent implements OnInit {
       Swal.fire({ title: 'Erro', text: 'Defina um nível de prioridade.', icon: 'warning', heightAuto: false });
       return;
     }
+    if(!this.isFormValid()) {
+      Swal.fire({ title: 'Erro', text: 'Preencha todos os campos corretamente.', icon: 'warning', heightAuto: false });
+      return;
+    }
 
     this.habit.progressType = this.progressType;
       this.habit.days = this.habit.days.sort((a, b) => this.daysOfWeek.indexOf(a) - this.daysOfWeek.indexOf(b));

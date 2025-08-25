@@ -59,6 +59,7 @@ export class CreateGoalModalComponent implements OnInit {
     progressValue: 0,
     createdAt: undefined,
     updatedAt: undefined,
+    completedAt: null
   };
 
   public closeModal() {
@@ -96,8 +97,10 @@ export class CreateGoalModalComponent implements OnInit {
         return !!this.goal.linkedHabit &&
           this.goal.targetValue !== undefined &&
           this.goal.targetValue > 0;
+      } else if (this.goal.hasEndDate === true) {
+        return !!this.goal.endDate;
       } else {
-        return true;
+        return true
       }
     }
     return true;
@@ -206,11 +209,14 @@ export class CreateGoalModalComponent implements OnInit {
     };
 
     if (this.goal.goalType === 'unit') {
+      delete goalToSave.linkedHabit
       const progressTypeToSave =
         this.goal.progressValueType === 'Outro'
           ? this.goal.customProgressType
           : this.goal.progressValueType;
-
+      if (this.goal.progressValueType !== 'Outro') {
+        delete goalToSave.customProgressType;
+      }
       goalToSave.progressValueType = progressTypeToSave as string;
     } else if (this.goal.goalType === 'habit') {
       goalToSave.linkedHabit = this.selectedHabit;
@@ -220,7 +226,8 @@ export class CreateGoalModalComponent implements OnInit {
     } else if (this.goal.goalType === 'yes_no') {
       delete goalToSave.progressValueType;
       delete goalToSave.customProgressType;
-      delete goalToSave.targetValue;
+      delete goalToSave.linkedHabit;
+      goalToSave.customProgressType = 1;
     }
 
     try {
@@ -235,7 +242,7 @@ export class CreateGoalModalComponent implements OnInit {
         });
         throw new Error('Usuário não autenticado');
       }
-
+      console.log(goalToSave)
       await this.goalService.addGoal(uid, goalToSave);
 
       Swal.fire({
