@@ -350,7 +350,7 @@ getProgressValueHabit(habit: HabitData) {
     .filter(log => this.parseLocalDate(log.date) >= perWeek)
     .reduce((acc, log) => acc + (log.progressValue || 0), 0);
 
-  const almostValue = logs.length ? Number((totalValue / logs.length).toFixed(1)) : 0;
+  const almostValue = logs.length ? Number((totalValue / logs.length).toFixed(0)) : 0;
 
   return { totalValue, weekValue, almostValue };
 }
