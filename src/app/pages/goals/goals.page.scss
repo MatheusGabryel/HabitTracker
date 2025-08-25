@@ -2,7 +2,6 @@ ion-content {
     .header-goal {
         display: flex;
         flex-direction: row;
-
         padding: 2rem;
         border-bottom: 1px solid #e5e7eb;
     }
@@ -16,6 +15,12 @@ ion-content {
         }
     }
 
+    .create-goal {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
     .create-goal-card {
         background-color: rgb(242, 244, 248);
         border: 1px solid #d3d3d3;
@@ -27,8 +32,9 @@ ion-content {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        transition: 0.2;
+        align-items: center;
         width: 400px;
+        min-width: 300px;
 
         &:hover {
             transform: scale(1.02);
@@ -67,23 +73,29 @@ ion-content {
 
     .list-goal {
         margin-top: 2rem;
+        padding: 0 2rem;
     }
 
     .list-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 2rem;
+        gap: 1rem;
     }
 
     .list-header .left {
         display: flex;
+        align-items: center;
         gap: 2rem;
+        flex: 1;
     }
 
     .list-header .left h2 {
         font-family: poppinsSemiBold;
         font-size: 20px;
+        white-space: nowrap;
     }
 
     .list-header .left .search-bar {
@@ -94,6 +106,8 @@ ion-content {
         border-radius: 5px;
         padding: 7px;
         gap: 5px;
+        flex: 1;
+        max-width: 300px;
 
         input {
             background-color: rgb(242, 244, 248);
@@ -108,14 +122,21 @@ ion-content {
         background-color: transparent;
         align-items: center;
         border: 1px solid #d3d3d3;
-        padding: 8px;
+        padding: 8px 12px;
         border-radius: 7px;
         gap: 5px;
         transition: 0.3s;
+        white-space: nowrap;
+        flex-shrink: 0;
 
         img {
             width: 20px;
             height: 20px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
         }
 
         &:hover {
@@ -152,6 +173,7 @@ ion-content {
         }
     }
 
+    // Responsividade para tablets e telas médias
     @media (max-width: 1250px) {
         .goal-list-cards-wrapper {
             max-width: 100%;
@@ -162,7 +184,9 @@ ion-content {
         }
 
         .header-goal {
-            padding: 1rem;
+            padding: 1.5rem;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .text {
@@ -170,14 +194,156 @@ ion-content {
             margin: 0;
         }
 
+        .create-goal {
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
         .create-goal-card {
-            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .list-goal {
+            padding: 0 1.5rem;
         }
     }
 
+    // Responsividade para tablets pequenos
+    @media (max-width: 900px) {
+        .list-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .list-header .left {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .list-header .left .search-bar {
+            max-width: 100%;
+        }
+
+        .list-header .filter {
+            align-self: center;
+            min-width: 120px;
+        }
+
+        .create-goal-card {
+            padding: 15px;
+        }
+    }
+
+    // Responsividade para smartphones
     @media (max-width: 640px) {
         .goal-list-cards {
             grid-template-columns: 1fr;
+        }
+
+        .header-goal {
+            padding: 1rem;
+        }
+
+        .text {
+            h1 {
+                font-size: 1.5rem;
+                line-height: 1.3;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+
+        .create-goal-card {
+            width: 80px;
+            height: 80px;
+            padding: 10px;
+            border-radius: 50%;
+            flex-direction: column;
+            justify-content: center;
+            min-width: unset;
+
+            p {
+                display: none; // Oculta o texto em dispositivos pequenos
+            }
+
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                margin: 0;
+            }
+
+            .add-icon {
+                display: none; // Oculta o ícone de adicionar em dispositivos pequenos
+            }
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        .list-goal {
+            
+            padding: 0 1rem;
+            margin-top: 1rem;
+        }
+
+        .list-header .left h2 {
+            font-size: 18px;
+        }
+
+        .list-header .filter {
+            padding: 10px 15px;
+
+            p {
+                font-size: 13px;
+            }
+        }
+    }
+
+    // Responsividade para smartphones muito pequenos
+    @media (max-width: 480px) {
+        .header-goal {
+            padding: 0.8rem;
+        }
+
+        .text h1 {
+            font-size: 1.3rem;
+        }
+
+        .create-goal-card {
+            width: 70px;
+            height: 70px;
+
+            .card-icon {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        .list-header .left {
+            gap: 0.8rem;
+        }
+
+        .list-header .left h2 {
+            font-size: 16px;
+        }
+
+        .list-header .filter {
+            padding: 8px 12px;
+
+            img {
+                width: 18px;
+                height: 18px;
+            }
+
+            p {
+                font-size: 12px;
+            }
         }
     }
 }

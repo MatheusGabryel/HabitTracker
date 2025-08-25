@@ -11,11 +11,25 @@
           (close)="closeModal()"
           @fadeInOut
         ></app-create-goal-modal>
+        } @if(showFilterModal) {
+        <app-filter-goal-modal
+         (close)="closeModal()" 
+         @fadeInOut
+         (filtersApplied)="onFiltersApplied($event)"
+         [initialFilters]="activeFilters"
+         >
+        </app-filter-goal-modal>
+        } @if (showEditGoalModal) {
+        <app-edit-goal-modal
+          [goalToEdit]="goalToEdit"
+          (close)="closeModal()"
+          @fadeInOut
+        ></app-edit-goal-modal>
         }
 
         <section class="header-goal">
           <div class="text">
-            <h1>Transforme seus hábitos em objetivos concretoss!</h1>
+            <h1>Transforme seus hábitos em objetivos concretos!</h1>
             <p>
               Conecte seus esforços diários a metas reais e recompensas que
               fazem sentido pra você.
@@ -51,11 +65,16 @@
                   alt=""
                   width="25px"
                 />
-                <input type="text" placeholder="Buscar meta... " />
+                <input
+                  type="text"
+                  placeholder="Buscar meta... "
+                  [(ngModel)]="searchText"
+                  (ngModelChange)="onSearchChange()"
+                />
               </div>
             </div>
 
-            <button class="filter">
+            <button class="filter" (click)="openFilterModal()">
               <img src="./assets/icon/tune_100dp_434343.png" alt="" />
               <p>Filters</p>
             </button>
@@ -63,11 +82,16 @@
           <div class="goal-list-card-wrapper">
             @if (!loading) { @if (hasGoals) {
             <ul class="goal-list-cards">
-              @for (goal of goals; track goal.id) {
+              @for (goal of filteredGoals; track goal.id) {
               <li>
                 <app-goal-card
                   [goal]="goal"
                   (mark)="completeGoal($event)"
+                  (delete)="deleteGoal($event)"
+                  (complete)="completeGoal($event)"
+                  (restore)="restoreGoal($event)"
+                  (cancel)="cancelGoal($event)"
+                  (edit)="openEditGoalModal($event)"
                 ></app-goal-card>
               </li>
               }
