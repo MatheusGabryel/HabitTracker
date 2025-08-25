@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { Subscription } from 'rxjs';
+import { GoalService } from 'src/app/services/goal/goal.service';
 // register()
 
 @Component({
@@ -18,7 +19,7 @@ import { Subscription } from 'rxjs';
 })
 export class HabitDaysComponent implements OnInit {
   public userService = inject(UserService);
-
+  public goalService = inject(GoalService)
   public habitService = inject(HabitService);
   public daysBefore = 7;
 
@@ -39,9 +40,10 @@ export class HabitDaysComponent implements OnInit {
 
   async selectDay(iso: string) {
     await this.habitService.completeHabitById(this.habitId, iso);
+        await this.goalService.checkGoalsForHabit(this.habitId)
     const dateList = this.days.map(d => d.iso);
     await this.habitService.loadLogsForHabit(this.habitId, dateList, this.habit);
-
+  
     this.logUpdated.emit();
   }
 

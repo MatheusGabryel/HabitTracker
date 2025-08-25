@@ -1,16 +1,16 @@
 <div class="habit-card" @fadeInOut [class.expanded]="showDetails">
-  <div class="habit-main">
+  <div class="habit-main"   (click)="toggleDetails($event)">
     <div class="dinamic-status" title="Concluído">
       @if(getTodayState() === "in_progress") {
-      <button class="status-button" (click)="markHabit()">
+      <button class="status-button" (click)="markHabit($event)">
         <img @fadeInOut src="./assets/icon/circle.png" width="30px" alt="" />
       </button>
       } @if(getTodayState() === "completed") {
-      <button class="status-button" (click)="markHabit()">
+      <button class="status-button" (click)="markHabit($event)">
         <img @fadeInOut src="./assets/icon/check.png" width="30px" alt="" />
       </button>
       } @if(getTodayState() === "failed") {
-      <button class="status-button" (click)="markHabit()">
+      <button class="status-button" (click)="markHabit($event)">
         <img @fadeInOut src="./assets/icon/close.png" width="30px" alt="" />
       </button>
       }
@@ -68,13 +68,13 @@
     </div>
 
     <div class="habit-actions">
-      <button class="delete-button" title="Deletar" (click)="emitDelete()">
+      <button class="delete-button" title="Deletar" (click)="emitDelete($event)">
         <img src="./assets/icon/delete.svg" alt="Deletar" width="20px" />
       </button>
-      <button class="edit-button" title="Editar hábito" (click)="emitEdit()">
+      <button class="edit-button" title="Editar hábito" (click)="emitEdit($event)">
         <img src="./assets/icon/edit.svg" alt="Editar" width="20px" />
       </button>
-      <button class="expand-button" title="Ver mais" (click)="toggleDetails()">
+      <button class="expand-button" title="Ver mais" (click)="toggleDetails($event)">
         <img
           src="./assets/icon/arrow.svg"
           alt="Expandir"

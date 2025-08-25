@@ -15,6 +15,7 @@ import { Timestamp } from 'firebase/firestore';
 import { addDays, format, startOfWeek } from 'date-fns';
 import { StatisticsService } from 'src/app/services/statistics/statistics.service';
 import { normalizeFirestoreDate } from 'src/app/shared/utils/timestamp.utils';
+import { GoalService } from 'src/app/services/goal/goal.service';
 register()
 
 @Component({
@@ -56,6 +57,7 @@ export class HabitCardComponent implements OnInit {
   public habitService = inject(HabitService)
   public statisticsService = inject(StatisticsService)
   public userService = inject(UserService);
+  public goalService = inject(GoalService)
   @Output() delete = new EventEmitter<string>();
   @Output() mark = new EventEmitter<{ habit: HabitData, date: string }>();
   @Output() open = new EventEmitter<HabitData>();
@@ -95,14 +97,17 @@ export class HabitCardComponent implements OnInit {
   timeValue: any = []
 
 
-  public emitDelete() {
+  public emitDelete(event: MouseEvent) {
+    event.stopPropagation();
     this.delete.emit(this.habit.id);
   }
 
-  public emitEdit() {
+  public emitEdit(event: MouseEvent) {
+    event.stopPropagation();
     this.open.emit(this.habit);
   }
-  public toggleDetails() {
+  public toggleDetails(event: MouseEvent) {
+    event.stopPropagation();
     this.showDetails = !this.showDetails;
   }
 
@@ -127,8 +132,10 @@ export class HabitCardComponent implements OnInit {
     return todayLog?.state || 'in_progress';
   }
 
-  async markHabit() {
-    await this.habitService.completeHabit(this.habit, new Date().toISOString().split('T')[0]);
+  async markHabit(event: MouseEvent) {
+    event.stopPropagation();
+    await this.habitService.completeHabit(this.habit, new Date().toISOString().split('T')[0])
+    await this.goalService.checkGoalsForHabit(this.habit.id)
     await this.habitService.loadLogsForHabit(
       this.habit.id,
       this.dateRange,
@@ -137,21 +144,21 @@ export class HabitCardComponent implements OnInit {
 
     this.logs = this.habitService.logs[this.habit.id] || {};
 
-        const totalLogs = await this.habitService.getHabitLogs(this.habit)
+    const totalLogs = await this.habitService.getHabitLogs(this.habit)
 
     const habitWithLogs = {
       ...this.habit,
       logs: totalLogs
     }
-this.updateHabitStatistics(habitWithLogs, this.dateRange);
+    this.updateHabitStatistics(habitWithLogs, this.dateRange);
   }
 
   getPieGradient() {
-  const successDeg = this.percentSuccess * 3.6;
-  const pendingDeg = this.percentPending * 3.6;
-  const failedDeg = this.percentFailed * 3.6;
+    const successDeg = this.percentSuccess * 3.6;
+    const pendingDeg = this.percentPending * 3.6;
+    const failedDeg = this.percentFailed * 3.6;
 
-  return `conic-gradient(
+    return `conic-gradient(
     #4caf50 0deg ${successDeg}deg,
     #ff9800 ${successDeg}deg ${successDeg + pendingDeg}deg,
     #f44336 ${successDeg + pendingDeg}deg 360deg
@@ -159,32 +166,32 @@ this.updateHabitStatistics(habitWithLogs, this.dateRange);
   }
 
   updateHabitStatistics(habitWithLogs: HabitData, weekRange: string[]) {
-  const habitStats = this.statisticsService.getIndivualHabitCompletionRate(habitWithLogs, weekRange);
-  this.weekCompletionRate = habitStats.rate;
-  this.daysCompleted = habitStats.completed;
+    const habitStats = this.statisticsService.getIndivualHabitCompletionRate(habitWithLogs, weekRange);
+    this.weekCompletionRate = habitStats.rate;
+    this.daysCompleted = habitStats.completed;
 
-  this.currentStreak = this.statisticsService.calculateHabitCurrentStreak(habitWithLogs);
-  this.bestStreak = this.statisticsService.calculateHabitBestStreak(habitWithLogs);
+    this.currentStreak = this.statisticsService.calculateHabitCurrentStreak(habitWithLogs);
+    this.bestStreak = this.statisticsService.calculateHabitBestStreak(habitWithLogs);
 
-  const habitCompletion = this.statisticsService.getHabitCompletion(habitWithLogs);
-  this.completionForWeek = habitCompletion.week;
-  this.completionForMonth = habitCompletion.month;
-  this.completionForYear = habitCompletion.year;
-  this.totalCompletion = habitCompletion.total;
+    const habitCompletion = this.statisticsService.getHabitCompletion(habitWithLogs);
+    this.completionForWeek = habitCompletion.week;
+    this.completionForMonth = habitCompletion.month;
+    this.completionForYear = habitCompletion.year;
+    this.totalCompletion = habitCompletion.total;
 
-  const perfomance = this.statisticsService.getPerfomanceHabit(habitWithLogs);
-  this.totalCount = perfomance.total;
-  this.successCount = perfomance.success;
-  this.pendingCount = perfomance.pending;
-  this.failCount = perfomance.failed;
-  this.percentSuccess = perfomance.percentSuccess;
-  this.percentPending = perfomance.percentPending;
-  this.percentFailed = perfomance.percentFailed;
+    const perfomance = this.statisticsService.getPerfomanceHabit(habitWithLogs);
+    this.totalCount = perfomance.total;
+    this.successCount = perfomance.success;
+    this.pendingCount = perfomance.pending;
+    this.failCount = perfomance.failed;
+    this.percentSuccess = perfomance.percentSuccess;
+    this.percentPending = perfomance.percentPending;
+    this.percentFailed = perfomance.percentFailed;
 
-  const progress = this.statisticsService.getProgressValueHabit(habitWithLogs);
-  this.unitsValue = progress;
-  this.timeValue = progress;
-}
+    const progress = this.statisticsService.getProgressValueHabit(habitWithLogs);
+    this.unitsValue = progress;
+    this.timeValue = progress;
+  }
 
   async ngOnInit() {
     const today = new Date();
@@ -213,7 +220,7 @@ this.updateHabitStatistics(habitWithLogs, this.dateRange);
       ...this.habit,
       logs: totalLogs
     }
-this.updateHabitStatistics(habitWithLogs, this.dateRange);
+    this.updateHabitStatistics(habitWithLogs, this.dateRange);
   }
 
 
@@ -232,7 +239,7 @@ this.updateHabitStatistics(habitWithLogs, this.dateRange);
       ...this.habit,
       logs: totalLogs
     };
-this.updateHabitStatistics(habitWithLogs, this.dateRange);
+    this.updateHabitStatistics(habitWithLogs, this.dateRange);
   }
 
   getCurrentWeekRange(): string[] {
