@@ -16,23 +16,23 @@ export class HabitService {
 
   constructor() { }
 
-  async updateHabit(newHabit: any, habitId: string) {
+  async updateHabit(newHabit: HabitData, habitId: string) {
     const uid = await this.userService.getUserId();
     if (!uid) return;
     const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`)
     try {
-      await updateDoc(habitRef, newHabit);
+      await updateDoc(habitRef, newHabit as Partial<HabitData>);
     } catch (error) {
       alert(`Erro desconhecido: ${error}`);
     }
   }
 
-    async updateHabitList(newList: any, listId: string) {
+  async updateHabitList(newList: HabitList, listId: string) {
     const uid = await this.userService.getUserId();
     if (!uid) return;
     const listRef = doc(this.firestore, `users/${uid}/list/${listId}`)
     try {
-      await updateDoc(listRef, newList);
+      await updateDoc(listRef, newList as Partial<HabitList>);
     } catch (error) {
       alert(`Erro desconhecido: ${error}`);
     }
@@ -155,6 +155,7 @@ export class HabitService {
 
   public async getHabitById(habitId: string) {
     const uid = await this.userService.getUserId();
+     if(!uid) return
     const habitsRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
     const snapshot = await getDoc(habitsRef);
     if (snapshot.exists()) {
@@ -164,7 +165,9 @@ export class HabitService {
     }
   }
 
-  async deleteHabit(uid: string, habitId: string): Promise<void> {
+  async deleteHabit(habitId: string): Promise<void> {
+    const uid = await this.userService.getUserId();
+    if (!uid) throw new Error("Usuário não autenticado");
     const habitRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
     const logsRef = collection(this.firestore, `users/${uid}/habits/${habitId}/habitlogs`);
     const logsSnapshot = await getDocs(logsRef);
@@ -172,7 +175,6 @@ export class HabitService {
     await Promise.all(deletions);
     await deleteDoc(habitRef);
   }
-
   async addNewEditHabit(oldHabit: HabitData) {
     const uid = await this.userService.getUserId();
     if (!uid) return;

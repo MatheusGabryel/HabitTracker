@@ -67,8 +67,10 @@ export class HabitPage {
   public showHabitModal = false;
   public showListModal = false;
   public showEditHabitModal = false;
+
   public showEditListsModal = false
   public habitToEdit: any = null;
+
 
   openHabitModal() {
     this.showHabitModal = true;
@@ -118,8 +120,6 @@ export class HabitPage {
 
   async deleteHabit(habitId: string) {
     try {
-      const uid = await this.userService.getUserId();
-      if (!uid) return;
       Swal.fire({
         title: "Tem certeza?",
         text: "Você perderá tudo relacionado ao hábito excluído!",
@@ -131,7 +131,7 @@ export class HabitPage {
         confirmButtonText: "Sim, desejo deletar."
       }).then((result) => {
         if (result.isConfirmed) {
-          this.habitService.deleteHabit(uid, habitId);
+          this.habitService.deleteHabit(habitId);
           this.activeListHabits = this.activeListHabits.filter(h => h.id !== habitId);
 
           Swal.fire({
