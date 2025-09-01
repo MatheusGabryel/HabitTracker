@@ -167,7 +167,82 @@ ion-content {
         li {
             list-style: none;
         }
+        }
 
+        .empty-state {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+
+            .empty-icon {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+                opacity: 0.6;
+                background-color: #e0004d;
+                padding: 15px;
+                border-radius: 50%;
+            }
+
+            p {
+                color: #666;
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            .empty-subtitle {
+                color: #888;
+                font-size: 1rem;
+                margin-bottom: 20px;
+                font-weight: 400;
+                max-width: 400px;
+            }
+
+            .create-button {
+                background-color: #e0004d;
+                color: white;
+                border: none;
+                padding: 14px 28px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: 500;
+                transition: background-color 0.2s;
+
+                &:hover {
+                    background-color: #c5003d;
+                }
+            }
+
+        @media (max-width: 768px) {
+            .empty-state {
+                padding: 3rem 1.5rem;
+
+                .empty-icon {
+                    width: 60px;
+                    height: 60px;
+                    padding: 10px;
+                }
+
+                p {
+                    font-size: 1rem;
+                }
+
+                .empty-subtitle {
+                    font-size: 0.9rem;
+                }
+
+                .create-button {
+                    padding: 12px 24px;
+                    font-size: 0.9rem;
+                }
+            }
+        }
         .no-goals {
             margin-top: 2rem;
         }

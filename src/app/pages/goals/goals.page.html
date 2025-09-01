@@ -86,7 +86,6 @@
               <li>
                 <app-goal-card
                   [goal]="goal"
-                  (mark)="completeGoal($event)"
                   (delete)="deleteGoal($event)"
                   (complete)="completeGoal($event)"
                   (restore)="restoreGoal($event)"
@@ -97,8 +96,15 @@
               }
             </ul>
             } @else {
-            <div class="no-goals">
-              <p>Crie uma meta.</p>
+            <div class="empty-state">
+              <img
+                src="./assets/icon/emoji_events_100dp_FFFFFF.png"
+                alt="Nenhuma meta"
+                class="empty-icon"
+              />
+              <p>Você ainda não criou nenhuma meta</p>
+              <p class="empty-subtitle">Transforme seus hábitos em objetivos concretos e alcance seus sonhos!</p>
+              <button class="create-button" (click)="openModal()">Criar Meta</button>
             </div>
             } }
           </div>
