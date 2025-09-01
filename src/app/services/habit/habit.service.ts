@@ -43,46 +43,33 @@ export class HabitService {
   async loadLogsForHabit(habitId: string, dates: string[] | string, habit: HabitData): Promise<void> {
     const uid = await this.userService.getUserId();
     if (!uid) return;
-    const dateList = Array.isArray(dates) ? dates : [dates]
+
+    const dateList = Array.isArray(dates) ? dates : [dates];
     const logs: HabitLogMap = {};
-    const habitRule = habit.timesTarget?.rule ?? habit.timeTarget?.rule;
-    const target = habit.timesTarget?.value ?? habit.timeTarget?.value ?? 0;
+    const today = new Date().toISOString().split('T')[0];
 
-    const logPromises = dateList.map(async date => {
-      const logRef = doc(this.firestore, `users/${uid}/habits/${habitId}/habitsLogs/${date}`);
-      const logSnap = await getDoc(logRef);
-      return { date, log: logSnap.exists() ? (logSnap.data() as HabitLog) : null };
-    });
+    const results = await Promise.all(
+      dateList.map(async date => {
+        const logRef = doc(this.firestore, `users/${uid}/habits/${habitId}/habitsLogs/${date}`);
+        const logSnap = await getDoc(logRef);
+        const log = logSnap.exists() ? (logSnap.data() as HabitLog) : null;
+        logs[date] = log;
+        return { date, log };
+      })
+    );
 
-    const results = await Promise.all(logPromises);
     for (const { date, log } of results) {
-      logs[date] = log;
-    }
-    if (habitRule === 'at_most' || habitRule === 'at_least' || habitRule === 'equal') {
-      const todayIso = new Date().toISOString().split('T')[0];
+      if (!log) continue;
+      const isPast = date < today;
+      if (!isPast) continue;
 
-      for (const [date, log] of Object.entries(logs)) {
-        const dateObj = new Date(date);
-        const isPast = dateObj < new Date(todayIso);
-        if (!isPast || !log || log.state !== 'in_progress') continue;
+      const updatedLog = this.updateLogState(log, habit);
 
-        const progress = log.progressValue ?? 0;
-
-        let newState: 'completed' | 'failed' | 'in_progress' | 'not_completed' = 'in_progress';
-
-        if (habitRule === 'at_most') {
-          newState = progress > target ? 'failed' : 'completed';
-        } else if (habitRule === 'at_least') {
-          newState = progress >= target ? 'completed' : 'failed';
-        } else if (habitRule === 'equal') {
-          newState = progress === target ? 'completed' : 'failed';
-        }
-
-        if (log.state !== newState) {
-          await this.logHabitCompletion(uid, habitId, date, newState, progress);
-          logs[date]!.state = newState;
-        }
+      if (log.state !== updatedLog.state) {
+        await this.logHabitCompletion(habitId, date, updatedLog.state, updatedLog.progressValue ?? 0);
       }
+
+      logs[date] = updatedLog;
     }
 
     this.logs[habitId] = logs;
@@ -153,9 +140,69 @@ export class HabitService {
     return habitsWithLogs;
   }
 
+  updateLogState(log: HabitLog, habit: HabitData): HabitLog {
+    if (!log) return log;
+
+    const habitRule = habit.timesTarget?.rule ?? habit.timeTarget?.rule;
+    const target = habit.timesTarget?.value ?? habit.timeTarget?.value ?? 0;
+
+    // Se não tiver regra ou log não estiver "in_progress", retorna como está
+    if (!habitRule || log.state !== 'in_progress') return log;
+
+    const progress = log.progressValue ?? 0;
+    let newState: HabitLog['state'] = 'in_progress';
+
+    switch (habitRule) {
+      case 'at_most':
+        newState = progress <= target ? 'completed' : 'failed';
+        break;
+      case 'at_least':
+        newState = progress >= target ? 'completed' : 'failed';
+        break;
+      case 'equal':
+        newState = progress === target ? 'completed' : 'failed';
+        break;
+    }
+
+    return { ...log, state: newState };
+  }
+
+  async getLogsWithHabit(): Promise<any[]> {
+    const uid = await this.userService.getUserId();
+    const habitsRef = collection(this.firestore, `users/${uid}/habits`);
+    const snapshot = await getDocs(habitsRef);
+
+
+    if (snapshot.empty) return [];
+
+    const habits = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as HabitData[];
+    const habitsLogs: any[] = await Promise.all(
+      habits.map(async habit => {
+        const logsRef = collection(this.firestore, `users/${uid}/habits/${habit.id}/habitsLogs`);
+        const logsSnap = await getDocs(logsRef);
+        const logs = logsSnap.docs.map(d => {
+          const log = d.data() as HabitLog;
+          //this.updateLogState(log, habit)
+          return log;
+        });
+
+        const id = habit.id
+        return {
+          id,
+          logs
+        };
+      })
+    );
+
+    return habitsLogs;
+  }
+
   public async getHabitById(habitId: string) {
     const uid = await this.userService.getUserId();
-     if(!uid) return
+    if (!uid) return
     const habitsRef = doc(this.firestore, `users/${uid}/habits/${habitId}`);
     const snapshot = await getDoc(habitsRef);
     if (snapshot.exists()) {
@@ -386,6 +433,7 @@ export class HabitService {
     return result;
   }
 
+
   async getHabitLog(habitId: HabitData, date: string): Promise<HabitLog | null> {
     const uid = await this.userService.getUserId();
     const logRef = doc(this.firestore, `users/${uid}/habits/${habitId.id}/habitsLogs/${date}`);
@@ -415,7 +463,7 @@ export class HabitService {
 
       case 'times': {
         const inputValue = await this.presentTimesInputAlert(habit);
-        if (inputValue == null) return;
+        if (inputValue == null) return currentState;
 
         const result = this.calcNewStateTimes(habit, inputValue);
         state = result.state;
@@ -425,7 +473,7 @@ export class HabitService {
 
       case 'time': {
         const inputValue = await this.presentTimeInputAlert(habit);
-        if (inputValue == null) return;
+        if (inputValue == null) return currentState;
 
         const result = this.calcNewStateTime(habit, inputValue);
         state = result.state;
@@ -438,18 +486,21 @@ export class HabitService {
 
     const logDate = dateIso || new Date().toISOString().split('T')[0];
 
-    await this.logHabitCompletion(uid, habit.id, logDate, state, progressValue);
+    await this.logHabitCompletion(habit.id, logDate, state, progressValue);
+
+    return state
   }
 
 
   async logHabitCompletion(
-    uid: string,
     habitId: string,
     date: string,
     state: string,
     progressValue: number | undefined
 
   ): Promise<void> {
+        const uid = await this.userService.getUserId();
+    if (!uid) return;
     const logId = `${date}`;
     const logRef = doc(this.firestore, `users/${uid}/habits/${habitId}/habitsLogs/${logId}`);
 
