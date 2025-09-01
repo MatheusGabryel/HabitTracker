@@ -153,11 +153,20 @@
                 }
               </ul>
               } @else {
-              <div class="no-habits">
-                <p>
-                  @if (activeTab === 'Ver tudo') { Você ainda não criou hábitos.
-                  } @else { Não há hábitos nesta lista. }
-                </p>
+              <div class="empty-state">
+                <img
+                  src="./assets/icon/post_add_250dp_FFFFFF.png"
+                  alt="Nenhum hábito"
+                  class="empty-icon"
+                />
+                @if (activeTab === 'Ver tudo') {
+                <p>Você ainda não criou nenhum hábito</p>
+                <p class="empty-subtitle">Comece criando seu primeiro hábito para começar sua jornada!</p>
+                } @else {
+                <p>Não há hábitos nesta lista</p>
+                <p class="empty-subtitle">Adicione hábitos a esta categoria ou selecione outra lista.</p>
+                }
+                <button class="create-button" (click)="openHabitModal()">Criar Hábito</button>
               </div>
               } }
             </div>
