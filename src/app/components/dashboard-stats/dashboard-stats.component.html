@@ -1,15 +1,192 @@
-<section class="stats-painel">
-  <h3 class="stats-title">Seu Desempenho</h3>
+<section class="stats-painel" [class.compact]="isCompact">
+  <div class="stats-header">
+    <h3 class="stats-title">Seu Desempenho</h3>
+    @if (!isCompact) {
+
+    <button class="expand-btn" (click)="openStatsModal()">
+      <img src="./assets/icon/expand_more_100dp_434343.png" alt="Expandir" />
+    </button>
+    }
+  </div>
 
   <div class="stats-section top">
-    <div class="stat-block">
-      <span class="stat-label">[stats aqui]</span>
+    <h4 class="section-title">Hábitos</h4>
+    <div class="stats-grid">
+      <div class="stat-block">
+        <span class="stat-value">{{ habitCompletionRate }}%</span>
+        <span class="stat-label">Concluídos na semana</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-value">{{ habitStreak }}</span>
+        <span class="stat-label">Dias consecutivos</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-value">{{ totalHabitsCreated }}</span>
+        <span class="stat-label">Hábitos criados</span>
+      </div>
     </div>
   </div>
 
   <div class="stats-section bottom">
-    <div class="stat-block">
-      <span class="stat-label">[stats aqui]</span>
+    <h4 class="section-title">Metas</h4>
+    <div class="stats-grid">
+      <div class="stat-block">
+        <span class="stat-value">{{ goalCompletionRate }}%</span>
+        <span class="stat-label">Metas concluídas</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-value">{{ inProgressGoalsCount }}</span>
+        <span class="stat-label">Metas em andamento</span>
+      </div>
+
+      <div class="stat-block">
+        <span class="stat-value">{{ totalGoalsCreated }}</span>
+        <span class="stat-label">Total de metas criadas</span>
+      </div>
     </div>
   </div>
 </section>
+
+@if(showStatsModal) {
+
+<div class="stats-side-modal" [class.closing]="isClosing">
+  <div class="stats-side-content" [class.closing]="isClosing">
+    <button class="close-button" (click)="closeStatsModal()">&times;</button>
+
+    <h2 class="modal-title">Estatísticas Detalhadas</h2>
+
+    <div class="stats-modal-section habits-section">
+      <h3 class="section-title">🟦 Hábitos</h3>
+
+      <div class="stat-item">
+        <span class="stat-item-label"
+          >Total de hábitos completados nas ultimas 4 semanas:</span
+        >
+        <div class="frequency-bars">
+          @for(semana of historyHabits; track semana.label) {
+          <div class="frequency-item">
+            <span class="habit-name">{{ semana.label }}</span>
+            <div class="frequency-bar-container">
+              <span class="frequency-value">{{ semana.count }}x/semana</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Taxa média de cumprimento:</span>
+        <span class="stat-item-value"
+          >{{ averageCompletionRate }}% de execução nas últimas 4 semanas</span
+        >
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Melhor streak de hábito individual:</span>
+        <span class="stat-item-value">{{ bestHabitStreak.count }} dias </span>
+        <span class="stat-date">({{ bestHabitStreak.name }})</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label"
+          >Dia da semana com maior taxa de execução (4 semanas):</span
+        >
+        <span class="stat-item-value"
+          >{{ bestDayOfWeek.name }} = {{ bestDayOfWeek.rate }}%</span
+        >
+      </div>
+    </div>
+
+    <div class="stats-modal-section goals-section">
+      <h3 class="section-title">🟩 Metas</h3>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Última meta concluída:</span>
+        @if (lastCompletedGoal) {
+        <span class="goal-stat-value">{{ lastCompletedGoal.name }}</span>
+        <span class="stat-date">
+          ({{ lastCompletedGoal.date | date : "dd/MM/yyyy" }})</span
+        >
+        } @else {
+        <span class="stat-item-value"
+          >Nenhuma meta concluída
+        </span>
+        }
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Metas:</span>
+        <div class="goals-comparison">
+          <div class="goal-stat completed">
+            <span class="goal-stat-value">{{ completedGoalsCount }}</span>
+            <span class="goal-stat-label">Concluídas</span>
+          </div>
+          <div class="goal-stat in_progress">
+            <span class="goal-stat-value">{{ inProgressGoalsCount }}</span>
+            <span class="goal-stat-label">Em Progresso</span>
+          </div>
+          <div class="goal-stat failed">
+            <span class="goal-stat-value">{{ failedGoalsCount }}</span>
+            <span class="goal-stat-label">Falhadas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label"
+          >Quantidade de metas concluídas este semestre:</span
+        >
+        <span class="stat-item-value">{{ goalsCompletedInSemester }}</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Tipo de meta mais comum:</span>
+        @if(mostCommonGoalType) {
+        <span class="stat-item-value"
+          >{{ getGoalTypeName(mostCommonGoalType.name) }}
+        </span>
+        <span class="stat-date"
+          >({{ mostCommonGoalType.count }}
+          {{ mostCommonGoalType.count === 1 ? "Meta" : "Metas" }})</span
+        >
+        } @else {
+        <span class="stat-item-value"
+          >Nenhuma meta criada
+        </span>
+        }
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Categoria de meta mais comum:</span>
+        @if(mostCommonGoalCategory) {
+        <span class="stat-item-value"
+          >{{ getGoalCategoryName(mostCommonGoalCategory.name) }}
+        </span>
+        <span class="stat-date"
+          >({{ mostCommonGoalType.count }}
+          {{ mostCommonGoalType.count === 1 ? "Meta" : "Metas" }})</span
+        >
+        } @else {
+        <span class="stat-item-value"
+          >Nenhuma meta criada
+        </span>
+        }
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-item-label">Meta mais antiga não concluída:</span>
+        @if (longestGoal) {
+        <span class="stat-item-value">{{ longestGoal.name }} </span>
+        <span class="stat-date"
+          >(desde {{ longestGoal.date | date : "dd/MM/yyyy" }})</span
+        >
+        } @else {
+        <span class="stat-item-value"
+          >Nenhuma meta criada
+        </span>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}
