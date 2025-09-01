@@ -3,7 +3,7 @@
   border-radius: 24px;
   background: #f9f9f9;
   height: 550px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.04);
   border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
 }
@@ -38,7 +38,7 @@
 .day-swiper-container {
   display: flex;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   padding: 0.75rem 0;
   border-radius: 16px;
   background-color: #f0f0f0;
@@ -106,6 +106,7 @@
 
 .habit-item:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
 }
 
 .habit-info {
@@ -278,4 +279,197 @@
       transform: translateY(100%);
     }
   }
+}
+
+// Media queries para responsividade
+@media (max-width: 992px) {
+  .dashboard-days {
+    height: auto;
+    min-height: 450px;
+  }
+  
+  .day-swiper-container {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .date-item {
+    width: 55px;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-days {
+    padding: 0.8rem;
+    border-radius: 16px;
+  }
+
+  
+  .section-title {
+    font-size: 1.2rem;
+  }
+  
+  .button-container {
+    align-self: flex-end;
+  }
+  
+  .day-swiper-container {
+    gap: 0.4rem;
+    padding: 0.4rem;
+  }
+  
+  .date-item {
+    width: 50px;
+    padding: 0.3rem 0.5rem;
+    
+    .date-number {
+      font-size: 0.9rem;
+    }
+    
+    .date-day {
+      font-size: 0.7rem;
+    }
+  }
+  
+  .habit-item {
+    padding: 0.6rem 0.8rem;
+    
+    .habit-info p {
+      font-size: 0.9rem;
+    }
+    
+    .icon-wrapper {
+      width: 35px;
+      height: 35px;
+      
+      img {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    .dinamic-status .status-button img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-days {
+    padding: 0.6rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .day-swiper-container {
+    gap: 0.3rem;
+    padding: 0.3rem;
+  }
+  
+  .date-item {
+    width: 40px;
+    padding: 0.25rem 0.4rem;
+    
+    .date-number {
+      font-size: 0.8rem;
+    }
+    
+    .date-day {
+      font-size: 0.65rem;
+    }
+  }
+  
+  .habit-item {
+    padding: 0.5rem 0.6rem;
+    
+    .habit-info {
+      gap: 0.5rem;
+      
+      p {
+        font-size: 0.85rem;
+      }
+    }
+    
+    .icon-wrapper {
+      width: 30px;
+      height: 30px;
+      
+      img {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    
+    .dinamic-status .status-button img {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  
+  .more-habits p {
+    font-size: 0.85rem;
+  }
+}
+
+.habit-list {
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        text-align: center;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 2px dashed #dee2e6;
+        margin-top: 1rem;
+    
+        .empty-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+            background-color: #6c757d;
+            padding: 8px;
+            border-radius: 50%;
+        }
+    
+        p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+    
+        .empty-subtitle {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .empty-state {
+            padding: 1.5rem 0.8rem;
+    
+            .empty-icon {
+                width: 40px;
+                height: 40px;
+                padding: 6px;
+            }
+    
+            p {
+                font-size: 0.8rem;
+            }
+    
+            .empty-subtitle {
+                font-size: 0.75rem;
+            }
+        }
+    }
 }
