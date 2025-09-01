@@ -148,14 +148,14 @@
           <span class="btn-text">Cancelado</span>
         </button>
         } @else if(goal.goalType === 'unit') {
-        <button class="action-btn progress-btn" (click)="addProgress($event)">
+        <button class="action-btn progress-btn" (click)="completeGoal($event)">
           <span class="btn-icon">+</span>
           <span class="btn-text">Progresso</span>
         </button>
         } @else if(goal.goalType === 'yes_no') {
         <button
           class="action-btn complete-btn"
-          (click)="addProgress($event)"
+          (click)="completeGoal($event)"
           [disabled]="goal.progressValue >= 1"
         >
           <span class="btn-icon">✓</span>
@@ -349,9 +349,9 @@
         } @if (goal.goalType === 'unit' && goal.state === 'in_progress') {
         <button
           class="modal-action-btn progress-btn"
-          (click)="addProgress($event)"
+          (click)="completeGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/plus.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-icon"><img src="./assets/icon/plus.svg" alt="Adicionar Progresso" width="20px"  /></span>
           <span class="action-text">Adicionar Progresso</span>
         </button>
         } @if (goal.goalType === 'yes_no' && goal.state === 'in_progress' &&
@@ -360,7 +360,7 @@
           class="modal-action-btn complete-btn"
           (click)="completeGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/check-white.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-icon"><img src="./assets/icon/check-white.svg" alt="Completar" width="20px"  /></span>
           <span class="action-text">Marcar como Concluída</span>
         </button>
         }
@@ -369,7 +369,7 @@
           class="modal-action-btn delete-btn"
           (click)="deleteGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/delete-white.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-icon"><img src="./assets/icon/delete-white.svg" alt="Deletar" width="20px"  /></span>
           <span class="action-text">Excluir Meta</span>
         </button>
 
@@ -378,7 +378,7 @@
           class="modal-action-btn cancel-btn"
           (click)="cancelGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/exit.svg" alt="Editar" width="20px"  /></span>
+          <span class="action-icon"><img src="./assets/icon/exit.svg" alt="Sair" width="20px"  /></span>
           <span class="action-text">Cancelar Meta</span>
         </button>
         }
