@@ -1,34 +1,135 @@
 <section class="goals-panel">
   <div class="goals-header">
     <h2 class="panel-title">Suas Metas</h2>
-    <button class="view-all">Ver todos</button>
+    <button class="view-all" routerLink="/goals">Ver todos</button>
   </div>
 
   <div class="goals-list">
-    @for (goal of goals; track goal.id) {
-    <div class="goal-card" [class.completed]="goal.isCompleted">
+    @if (filteredGoals.length > 0) {
+    @for (goal of filteredGoals.slice(0, 3); track goal.id) {
+    <div
+      class="goal-card"
+      [class.high-progress]="calculateProgress(goal) >= 80"
+      [class.medium-progress]="
+        calculateProgress(goal) >= 50 && calculateProgress(goal) < 80
+      "
+      [class.low-progress]="calculateProgress(goal) < 50"
+      [ngStyle]="{ 'border-left-color': rgbaCatColor(goal) }"
+    >
+      
+
       <div class="header">
-        <h3>{{ goal.title }}</h3>
-        <span class="status" *ngIf="isCompleted">✔️ Concluído</span>
-        <button *ngIf="!goal.isCompleted" class="btn-add-progress">
-          + Progresso
+        <h3>{{ goal.name }}</h3>
+
+        @switch(goal.state) {
+
+        @case('completed') {
+        <button class="btn-complete completed" disabled>
+          <span class="btn-icon">
+            <img
+              src="./assets/icon/check-white.svg"
+              alt="Concluído"
+              width="15px"
+            />
+          </span>
+          <span class="btn-text">Concluída</span>
         </button>
+        }
+
+        @case('cancelled') {
+        <button class="btn-complete cancelled" disabled>
+          <span class="btn-icon">
+            <img
+              src="./assets/icon/check-white.svg"
+              alt="Cancelado"
+              width="15px"
+            />
+          </span>
+          <span class="btn-text">Cancelada</span>
+        </button>
+        }
+
+        @case('in_progress') {
+
+        @if(goal.goalType === 'unit') {
+        <button
+          class="btn-complete unit-type"
+          (click)="completeGoal(goal)"
+          [disabled]="(goal.progressValue ?? 0) >= (goal.targetValue ?? 0)"
+        >
+          <span class="btn-icon">
+            <img src="./assets/icon/plus.svg" alt="Progresso" width="15px" />
+          </span>
+          <span class="btn-text"> Progresso </span>
+        </button>
+        }
+
+        @else if(goal.goalType === 'habit' && goal.linkedHabit) {
+        <div class="habit-info">
+          <span class="habit-label">Hábito:</span>
+          <strong class="habit-name">{{
+            habitNamesMap[goal.linkedHabit]
+          }}</strong>
+        </div>
+        }
+
+        @else if(goal.goalType === 'yes_no') {
+        <button
+          class="btn-complete yes-no-type"
+          (click)="completeGoal(goal)"
+          [disabled]="(goal.progressValue ?? 0) >= 1"
+        >
+          <span class="btn-icon">
+            <img
+              src="./assets/icon/check-white.svg"
+              alt="Completar"
+              width="15px"
+            />
+          </span>
+          <span class="btn-text">
+            {{ (goal.progressValue ?? 0) >= 1 ? "Concluída" : "Completar" }}
+          </span>
+        </button>
+        } } }
       </div>
 
       <div class="progress-info">
-        <p>
-          Progresso: {{ goal.current }} / {{ goal.target }}
-          {{ goal.unit || "" }}
-        </p>
+        <div class="progress-text">
+          <span class="progress-label">Progresso:</span>
+          <span class="progress-values">
+            {{ goal.progressValue }} / {{ goal.targetValue }}
+            @if(goal.goalType === 'unit') {
+            <span class="unit-type">{{
+              goal.progressValueType || goal.customProgressType
+            }}</span>
+            } @else if(goal.goalType === 'habit') {
+            <span class="unit-type">{{
+              goal.targetValue === 1 ? "Conclusão" : "Conclusões"
+            }}</span>
+            }
+          </span>
+        </div>
         <div class="progress-bar">
           <div
             class="progress-fill"
             [style.width.%]="calculateProgress(goal)"
+            [style.background-color]="getProgressColor(calculateProgress(goal))"
           ></div>
         </div>
+        <div class="progress-percentage">{{ calculateProgress(goal) }}%</div>
       </div>
     </div>
-
+    }
+    } @else {
+    <div class="empty-state">
+      <img
+        src="./assets/icon/emoji_events_100dp_FFFFFF.png"
+        alt="Nenhuma meta"
+        class="empty-icon"
+      />
+      <p>Nenhuma meta criada ainda</p>
+      <p class="empty-subtitle">Crie suas primeiras metas para acompanhar seu progresso!</p>
+    </div>
     }
   </div>
 </section>
