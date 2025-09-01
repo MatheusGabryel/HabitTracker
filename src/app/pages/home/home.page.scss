@@ -3,7 +3,6 @@ ion-content {
         display: flex;
         gap: 24px;
         align-items: stretch;
-
     }
 
     .dashboard-bottom {
@@ -15,7 +14,6 @@ ion-content {
 
     .dashboard-top .daily-panel {
         flex: 0 0 40%;
-        
     }
 
     .dashboard-top .calendar-panel {
@@ -31,5 +29,71 @@ ion-content {
     .dashboard-bottom .stats-panel {
         flex: 0 0 40%;
         min-width: 260px;
+    }
+}
+
+@media (max-width: 1250px) {
+    ion-content {
+        .dashboard-top .calendar-panel {
+            min-width: 380px;
+        }
+        
+        .dashboard-bottom .goal-panel {
+            min-width: 280px;
+        }
+        
+        .dashboard-bottom .stats-panel {
+            min-width: 240px;
+        }
+    }
+}
+
+@media (max-width: 1300px) {
+    ion-content {
+        .dashboard-top {
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .dashboard-bottom {
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .dashboard-top .daily-panel,
+        .dashboard-top .calendar-panel,
+        .dashboard-bottom .goal-panel,
+        .dashboard-bottom .stats-panel {
+            flex: 1 1 auto;
+            min-width: unset;
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    ion-content {
+        .dashboard-top,
+        .dashboard-bottom {
+            gap: 12px;
+        }
+        
+        .dashboard-bottom {
+            margin-top: 12px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    ion-content {
+        .dashboard-top,
+        .dashboard-bottom {
+            gap: 8px;
+        }
+        
+        .dashboard-bottom {
+            margin-top: 8px;
+        }
     }
 }
