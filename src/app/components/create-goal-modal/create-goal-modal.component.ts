@@ -227,7 +227,7 @@ export class CreateGoalModalComponent implements OnInit {
       delete goalToSave.progressValueType;
       delete goalToSave.customProgressType;
       delete goalToSave.linkedHabit;
-      goalToSave.customProgressType = 1;
+      goalToSave.targetValue = 1;
     }
 
     try {
