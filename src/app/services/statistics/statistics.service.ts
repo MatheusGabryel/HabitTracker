@@ -1,10 +1,11 @@
 import { HabitData, HabitLog } from 'src/app/interfaces/habit.interface';
 import { Injectable } from '@angular/core';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { average, Timestamp } from 'firebase/firestore';
-import { GoalData } from 'src/app/interfaces/goal.interface';
-import { getLastMonthStart, getLastWeekStart, getLastYearStart } from 'src/app/shared/utils/date.utils';
+import { GoalData, GoalType } from 'src/app/interfaces/goal.interface';
+import { getLastMonthStart, getLastWeekStart, getLastYearStart, getSixMonthsAgo } from 'src/app/shared/utils/date.utils';
+import { normalizeFirestoreDate, normalizeFirestoreDateOrNull } from 'src/app/shared/utils/timestamp.utils';
 
 
 @Injectable({
@@ -162,6 +163,63 @@ export class StatisticsService {
 
     return totalGoals === 0 ? 0 : Number(((completedGoals / totalGoals) * 100).toFixed(1));
   }
+
+  getLastCompletitionGoal(goals: GoalData[]) {
+    return goals.reduce((acc, goal) => {
+      const goalDate = normalizeFirestoreDateOrNull(goal.completedAt);
+      if (!goalDate) return acc;
+      if (!acc) return { name: goal.name, date: goalDate };
+
+      return goalDate < acc.date ? { name: goal.name, date: goalDate } : acc;
+    }, null as { name: string; date: Date } | null);
+  }
+
+  getOldestGoal(goals: GoalData[]) {
+    return goals.reduce((acc, goal) => {
+      const createdDate = normalizeFirestoreDateOrNull(goal.createdAt);
+      if (goal.completedAt !== null) return acc;
+      if (!createdDate) return acc;
+      if (!acc) return { name: goal.name, date: createdDate };
+
+      return createdDate < acc.date ? { name: goal.name, date: createdDate } : acc;
+    }, null as { name: string; date: Date } | null);
+  }
+
+  getMostCommumGoalType(goals: GoalData[]) {
+    const types = goals.reduce((acc, goal) => {
+      if (!acc[goal.goalType]) {
+        acc[goal.goalType] = 0;
+      }
+      acc[goal.goalType]++;
+      return acc;
+    }, {} as Record<GoalType, number>);
+
+    const sorted = Object.entries(types).sort((a, b) => b[1] - a[1]);
+    const mostComum = { name: sorted[0][0] as GoalType, count: sorted[0][1] };
+
+    return mostComum
+  }
+
+  getMostCommumGoalCategory(goals: GoalData[]) {
+    const types = goals.reduce((acc, goal) => {
+      if (!acc[goal.category]) {
+        acc[goal.category] = 0;
+      }
+      acc[goal.category]++;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const sorted = Object.entries(types).sort((a, b) => b[1] - a[1]);
+    const mostComum = { name: sorted[0][0], count: sorted[0][1] };
+
+    return mostComum
+  }
+  getCompletedGoalsLastSemester(goals: GoalData[]) {
+    const sixMonthsAgo = new Date(subMonths(new Date(), 6));
+
+    return goals.filter(goal => goal.state === 'completed' && !!goal.completedAt && normalizeFirestoreDate(goal.completedAt)! >= sixMonthsAgo).length;
+  }
+
 
   // Individual Habit Statistics
 
@@ -328,32 +386,31 @@ export class StatisticsService {
 
 
     return {
-      total: totalDays, 
-      success, 
-      failed, 
-      pending, 
+      total: totalDays,
+      success,
+      failed,
+      pending,
       percentSuccess: Number(percentSuccess.toFixed(1)),
       percentFailed: Number(percentFailed.toFixed(1)),
       percentPending: Number(percentPending.toFixed(1))
     };
   }
 
-getProgressValueHabit(habit: HabitData) {
-  const today = new Date();
-  const perWeek = this.parseLocalDate(getLastWeekStart());
+  getProgressValueHabit(habit: HabitData) {
+    const perWeek = this.parseLocalDate(getLastWeekStart());
 
-  const logs = habit.logs ?? [];
+    const logs = habit.logs ?? [];
 
-  const totalValue = logs.reduce((acc, log) => acc + (log.progressValue || 0), 0);
+    const totalValue = logs.reduce((acc, log) => acc + (log.progressValue || 0), 0);
 
-  const weekValue = logs
-    .filter(log => this.parseLocalDate(log.date) >= perWeek)
-    .reduce((acc, log) => acc + (log.progressValue || 0), 0);
+    const weekValue = logs
+      .filter(log => this.parseLocalDate(log.date) >= perWeek)
+      .reduce((acc, log) => acc + (log.progressValue || 0), 0);
 
-  const almostValue = logs.length ? Number((totalValue / logs.length).toFixed(0)) : 0;
+    const almostValue = logs.length ? Number((totalValue / logs.length).toFixed(0)) : 0;
 
-  return { totalValue, weekValue, almostValue };
-}
+    return { totalValue, weekValue, almostValue };
+  }
 
 
 
