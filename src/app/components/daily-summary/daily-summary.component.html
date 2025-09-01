@@ -9,90 +9,50 @@
   <div class="daily-graphs">
     <div class="graph-card">
       <h3>Hábitos concluídos</h3>
-      <div class="chart-placeholder">
-        <svg
-          class="circular-chart blue"
-          width="200"
-          height="200"
-          viewBox="-25 -25 250 250"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          style="transform: rotate(-90deg)"
-        >
-          <circle
-            r="90"
-            cx="100"
-            cy="100"
-            fill="transparent"
-            stroke="#e0e0e0"
-            stroke-width="16px"
-          ></circle>
-          <circle 
-            r="90"
-            cx="100"
-            cy="100"
-            stroke="#E0004D"
-            stroke-width="16px"
-            stroke-linecap="round"
-            stroke-dashoffset="250px"
-            fill="transparent"
-            stroke-dasharray="565.48px"
-          ></circle>
-          <text
-            x="64px"
-            y="113px"
-            fill="#4d4d4d"
-            font-size="39px"
-            font-weight="bold"
-            style="transform: rotate(90deg) translate(0px, -196px)"
+      <div class="progress-display">
+        <div class="progress-circle">
+          <div
+            class="circle-progress"
+            [ngStyle]="{
+              background:
+                'conic-gradient(from 0deg, ' +
+                getProgressColor(calculateProgress(currentHabitValue, targetHabitValue)) +
+                ' ' +
+                calculateProgress(currentHabitValue, targetHabitValue) * 3.6 +
+                'deg, #f0f0f0 0deg)'
+            }"
           >
-            7/10
-          </text>
-        </svg>
+            <div class="circle-inner">
+              <span class="progress-percentage"
+                >{{currentHabitValue}}/{{targetHabitValue}}</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="graph-card">
-      <h3>Progresso geral</h3>
-      <div class="chart-placeholder">
-        <svg
-          class="circular-chart blue"
-          width="200"
-          height="200"
-          viewBox="-25 -25 250 250"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          style="transform: rotate(-90deg)"
-        >
-          <circle
-            r="90"
-            cx="100"
-            cy="100"
-            fill="transparent"
-            stroke="#e0e0e0"
-            stroke-width="16px"
-          ></circle>
-          <circle 
-            r="90"
-            cx="100"
-            cy="100"
-            stroke="#E0004D"
-            stroke-width="16px"
-            stroke-linecap="round"
-            stroke-dashoffset="40px"
-            fill="transparent"
-            stroke-dasharray="565.48px"
-          ></circle>
-          <text
-            x="64px"
-            y="113px"
-            fill="#4d4d4d"
-            font-size="39px"
-            font-weight="bold"
-            style="transform: rotate(90deg) translate(0px, -196px)"
+      <h3>Progresso das metas</h3>
+      <div class="progress-display">
+        <div class="progress-circle">
+          <div
+            class="circle-progress"
+            [ngStyle]="{
+              background:
+                'conic-gradient(from 0deg, ' +
+                getProgressColor(this.goalRate) +
+                ' ' +
+                this.goalRate * 3.6 +
+                'deg, #f0f0f0 0deg)'
+            }"
           >
-            78%
-          </text>
-        </svg>
+            <div class="circle-inner">
+              <span class="progress-percentage"
+                >{{ goalRate }}%</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

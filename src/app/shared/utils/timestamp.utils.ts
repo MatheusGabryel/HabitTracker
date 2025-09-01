@@ -11,3 +11,12 @@ import { Timestamp } from "firebase/firestore";
     if (value instanceof Date) return value;
     return new Date();
   }
+
+    export function normalizeFirestoreDateOrNull(value: any): Date | null{
+    if (value instanceof Timestamp) return value.toDate();
+    if (isTimestampPlain(value)) {
+      return new Timestamp(value.seconds, value.nanoseconds).toDate();
+    }
+    if (value instanceof Date) return value;
+    return null;
+  }

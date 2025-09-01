@@ -54,3 +54,6 @@ export function getLastYearStart(n: number = 1): string {
     format(startOfYear(subYears(new Date(), n - 1 - i)), 'yyyy-MM-dd')
   ).join();
 }
+export function getSixMonthsAgo(): string {
+  return format(subMonths(new Date(), 6), 'yyyy-MM-dd');
+}

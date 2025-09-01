@@ -23,9 +23,8 @@
 
   .daily-graphs {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
 
     .graph-card {
       flex: 1 1 250px;
@@ -36,13 +35,17 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       text-align: center;
 
+      font-size: clamp(0.5rem, 1vw + 0.3rem, 1rem);
+      text-align: center;
+      white-space: nowrap;
+
       h3 {
         font-size: 1.1rem;
         margin-bottom: 1rem;
         color: #444;
       }
 
-      .chart-placeholder {
+      .progress-display {
         width: 100%;
         height: 200px;
         background-color: #eaeaea;
@@ -52,6 +55,37 @@
         justify-content: center;
         color: #999;
         font-size: 0.9rem;
+
+        .progress-circle {
+          flex-shrink: 0;
+        }
+
+        .circle-progress {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          transition: 0.3s;
+        }
+
+        .circle-inner {
+          width: 90px;
+          height: 90px;
+          background: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .progress-percentage {
+          font-size: 20px;
+          font-weight: 700;
+          color: #333;
+        }
       }
     }
   }
@@ -78,8 +112,7 @@
   fill: none;
   stroke-width: 3.8;
   stroke-linecap: round;
-  stroke: #007bff; /* cor azul */
-  transform: rotate(-90deg);
+  stroke: #007bff;
   transform-origin: center;
   transition: stroke-dasharray 0.6s ease 0s;
 }
@@ -89,4 +122,111 @@
   font-family: sans-serif;
   font-size: 0.8em;
   text-anchor: middle;
+}
+
+@media (max-width: 1300px) {
+  .daily-summary {
+    height: auto;
+  }
+
+  .daily-graphs {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 992px) {
+  .daily-summary {
+    .daily-graphs {
+      .graph-card {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+ 
+}
+
+@media (max-width: 768px) {
+  .daily-summary {
+    padding: 1rem;
+
+    .daily-header {
+      margin-bottom: 1.5rem;
+
+      .daily-quote {
+        font-size: 1.1rem;
+      }
+    }
+
+    .daily-graphs {
+      gap: 1rem;
+
+      .graph-card {
+        padding: 0.8rem;
+
+        h3 {
+          font-size: 1rem;
+        }
+
+        .chart-placeholder {
+          height: 150px;
+        }
+      }
+    }
+
+     .circle-progress {
+        transform: translate(-10px, -10px);
+  }
+  }
+
+  .circular-chart {
+    max-height: 150px;
+  }
+
+  .progress-circle {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .daily-summary {
+    padding: 0.8rem;
+    flex-direction: column;
+    align-items: center;
+
+    .daily-header {
+      margin-bottom: 1rem;
+
+      .daily-date {
+        font-size: 0.85rem;
+      }
+
+      .daily-quote {
+        font-size: 1rem;
+      }
+    }
+
+    .daily-graphs {
+      gap: 0.8rem;
+
+      .graph-card {
+        padding: 0.6rem;
+
+        .chart-placeholder {
+          height: 120px;
+        }
+      }
+    }
+  }
+
+  .circular-chart {
+    max-height: 125px;
+  }
+
+  .circle-progress {
+    transform: translate(-10px, -10px);
+
+  }
 }
