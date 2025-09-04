@@ -5,8 +5,7 @@ ion-content {
         justify-content: center;
     }
 
-    .login {
-        width: 30vw;
+    .singup {
         height: min-content;
         background-color: white;
         border-radius: 20px;
@@ -16,6 +15,7 @@ ion-content {
         h1 {
             font-family: poppinsBold;
             font-size: 22px;
+            margin-bottom: 0;
         }
 
         a {
@@ -37,13 +37,20 @@ ion-content {
                 color: rgb(224, 0, 77);
             }
 
-            .icon-back {
-                cursor: pointer;
-            }
+
         }
 
         .text-container {
             text-align: center;
+
+            p {
+                width: 350px;
+                margin-top: 1rem;
+            }
+            &.top {
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 2rem;
+            }
         }
 
         .signup-buttons-container {
@@ -70,20 +77,19 @@ ion-content {
             border-radius: 15px;
             background-color: rgb(224, 0, 77);
             color: #ffffff;
+            margin-top: 0.8rem;
+
+            &:hover {
+                background-color: rgb(209, 0, 73);
+            }
         }
 
-        .line {
-            border-top: 1px solid #ccc;
-            width: 100%;
-            margin: 2.5rem 0 1rem 0;
-        }
-
-        .input-container {
+        form {
             display: flex;
             flex-direction: column;
             position: relative;
             width: 100%;
-            padding: 1rem 0 2rem 0;
+            margin-top: 1rem;
             gap: 15px;
 
             label {
@@ -91,30 +97,45 @@ ion-content {
                 font-weight: bold;
                 margin-bottom: 3px;
             }
+            input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #d1d5db;
+                border-radius: 5px;
+                background-color: white;
+                padding-right: 40px;
 
-            .input-wrapper {
-                input {
-                    width: 100%;
-                    padding: 8px;
-                    border: 1px solid #d1d5db;
-                    border-radius: 5px;
-                    background-color: white;
-                    padding-right: 40px;
-                }
-                input::placeholder {
+                &::placeholder {
                     font-family: poppinsMedium;
                     font-size: 13;
                 }
 
-                .toggle-icon {
-                    position: absolute;
-                    right: 10px;
-                    top: 58.7%;
-                    transform: translateY(100%);
-                    font-size: 22px;
-                    cursor: pointer;
-                    color: #666;
+                &:hover {
+                    background-color: white;
                 }
+            }
+
+            .toggle-icon {
+                position: absolute;
+                right: 13px;
+                top: 61%;
+                transform: translateY(100%);
+                font-size: 22px;
+                cursor: pointer;
+                color: #666;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .singup {
+            height: 100vh;
+            width: 100vw;
+            border-radius: 0;
+            padding: 4rem 1.5rem;
+
+            .text-container p {
+                width: auto;
             }
         }
     }

@@ -1,16 +1,17 @@
-<ion-content >
+<ion-content>
   <ion-grid class="grid-container">
     <ion-row class="ion-justify-content-center ion-align-items-center">
       <ion-col size="auto">
-        <div class="login">
+        <div class="singup">
           <header>
             <h3>HabitTracker</h3>
-            <ion-icon
-              class="icon-back"
-              name="arrow-back-outline"
-              size="medium"
-              [routerLink]="'/login'"
-            ></ion-icon>
+            <div class="icon-back" [routerLink]="'/login'">
+              <img
+                src="./assets/icon/left.svg"
+                alt="Voltar"
+                width="16px"
+              />
+            </div>
           </header>
           <div class="text-container">
             <h1>Crie sua conta</h1>
@@ -19,47 +20,44 @@
               eficaz.
             </p>
           </div>
-          <div class="line"></div>
-
-          <div class="input-container">
-
+          <form (ngSubmit)="onRegister()" #registerForm="ngForm">
             <label for="email">Nome*</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Digite seu nome"
-                [(ngModel)]="name"
-                required
-              />
-            </div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Digite seu nome"
+              [(ngModel)]="name"
+              required
+            />
 
             <label for="email">Email*</label>
-            <div class="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Digite seu email"
-                [(ngModel)]="email"
-                required
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Digite seu email"
+              [(ngModel)]="email"
+              required
+            />
 
             <label for="password">Senha*</label>
-            <div class="input-wrapper">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                [(ngModel)]="password"
-                placeholder="Digite sua senha"
-                required
-              />
-            </div>
-          </div>
-          <button (click)="onRegister()">Cadastrar-se</button>
+            <input
+              [type]="passwordFieldType"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Digite sua senha"
+              required
+            />
+            <app-eye-toogle
+              class="toggle-icon"
+              [isVisible]="isVisible"
+              (isVisibleChange)="togglePasswordVisibility()"
+            ></app-eye-toogle>
+            <button type="submit" [disabled]="!registerForm.form.valid">
+              Cadastrar-se
+            </button>
+          </form>
           <div class="text-container">
             <p>Possui uma conta? <a [routerLink]="'/login'">Entrar.</a></p>
           </div>

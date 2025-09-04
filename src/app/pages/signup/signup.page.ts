@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
-import { addIcons } from 'ionicons';
-import { arrowBackOutline, logoGoogle } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
+import { EyeToogleComponent } from "src/app/shared/ui/eye-toogle/eye-toogle.component";
 
 
 @Component({
@@ -16,32 +15,39 @@ import { Loading } from 'notiflix';
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink]
+  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink, EyeToogleComponent]
 })
-export class SignupPage implements OnInit {
-  email = '';
-  name = '';
-  password = '';
+export class SignupPage {
 
-  constructor(private authService: AuthService, private router: Router) {
-    addIcons({ arrowBackOutline, logoGoogle });
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  public name: string = '';
+  public email: string = '';
+  public password: string = '';
+
+  public passwordFieldType: 'password' | 'text' = 'password';
+  public isVisible: boolean = false;
+
+  public togglePasswordVisibility(): void {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+    this.isVisible = !this.isVisible
   }
-
-  async onRegister() {
+  
+  public async onRegister(): Promise<void> {
     if (!this.email || !this.password || !this.name) {
-          Swal.fire({
-          title: 'Erro',
-          text: 'Preencha os campos corretamente.',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+      Swal.fire({
+        title: 'Erro',
+        text: 'Preencha os campos corretamente.',
+        icon: 'error',
+        heightAuto: false,
+        confirmButtonColor: '#E0004D'
+      });
       return;
     }
-
     try {
       Loading.circle()
-      const result = await this.authService.register(this.email, this.password, this.name);
+      await this.authService.register(this.email, this.password, this.name);
       Swal.fire({
         title: 'Sucesso',
         text: 'Login adicionado com sucesso',
@@ -49,10 +55,8 @@ export class SignupPage implements OnInit {
         heightAuto: false,
         confirmButtonColor: '#E0004D'
       });
-      Loading.remove()
       this.router.navigate(['/home'])
     } catch (error: any) {
-      Loading.remove()
       if (error.code === 'auth/email-already-in-use') {
         Swal.fire({
           title: 'Erro',
@@ -62,7 +66,7 @@ export class SignupPage implements OnInit {
           confirmButtonColor: '#E0004D'
         });
       }
-      if (error.code === 'auth/weak-password') {
+      else if (error.code === 'auth/weak-password') {
         Swal.fire({
           title: 'Erro',
           text: 'A senha deve ter pelo menos 6 caracteres',
@@ -71,7 +75,7 @@ export class SignupPage implements OnInit {
           confirmButtonColor: '#E0004D'
         });
       }
-      if (error.code === 'auth/invalid-email') {
+      else if (error.code === 'auth/invalid-email') {
         Swal.fire({
           title: 'Erro',
           text: 'Email inválido',
@@ -88,10 +92,8 @@ export class SignupPage implements OnInit {
           confirmButtonColor: '#E0004D'
         });
       }
+    } finally {
+      Loading.remove()
     }
   }
-
-  ngOnInit() {
-  }
-
 }
