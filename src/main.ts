@@ -11,12 +11,19 @@ import { AppComponent } from './app/app.component';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideHttpClient } from '@angular/common/http';
 import { register } from 'swiper/element/bundle';
-import { LOCALE_ID } from '@angular/core';
+import { enableProdMode, LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
 registerLocaleData(localePt);
 register()
+
+
+initializeApp(environment.firebase);
+
+if (environment.production) {
+  enableProdMode();
+}
 
 bootstrapApplication(AppComponent, {
   providers: [

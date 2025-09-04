@@ -24,20 +24,19 @@
             <label for="password">Senha</label>
             <div class="input-wrapper">
               <input
-                type="password"
                 id="password"
                 name="password"
                 placeholder="Digite sua senha"
                 [type]="passwordFieldType"
                 [(ngModel)]="password"
               />
-              <ion-icon
+              <app-eye-toogle
                 class="toggle-icon"
-                (click)="togglePasswordVisibility()"
-                [name]="passwordFieldType === 'password' ? 'eye-off-outline' : 'eye-outline'"
-              ></ion-icon>
+                [isVisible]="isVisible"
+                (isVisibleChange)="togglePasswordVisibility()"
+              ></app-eye-toogle>
             </div>
-            <a [routerLink]>Esqueceu a Senha?</a>
+            <a [routerLink]="'/reset-password'">Esqueceu a Senha?</a>
           </div>
           <button (click)="onLogin()">Entrar</button>
           <div class="text-container">

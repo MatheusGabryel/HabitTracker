@@ -1,39 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CommonModule, } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
+import { IonContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
+import { EyeToogleComponent } from "src/app/shared/ui/eye-toogle/eye-toogle.component";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink]
+  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink, EyeToogleComponent]
 })
-export class LoginPage implements OnInit {
-  public passwordFieldType: string = 'password';
+export class LoginPage {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   public password: string = '';
-  public email = '';
+  public email: string = '';
 
-  public togglePasswordVisibility() {
+  public passwordFieldType: 'password' | 'text' = 'password';
+  public isVisible: boolean = false;
+
+  public async ionViewWillEnter() {
+    this.email = '';
+    this.password = '';
+    this.passwordFieldType = 'password'
+    this.isVisible = false;
+  }
+  
+  public togglePasswordVisibility(): void {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
-  }
+    this.isVisible = !this.isVisible;
+  };
 
-  constructor(private authService: AuthService, private router: Router) {
-    addIcons({ eyeOffOutline, eyeOutline })
-  }
-
-  public async onLogin() {
+  public async onLogin(): Promise<void> {
+    if (!this.email || !this.password) {
+      Swal.fire({
+        title: 'Erro',
+        text: 'Preencha os campos corretamente.',
+        icon: 'error',
+        heightAuto: false,
+        confirmButtonColor: '#E0004D'
+      });
+      return;
+    }
     try {
       Loading.circle()
-
       await this.authService.login(this.email, this.password);
       Swal.fire({
         title: 'Sucesso',
@@ -42,29 +59,24 @@ export class LoginPage implements OnInit {
         heightAuto: false,
         confirmButtonColor: '#E0004D'
       });
-      Loading.remove()
       this.router.navigate(['/home']);
     } catch (error: any) {
-      console.error('Erro completo:', error);
-      console.log('Código do erro:', error.code);
-      if (error.code === 'auth/user-not-found') {
+      if (error.code === 'auth/invalid-credential') {
         Swal.fire({
           title: 'Error',
-          text: 'Usuário não encontrado.',
+          text: 'Usuário ou senha incorretos.',
           icon: 'error',
           heightAuto: false,
           confirmButtonColor: '#E0004D'
         });
-        Loading.remove()
-      } else if (error.code === 'auth/wrong-password') {
+      } else if (error.code === 'auth/invalid-email') {
         Swal.fire({
           title: 'Error',
-          text: 'Senha incorreta.',
+          text: 'Digite um e-mail válido.',
           icon: 'error',
           heightAuto: false,
           confirmButtonColor: '#E0004D'
         });
-        Loading.remove()
       } else {
         Swal.fire({
           title: 'Error',
@@ -72,16 +84,12 @@ export class LoginPage implements OnInit {
           icon: 'error',
           heightAuto: false,
           confirmButtonColor: '#E0004D'
-        });
-        Loading.remove()
+        })
       }
+    } finally {
+      Loading.remove()
     }
-  }
 
-
-  ngOnInit() {
-
-  }
-
+  };
 }
 
