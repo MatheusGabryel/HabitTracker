@@ -12,10 +12,8 @@ export class UserService {
 
   private firestore = inject(Firestore)
   private auth = inject(Auth);
-  private collectionRef = collection(this.firestore, 'users')
 
-  constructor() {
-  }
+  private collectionRef = collection(this.firestore, 'users')
 
   public getUserId(): Promise<string | null> {
     return new Promise((resolve) => {

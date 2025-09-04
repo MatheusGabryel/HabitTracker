@@ -4,9 +4,17 @@ import { Auth } from '@angular/fire/auth';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route, state) => {
   const auth = inject(Auth);
   const router = inject(Router);
+
+  const publicPaths = ['login', 'reset-password'];
+
+  const currentPath = route.routeConfig?.path;
+
+  if (currentPath && publicPaths.includes(currentPath)) {
+    return true;
+  }
 
   return new Promise<boolean>((resolve) => {
     auth.onAuthStateChanged((user) => {
@@ -19,3 +27,6 @@ export const authGuard: CanActivateFn = () => {
     });
   });
 };
+
+
+

@@ -20,11 +20,11 @@ export class MenuService {
     });
   }
 
-  setMenuOpen(open: boolean) {
+  public setMenuOpen(open: boolean) {
     this._menuOpen.next(open);
   }
 
-  toggleMenu() {
+  public toggleMenu() {
     this._menuOpen.next(!this._menuOpen.value);
   }
 
