@@ -1,12 +1,14 @@
 <section class="goals-panel">
   <div class="goals-header">
     <h2 class="panel-title">Suas Metas</h2>
+    @if (goals.length >= 4) {
     <button class="view-all" routerLink="/goals">Ver todos</button>
+    }
   </div>
 
   <div class="goals-list">
-    @if (filteredGoals.length > 0) {
-    @for (goal of filteredGoals.slice(0, 3); track goal.id) {
+    @if (filteredGoals.length > 0) { @for (goal of filteredGoals.slice(0, 3);
+    track goal.id) {
     <div
       class="goal-card"
       [class.high-progress]="calculateProgress(goal) >= 80"
@@ -16,14 +18,10 @@
       [class.low-progress]="calculateProgress(goal) < 50"
       [ngStyle]="{ 'border-left-color': rgbaCatColor(goal) }"
     >
-      
-
       <div class="header">
         <h3>{{ goal.name }}</h3>
 
-        @switch(goal.state) {
-
-        @case('completed') {
+        @switch(goal.state) { @case('completed') {
         <button class="btn-complete completed" disabled>
           <span class="btn-icon">
             <img
@@ -34,9 +32,7 @@
           </span>
           <span class="btn-text">Concluída</span>
         </button>
-        }
-
-        @case('cancelled') {
+        } @case('cancelled') {
         <button class="btn-complete cancelled" disabled>
           <span class="btn-icon">
             <img
@@ -47,11 +43,7 @@
           </span>
           <span class="btn-text">Cancelada</span>
         </button>
-        }
-
-        @case('in_progress') {
-
-        @if(goal.goalType === 'unit') {
+        } @case('in_progress') { @if(goal.goalType === 'unit') {
         <button
           class="btn-complete unit-type"
           (click)="completeGoal(goal)"
@@ -62,18 +54,14 @@
           </span>
           <span class="btn-text"> Progresso </span>
         </button>
-        }
-
-        @else if(goal.goalType === 'habit' && goal.linkedHabit) {
+        } @else if(goal.goalType === 'habit' && goal.linkedHabit) {
         <div class="habit-info">
           <span class="habit-label">Hábito:</span>
           <strong class="habit-name">{{
             habitNamesMap[goal.linkedHabit]
           }}</strong>
         </div>
-        }
-
-        @else if(goal.goalType === 'yes_no') {
+        } @else if(goal.goalType === 'yes_no') {
         <button
           class="btn-complete yes-no-type"
           (click)="completeGoal(goal)"
@@ -119,8 +107,7 @@
         <div class="progress-percentage">{{ calculateProgress(goal) }}%</div>
       </div>
     </div>
-    }
-    } @else {
+    } } @else {
     <div class="empty-state">
       <img
         src="./assets/icon/emoji_events_100dp_FFFFFF.png"
@@ -128,7 +115,9 @@
         class="empty-icon"
       />
       <p>Nenhuma meta criada ainda</p>
-      <p class="empty-subtitle">Crie suas primeiras metas para acompanhar seu progresso!</p>
+      <p class="empty-subtitle">
+        Crie suas primeiras metas para acompanhar seu progresso!
+      </p>
     </div>
     }
   </div>

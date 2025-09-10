@@ -1,11 +1,12 @@
 import { StatisticsService } from 'src/app/services/statistics/statistics.service';
 import { HabitData } from './../../interfaces/habit.interface';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexLegend, NgApexchartsModule } from 'ng-apexcharts';
 import { GoalData } from 'src/app/interfaces/goal.interface';
 import { GoalService } from 'src/app/services/goal/goal.service';
 import { HabitService } from 'src/app/services/habit/habit.service';
+import { formatLocalDate } from 'src/app/shared/utils/date.utils';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -20,34 +21,37 @@ export type ChartOptions = {
   styleUrls: ['./daily-summary.component.scss'],
   imports: [NgApexchartsModule, CommonModule],
 })
-export class DailySummaryComponent implements OnInit {
+export class DailySummaryComponent {
 
-  public habitService = inject(HabitService)
-  public goalService = inject(GoalService)
   public statisticsService = inject(StatisticsService)
-  public habits: HabitData[] = []
-  public goals: GoalData[] = []
 
-  currentHabitValue = 0
-  targetHabitValue = 0
+  @Input() habits!: HabitData[];
+  @Input() goals!: GoalData[];
 
-  goalRate = 0
+  public currentHabitValue!: number;
+  public targetHabitValue!: number;
+
+  public goalRate!: number;
 
   public todayDate!: string;
-  async ngOnInit() {
+
+  async ngOnChanges() {
+    this.getSummaryInfo()
+  }
+
+  public getSummaryInfo() {
     const now = new Date();
     const weekDay = now.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
     const dayMonth = now.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    
     this.todayDate = `Hoje - ${this.capitalizeFirst(weekDay)}, ${dayMonth}`;
-    this.habits = await this.habitService.getUserHabitsWithLogs()
-    this.goals = await this.goalService.getUserGoals()
     this.currentHabitValue = this.getCurrentLog(now)
     this.targetHabitValue = this.getHabitsForWeekday(now);
 
     this.goalRate = this.statisticsService.getGoalCompletionRate(this.goals)
   }
 
-  getHabitsForWeekday(date: Date): number {
+  public getHabitsForWeekday(date: Date): number {
     const weekday = date.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '').toLowerCase();
     console.log(weekday)
     const habitsForDay = this.habits.filter(habit =>
@@ -56,15 +60,8 @@ export class DailySummaryComponent implements OnInit {
     return habitsForDay;
   }
 
-  formatLocalDate(date: Date): string {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-
-  getCurrentLog(date: Date): number {
-    const weekday = this.formatLocalDate(date);
+  public getCurrentLog(date: Date): number {
+    const weekday = formatLocalDate(date);
     const logsCompleted = this.habits.reduce((acc, habit) => {
       let habitCompleted = habit.logs.filter(l => l.state === 'completed' && l.date.includes(weekday)).length
       return habitCompleted = acc + habitCompleted
@@ -77,25 +74,19 @@ export class DailySummaryComponent implements OnInit {
     return logsCompleted
   }
 
-  calculateProgress(current: number, target: number): number {
-    const today = new Date()
-
+  public calculateProgress(current: number, target: number): number {
     if (!target || target === 0) return 0;
-
-
 
     let percentage = (current / target) * 100;
 
-    // if (this.goal.goalType === 'habit' && percentage > 100) {
-    //   percentage = 100;
-    // }
-
-    // if (percentage >= 99) return Math.floor(percentage * 10) / 10;
+    if (percentage > 100) {
+      percentage = 100;
+    }
 
     return Math.floor(percentage);
   }
 
-  getProgressColor(progress: number): string {
+  public getProgressColor(progress: number): string {
     if (progress >= 100) return '#219653';
     if (progress >= 90) return '#27ae60';
     if (progress >= 80) return '#43b97f';
@@ -108,11 +99,7 @@ export class DailySummaryComponent implements OnInit {
     return '#f8b195';
   }
 
-  constructor() {
-
-  }
-
-  capitalizeFirst(str: string): string {
+  public capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }

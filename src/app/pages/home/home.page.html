@@ -6,29 +6,42 @@
       <app-header></app-header>
 
       <main class="page-content">
+        @if(!loading) {
         <div class="dashboard">
-
           <div class="dashboard-top">
             <section class="daily-panel">
-              <app-daily-summary></app-daily-summary>
+              <app-daily-summary
+                [habits]="habits"
+                [goals]="goals"
+              ></app-daily-summary>
             </section>
 
             <section class="calendar-panel">
-              <app-dashboard-day-swiper></app-dashboard-day-swiper>
+              <app-dashboard-day-swiper
+                [habits]="habits"
+                (update)="updateInfo()"
+              ></app-dashboard-day-swiper>
             </section>
           </div>
 
           <div class="dashboard-bottom">
             <section class="goal-panel">
-              <app-dashboard-goals></app-dashboard-goals>
+              <app-dashboard-goals [goals]="goals" (update)="updateInfo()"></app-dashboard-goals>
             </section>
 
             <section class="stats-panel">
-              <app-dashboard-stats></app-dashboard-stats>
+              <app-dashboard-stats
+                [habits]="habits"
+                [goals]="goals"
+              ></app-dashboard-stats>
             </section>
           </div>
-
         </div>
+        } @else {
+        <div class="loading-container">
+          <div class="spinner"></div>
+        </div>
+        }
       </main>
     </div>
   </div>

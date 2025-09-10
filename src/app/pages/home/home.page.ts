@@ -8,6 +8,10 @@ import { DashboardDaySwiperComponent } from "src/app/components/dashboard-day-sw
 import { DailySummaryComponent } from "src/app/components/daily-summary/daily-summary.component";
 import { DashboardGoalsComponent } from "src/app/components/dashboard-goals/dashboard-goals.component";
 import { DashboardStatsComponent } from "src/app/components/dashboard-stats/dashboard-stats.component";
+import { GoalService } from 'src/app/services/goal/goal.service';
+import { HabitService } from 'src/app/services/habit/habit.service';
+import { HabitData } from 'src/app/interfaces/habit.interface';
+import { GoalData } from 'src/app/interfaces/goal.interface';
 
 
 @Component({
@@ -19,9 +23,24 @@ import { DashboardStatsComponent } from "src/app/components/dashboard-stats/dash
 export class HomePage {
 
   private authService = inject(AuthService)
+  private goalService = inject(GoalService)
+  private habitService = inject(HabitService)
 
-  constructor() {
+  habits: HabitData[] = []
+  goals: GoalData[] = []
+  loading = false
+
+  async ngOnInit() {
+    this.loading = true
+    this.habits = await this.habitService.getHabitsWithLogs();
+    this.goals = await this.goalService.getUserGoals()
+    this.loading = false
   }
-  ngOnInit() {
-  }
+
+async updateInfo() {
+  const newHabits = await this.habitService.getHabitsWithLogs();
+  const newGoals = await this.goalService.getUserGoals();
+  this.habits = [...newHabits];
+  this.goals = [...newGoals]
+}
 }

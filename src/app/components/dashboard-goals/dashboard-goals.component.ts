@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Category } from 'src/app/interfaces/category.interface';
 import { GoalData } from 'src/app/interfaces/goal.interface';
@@ -13,57 +13,49 @@ import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
   styleUrls: ['./dashboard-goals.component.scss'],
   imports: [CommonModule, RouterLink],
 })
-export class DashboardGoalsComponent implements OnInit {
+export class DashboardGoalsComponent {
 
-  title!: string;
-  progress!: number;
-  current!: number;
-  target!: number;
-  unit?: string;
-  isCompleted?: boolean;
-  habitNamesMap: Record<string, string> = {};
-  name: any = ''
-
-
-  goals: GoalData[] = []
-  filteredGoals: GoalData[] = []
   public habitService = inject(HabitService)
   public goalService = inject(GoalService);
-  constructor() { }
 
-  async ngOnInit() {
-    this.goals = await this.goalService.getUserGoals()
+  @Input() goals!: GoalData[];
+  @Output() update = new EventEmitter<void>();
 
+  public habitNamesMap: Record<string, string> = {};
+  public filteredGoals: GoalData[] = []
+
+  async ngOnChanges() {
     this.filteredGoals = this.goals.sort((a, b) => {
       if (a.progressValue == null) return 1;
       if (b.progressValue == null) return -1;
       return b.progressValue - a.progressValue;
     });
 
+    this.getHabitName()
+  }
+
+  public completeGoal(goal: GoalData) {
+    this.goalService.completeGoal(goal)
+
+    setTimeout(() => {
+      this.update.emit()
+    }, 300);
+  }
+
+  public async getHabitName() {
     for (const goal of this.goals) {
       if (goal.goalType === 'habit' && goal.linkedHabit) {
-        const name = await this.habitService.getHabitById(goal.linkedHabit);
-        this.habitNamesMap[goal.linkedHabit] = name?.name || "Hábito não encontrado";
+        const habit = await this.habitService.getHabitById(goal.linkedHabit);
+        this.habitNamesMap[goal.linkedHabit] = habit?.name || "Hábito não encontrado";
       }
     }
   }
 
-
-
-  async getHabitName(goalHabit: string) {
-    const habit = await this.habitService.getHabitById(goalHabit)
-    const name = habit?.name
-    return this.name = name
-  }
-  completeGoal(goal: GoalData) {
-    this.goalService.completeGoal(goal)
-  }
-
-  calculateProgress(goal: any): number {
+  public calculateProgress(goal: any): number {
     const ratio = goal.progressValue / goal.targetValue;
     return Math.min(100, Math.round(ratio * 100));
   }
-  getProgressColor(progress: number): string {
+  public getProgressColor(progress: number): string {
     if (progress >= 100) return '#219653';
     if (progress >= 90) return '#27ae60';
     if (progress >= 80) return '#43b97f';
@@ -76,16 +68,15 @@ export class DashboardGoalsComponent implements OnInit {
     return '#f8b195';
   }
 
-category(goal: GoalData): Category | undefined {
-  return PREDEFINED_CATEGORIES.find(cat => cat.id === goal.category);
-}
+  public category(goal: GoalData): Category | undefined {
+    return PREDEFINED_CATEGORIES.find(cat => cat.id === goal.category);
+  }
 
+  public rgbaCatColor(goal: GoalData): string | undefined {
+    const category = this.category(goal);
+    const color = category?.color;
+    if (!color) return undefined;
 
-rgbaCatColor(goal: GoalData): string | undefined {
-  const category = this.category(goal);
-  const color = category?.color;
-  if (!color) return undefined;
-
-  return color.replace('rgb', 'rgba').replace(')', ', 0.8)');
-}
+    return color.replace('rgb', 'rgba').replace(')', ', 0.8)');
+  }
 }

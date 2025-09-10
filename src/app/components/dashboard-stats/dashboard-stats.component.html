@@ -4,7 +4,7 @@
     @if (!isCompact) {
 
     <button class="expand-btn" (click)="openStatsModal()">
-      <img src="./assets/icon/expand_more_100dp_434343.png" alt="Expandir" />
+      <img src="./assets/icon/add.png" alt="Expandir" />
     </button>
     }
   </div>
@@ -49,8 +49,8 @@
 
 @if(showStatsModal) {
 
-<div class="stats-side-modal" [class.closing]="isClosing">
-  <div class="stats-side-content" [class.closing]="isClosing">
+<div class="stats-side-modal" [class.closing]="isClosing" (click)="closeStatsModal()">
+  <div class="stats-side-content" [class.closing]="isClosing" (click)="$event.stopPropagation()">
     <button class="close-button" (click)="closeStatsModal()">&times;</button>
 
     <h2 class="modal-title">Estatísticas Detalhadas</h2>
@@ -83,17 +83,26 @@
 
       <div class="stat-item">
         <span class="stat-item-label">Melhor streak de hábito individual:</span>
+        @if (bestHabitStreak.count !== 0) {
         <span class="stat-item-value">{{ bestHabitStreak.count }} dias </span>
         <span class="stat-date">({{ bestHabitStreak.name }})</span>
+        } @else {
+        <span class="stat-item-value">Nenhum hábito concluído</span>
+        }
       </div>
 
       <div class="stat-item">
         <span class="stat-item-label"
           >Dia da semana com maior taxa de execução (4 semanas):</span
         >
+        @if (bestDayOfWeek.rate !== 0) {
         <span class="stat-item-value"
           >{{ bestDayOfWeek.name }} = {{ bestDayOfWeek.rate }}%</span
         >
+        } @else {
+          <span class="stat-item-value">Nenhum hábito concluído</span>
+        }
+
       </div>
     </div>
 
@@ -108,9 +117,7 @@
           ({{ lastCompletedGoal.date | date : "dd/MM/yyyy" }})</span
         >
         } @else {
-        <span class="stat-item-value"
-          >Nenhuma meta concluída
-        </span>
+        <span class="stat-item-value">Nenhuma meta concluída </span>
         }
       </div>
 
@@ -150,9 +157,7 @@
           {{ mostCommonGoalType.count === 1 ? "Meta" : "Metas" }})</span
         >
         } @else {
-        <span class="stat-item-value"
-          >Nenhuma meta criada
-        </span>
+        <span class="stat-item-value">Nenhuma meta criada </span>
         }
       </div>
 
@@ -167,9 +172,7 @@
           {{ mostCommonGoalType.count === 1 ? "Meta" : "Metas" }})</span
         >
         } @else {
-        <span class="stat-item-value"
-          >Nenhuma meta criada
-        </span>
+        <span class="stat-item-value">Nenhuma meta criada </span>
         }
       </div>
 
@@ -181,9 +184,7 @@
           >(desde {{ longestGoal.date | date : "dd/MM/yyyy" }})</span
         >
         } @else {
-        <span class="stat-item-value"
-          >Nenhuma meta criada
-        </span>
+        <span class="stat-item-value">Nenhuma meta criada </span>
         }
       </div>
     </div>
