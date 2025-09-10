@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, OnInit, Output, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { deleteField, serverTimestamp } from 'firebase/firestore';
+import { serverTimestamp } from 'firebase/firestore';
 import { Loading } from 'notiflix';
+import { Category } from 'src/app/interfaces/category.interface';
 import { GoalData, GoalType } from 'src/app/interfaces/goal.interface';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { GoalService } from 'src/app/services/goal/goal.service';
@@ -19,37 +20,34 @@ import Swal from 'sweetalert2';
   imports: [CommonModule, FormsModule],
 })
 export class EditGoalModalComponent implements OnInit {
+  private goalService = inject(GoalService);
+  private userService = inject(UserService);
+  private habitService = inject(HabitService);
+  
+  @Input() goalToEdit!: GoalData
+  @Output() close = new EventEmitter<void>();
 
-
-  public goalService = inject(GoalService);
-  public userService = inject(UserService);
-  public habitService = inject(HabitService);
-
-  @Input() goalToEdit!: GoalData;
   public goal!: GoalData;
 
-  public now = new Date();
-  public currentStep = 1;
+  public currentStep: number = 1;
 
   public userHabits: HabitData[] = [];
   public selectedHabit: string = '';
 
-  constructor() { }
+  public progressTypes: string[] = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'R$', 'Dias', 'Semanas', 'Outro'];
+  public categories: Category[] = PREDEFINED_CATEGORIES;
 
-  async ngOnInit() {
+
+
+  public async ngOnInit() {
     this.goal = structuredClone(this.goalToEdit);
     this.goal.createdAt = normalizeFirestoreDate(this.goal.createdAt)
     this.goal.updatedAt = normalizeFirestoreDate(this.goal.updatedAt)
-if (this.goal.completedAt) {
-  this.goal.completedAt = normalizeFirestoreDate(this.goal.completedAt);
-}
+    if (this.goal.completedAt) {
+      this.goal.completedAt = normalizeFirestoreDate(this.goal.completedAt);
+    }
     await this.loadUserHabits();
   }
-
-  @Output() close = new EventEmitter<void>();
-  progressTypes = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'R$', 'Dias', 'Semanas', 'Outro'];
-  public categories = PREDEFINED_CATEGORIES;
-
 
   public closeModal() {
     this.close.emit();
@@ -158,20 +156,11 @@ if (this.goal.completedAt) {
     return habit ? habit.name : '';
   }
 
-  public getCategoryName(categoryId: string): string {
+  public getCategoryInfo(categoryId: string): Category | null {
     const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.displayName : '';
+    return category || null
   }
 
-  public getCategoryIcon(categoryId: string): string {
-    const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.icon : '';
-  }
-
-  public getCategoryColor(categoryId: string): string {
-    const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.color : '#cccccc';
-  }
 
   public getGoalTypeDisplay(): string {
     switch (this.goal.goalType) {
@@ -181,7 +170,6 @@ if (this.goal.completedAt) {
       default: return '';
     }
   }
-
 
   public async updateGoal() {
     if (!this.isFormValid()) {
@@ -194,63 +182,36 @@ if (this.goal.completedAt) {
       return;
     }
 
-    let goalToSave: any = {
+    let goalToSave: GoalData = {
       ...this.goal,
       updatedAt: serverTimestamp(),
     };
 
     if (this.goal.goalType === 'unit') {
       delete goalToSave.linkedHabit
-      const progressTypeToSave =
-        this.goal.progressValueType === 'Outro'
-          ? this.goal.customProgressType
-          : this.goal.progressValueType;
+      const progressTypeToSave = this.goal.progressValueType === 'Outro' ? this.goal.customProgressType : this.goal.progressValueType;
       if (goalToSave.progressValueType !== 'Outro') {
-        goalToSave.customProgressType = deleteField();
+        delete goalToSave.customProgressType
       }
       goalToSave.progressValueType = progressTypeToSave as string;
     } else if (this.goal.goalType === 'habit') {
-      goalToSave.linkedHabit = this.goal.linkedHabit;
-      goalToSave.state = 'in_progress'
-
       delete goalToSave.progressValueType;
       delete goalToSave.customProgressType;
+      goalToSave.linkedHabit = this.goal.linkedHabit;
+      goalToSave.state = 'in_progress'
     } else if (this.goal.goalType === 'yes_no') {
       delete goalToSave.progressValueType;
       delete goalToSave.customProgressType;
       delete goalToSave.linkedHabit;
       goalToSave.targetValue = 1;
     }
-
     try {
       Loading.standard('Atualizando meta...');
-      const uid = await this.userService.getUserId();
-      if (!uid) {
-        Swal.fire({
-          title: 'Erro',
-          text: 'Usuário não autenticado',
-          icon: 'error',
-          confirmButtonColor: '#E0004D'
-        });
-        throw new Error('Usuário não autenticado');
-      }
-      console.log(goalToSave)
-
-      await this.goalService.updateGoal(goalToSave, this.goal.id);
-
-      Swal.fire({
-        title: 'Sucesso',
-        text: 'Meta atualizada com sucesso',
-        icon: 'success',
-        heightAuto: false,
-        confirmButtonColor: '#E0004D'
-      });
-      Loading.remove()
+      await this.goalService.updateGoal(this.goal.id, goalToSave);
+      Swal.fire({ title: 'Sucesso', text: 'Meta atualizada com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
       this.closeModal();
     } catch (err: unknown) {
-      Loading.remove()
       if (err instanceof Error) {
-        console.error(err);
         Swal.fire({
           title: 'Erro',
           text: err.message,
@@ -259,7 +220,6 @@ if (this.goal.completedAt) {
           confirmButtonColor: '#E0004D'
         });
       } else {
-        console.error('Erro desconhecido', err);
         Swal.fire({
           title: 'Erro',
           text: 'Ocorreu um erro desconhecido',
@@ -268,6 +228,8 @@ if (this.goal.completedAt) {
           confirmButtonColor: '#E0004D'
         });
       }
+    } finally {
+      Loading.remove()
     }
   }
 }

@@ -237,7 +237,7 @@ ion-content {
         align-items: center;
         gap: 16px;
         background-color: #f9f9f9;
-        padding: 12px 20px; /* 🔑 igual ao habit-main */
+        padding: 12px 20px;
         border-radius: 8px;
         font-family: poppinsBold;
         font-size: clamp(12px, 1vw, 14px);
@@ -290,11 +290,11 @@ ion-content {
             text-align: left;
         }
         .icon-col {
-            flex: 0 0 30px; /* mesma largura do ícone do card */
+            flex: 0 0 30px;
         }
 
         .actions-col {
-            flex: 0 0 92px; /* mesma largura do bloco de botões no card */
+            flex: 0 0 92px;
             text-align: right;
         }
 
@@ -304,7 +304,6 @@ ion-content {
         }
     }
 
-    /* ===== MEDIA QUERIES ===== */
     @media (max-width: 1000px) {
         .habit-toolbar {
             flex-direction: column-reverse;

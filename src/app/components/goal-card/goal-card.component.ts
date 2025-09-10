@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Category } from 'src/app/interfaces/category.interface';
 import { GoalData } from 'src/app/interfaces/goal.interface';
 import { HabitService } from 'src/app/services/habit/habit.service';
+import { normalizeFirestoreDate } from 'src/app/shared/utils/timestamp.utils';
 import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
 
 @Component({
@@ -26,29 +27,43 @@ import { PREDEFINED_CATEGORIES } from 'src/assets/data/categories';
   ]
 })
 export class GoalCardComponent implements OnInit {
-  @Input() goal: any;
+  public habitService = inject(HabitService)
+
+  @Input() goal!: GoalData;
   @Output() mark = new EventEmitter<GoalData>();
   @Output() delete = new EventEmitter<GoalData>();
   @Output() complete = new EventEmitter<GoalData>();
   @Output() restore = new EventEmitter<GoalData>();
   @Output() cancel = new EventEmitter<GoalData>();
   @Output() edit = new EventEmitter<GoalData>();
-  public habitService = inject(HabitService)
-  public showGoalModal = false;
 
-  habitName?: string;
+  public showGoalModal: boolean = false;
 
-  constructor() { }
+  public habitName!: string;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public completedAt!: Date;
 
-  openModal() {
+  async ngOnInit() {
+    if (this.goal.goalType === 'habit' && this.goal.linkedHabit) {
+      const habit = await this.habitService.getHabitById(this.goal.linkedHabit)
+      this.habitName = habit?.name ?? '';
+    }
+
+    this.createdAt = normalizeFirestoreDate(this.goal.createdAt)
+    this.updatedAt = normalizeFirestoreDate(this.goal.updatedAt);
+    this.completedAt = normalizeFirestoreDate(this.goal.completedAt);
+  }
+
+  public openModal() {
     this.showGoalModal = true;
   }
 
-  closeModal() {
+  public closeModal() {
     this.showGoalModal = false;
   }
 
-  translateStatus(): string {
+  public translateStatus(): string {
     const status = this.goal.state
     const translations: Record<string, string> = {
       in_progress: 'Em progresso',
@@ -60,31 +75,27 @@ export class GoalCardComponent implements OnInit {
     return translations[status] || status;
   }
 
-  calculateProgress(): number {
+  public calculateProgress(): number {
+    if (this.goal?.targetValue == null || this.goal?.progressValue == null) {
+      return 0
+    }
     const current = this.goal.progressValue;
     const target = this.goal.targetValue;
 
     if (!target || target === 0) return 0;
-
-
-
     let percentage = (current / target) * 100;
-
     if (this.goal.goalType === 'habit' && percentage > 100) {
       percentage = 100;
     }
-
     if (percentage >= 99) return Math.floor(percentage * 10) / 10;
-
     return Math.floor(percentage);
   }
 
-  getProgressColor(progress: number): string {
+  public getProgressColor(progress: number): string {
     const status = this.goal.state;
 
     if (status === 'cancelled') return '#bdbdbd';
     if (status === 'not_completed') return '#d32f2f';
-    if (status === 'suspended') return '#828282';
 
     if (progress >= 100) return '#219653';
     if (progress >= 90) return '#27ae60';
@@ -98,17 +109,23 @@ export class GoalCardComponent implements OnInit {
     return '#f8b195';
   }
 
-  getRemainingValue(): number {
+  public getRemainingValue(): number {
+    if (this.goal?.targetValue == null || this.goal?.progressValue == null) {
+      return 0
+    }
     const remaining = this.goal.targetValue - this.goal.progressValue;
     return remaining > 0 ? remaining : 0;
   }
 
-  getExtraValue(): number {
+  public getExtraValue(): number {
+    if (this.goal?.targetValue == null || this.goal?.progressValue == null) {
+      return 0
+    }
     const extra = this.goal.progressValue - this.goal.targetValue;
     return extra
   }
 
-  getGoalTypeDisplay(): string {
+  public getGoalTypeDisplay(): string {
     const types: Record<string, string> = {
       unit: 'Contagem de Unidades',
       habit: 'Baseada em Hábito',
@@ -117,24 +134,24 @@ export class GoalCardComponent implements OnInit {
     return types[this.goal.goalType] || this.goal.goalType;
   }
 
-  editGoal(event: MouseEvent): void {
+  public editGoal(event: MouseEvent): void {
     event.stopPropagation();
     this.closeModal();
     this.edit.emit(this.goal);
 
   }
 
-  deleteGoal(event: MouseEvent): void {
+  public deleteGoal(event: MouseEvent): void {
     event.stopPropagation();
     this.delete.emit(this.goal);
   }
 
-  restoreGoal(event: MouseEvent): void {
+  public restoreGoal(event: MouseEvent): void {
     event.stopPropagation();
     this.restore.emit(this.goal);
   }
 
-  cancelGoal(event: MouseEvent): void {
+  public cancelGoal(event: MouseEvent): void {
     event.stopPropagation();
     this.cancel.emit(this.goal);
   }
@@ -147,11 +164,6 @@ export class GoalCardComponent implements OnInit {
   public completeGoal(event: MouseEvent): void {
     event.stopPropagation();
     this.complete.emit(this.goal);
-  }
-
-  async ngOnInit() {
-    const habit = await this.habitService.getHabitById(this.goal.linkedHabit)
-    this.habitName = habit?.name ?? '';
   }
 
   get category(): Category | undefined {

@@ -7,7 +7,7 @@ import { HeaderComponent } from "../../components/header/header.component";
 import { CreateGoalModalComponent } from "../../components/create-goal-modal/create-goal-modal.component";
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UserService } from 'src/app/services/user/user.service';
-import { GoalData, GoalType, StateGoalType } from 'src/app/interfaces/goal.interface';
+import { GoalData } from 'src/app/interfaces/goal.interface';
 import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
 import { GoalService } from 'src/app/services/goal/goal.service';
@@ -35,6 +35,8 @@ import { GoalFilters } from 'src/app/interfaces/goalFilters.interface';
   ]
 })
 export class GoalsPage {
+  public userService = inject(UserService);
+  public goalService = inject(GoalService);
 
   public showGoalModal = false;
   public showFilterModal = false;
@@ -42,8 +44,6 @@ export class GoalsPage {
 
   public goalToEdit: any = null;
 
-  public userService = inject(UserService);
-  public goalService = inject(GoalService);
   public loading: boolean = true;
   public hasGoals: boolean = false;
 
@@ -72,14 +72,40 @@ export class GoalsPage {
   }
 
 
-  public openModal() {
+  public async ionViewWillEnter() {
+    this.loadGoals()
+    const result: boolean = await this.goalService.checkGoalsForHabit()
+    if (result === true) {
+      this.loadGoals();
+    }
+  }
+
+  async loadGoals() {
+    try {
+      this.loading = true
+      this.goals = await this.goalService.getUserGoals();
+      this.filteredGoals = this.goalService.filterGoals(this.goals, this.activeFilters, this.searchText);
+      this.hasGoals = this.filteredGoals.length > 0;
+    } catch {
+      this.goals = [];
+      this.filteredGoals = [];
+      this.hasGoals = false;
+    } finally {
+      this.loading = false
+    }
+  }
+
+  public openCreateModal() {
     this.showGoalModal = true;
   }
 
   public openFilterModal() {
     this.showFilterModal = true
   }
-
+  public openEditGoalModal(goal: GoalData) {
+    this.goalToEdit = goal;
+    this.showEditGoalModal = true;
+  }
   public closeModal() {
     this.showGoalModal = false;
     this.showFilterModal = false;
@@ -87,114 +113,80 @@ export class GoalsPage {
 
     this.loadGoals()
   }
-  public openEditGoalModal(goal: GoalData) {
-    this.goalToEdit = goal;
-    this.showEditGoalModal = true;
-  }
 
-  async ionViewWillEnter() {
-    this.loadGoals();
-  }
-
-  constructor() { }
-
-  async ngOnInit() {
-
-    this.loadGoals()
-    this.goalService.checkGoalsForHabit()
-  }
-
-  deleteGoal(goal: GoalData) {
+  public async deleteGoal(goal: GoalData) {
     try {
-      Swal.fire({
-        title: "Tem certeza?",
-        text: "Você perderá tudo relacionado a meta excluída!",
-        icon: "warning",
-        heightAuto: false,
-        showCancelButton: true,
-        confirmButtonColor: "#1976d2",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sim, desejo deletar."
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.goalService.deleteGoal(goal.id);
-          this.goals = this.goals.filter(g => g.id !== goal.id);
-          this.loadGoals()
-
-          Swal.fire({
-            title: 'Excluido',
-            text: 'Meta excluída com sucesso',
-            icon: 'success',
-            heightAuto: false,
-            confirmButtonColor: '#E0004D'
-          });
-          Loading.remove()
-        }
-      });
+      Swal.fire({ title: "Tem certeza?", text: "Você perderá tudo relacionado a meta excluída!", icon: "warning", heightAuto: false, showCancelButton: true, confirmButtonColor: "#1976d2", cancelButtonColor: "#d33", confirmButtonText: "Sim, desejo deletar." })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.goalService.deleteGoal(goal.id);
+            this.goals = this.goals.filter(g => g.id !== goal.id);
+            this.loadGoals()
+            Swal.fire({ title: 'Excluido', text: 'Meta excluída com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
+          }
+        });
     } catch (err: unknown) {
-      Loading.remove()
       if (err instanceof Error) {
-        console.error(err);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Não foi possivel excluir a meta',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+        Swal.fire({ title: 'Erro', text: 'Não foi possivel excluir a meta', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
       } else {
-        console.error('Erro desconhecido', err);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Ocorreu um erro desconhecido',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+        Swal.fire({ title: 'Erro', text: 'Ocorreu um erro desconhecido', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
       }
     }
   }
 
-  async loadGoals() {
+  public restoreGoal(goal: GoalData) {
     try {
-      this.loading = true
-      const uid = await this.userService.getUserId();
-      if (!uid) throw new Error('Usuário não autenticado');
-
-      this.goals = await this.goalService.getUserGoals();
-      this.filteredGoals = this.goalService.filterGoals(this.goals, this.activeFilters, this.searchText);
-
-      this.hasGoals = this.filteredGoals.length > 0;
-      this.loading = false;
-    } catch {
-      this.goals = [];
-      this.filteredGoals = [];
-      this.hasGoals = false;
-      this.loading = false;
+      Swal.fire({
+        title: "Tem certeza?", text: "Tem certeza de que deseja restaurar esta meta? Essa ação não pode ser desfeita.", icon: "warning", heightAuto: false, showCancelButton: true, confirmButtonColor: "#1976d2", cancelButtonColor: "#d33", confirmButtonText: "Sim, desejo restaurar."
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.goalService.restoreGoal(goal)
+          Swal.fire({
+            title: 'Restaurada', text: 'Meta restaurada com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D'
+          });
+        }
+      })
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Swal.fire({ title: 'Erro', text: 'Não foi possivel restaurar a meta', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
+      } else {
+        Swal.fire({ title: 'Erro', text: 'Ocorreu um erro desconhecido', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
+      }
     }
   }
 
+  public cancelGoal(goal: GoalData) {
+    try {
+      Swal.fire({
+        title: "Tem certeza?", text: "Tem certeza de que deseja cancelar está meta?", icon: "warning", heightAuto: false, showCancelButton: true, confirmButtonColor: "#1976d2", cancelButtonColor: "#d33", confirmButtonText: "Sim, desejo restaurar."
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.goalService.cancelGoal(goal)
+          Swal.fire({
+            title: 'Cancelada', text: 'Meta cancelada com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D'
+          });
+        }
+      })
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Swal.fire({ title: 'Erro', text: 'Não foi possivel cancelar a meta', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
+      } else {
+        Swal.fire({ title: 'Erro', text: 'Ocorreu um erro desconhecido', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
+      }
+    }
+  }
 
+  public completeGoal(goal: GoalData) {
+    this.goalService.completeGoal(goal)
+  }
 
-  onFiltersApplied(filters: GoalFilters) {
+  public onFiltersApplied(filters: GoalFilters) {
     this.activeFilters = filters;
     this.filteredGoals = this.goalService.filterGoals(this.goals, filters, this.searchText);
     return this.activeFilters
   }
-  onSearchChange() {
+
+  public onSearchChange() {
     this.filteredGoals = this.goalService.filterGoals(this.goals, this.activeFilters, this.searchText);
   }
-
-  restoreGoal(goal: GoalData) {
-    this.goalService.restoreGoal(goal)
-  }
-
-  completeGoal(goal: GoalData) {
-    this.goalService.completeGoal(goal)
-  }
-  cancelGoal(goal: GoalData) {
-    this.goalService.cancelGoal(goal)
-  }
-
-
 }

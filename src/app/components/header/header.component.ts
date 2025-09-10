@@ -7,14 +7,13 @@ import { menuOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuService } from 'src/app/services/menu/menu.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { ProfileModalComponent } from '../../components/profile-modal/profile-modal.component';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [IonIcon, CommonModule, RouterLink, ProfileModalComponent]
+  imports: [IonIcon, CommonModule, RouterLink]
 })
 export class HeaderComponent {
 
@@ -24,12 +23,14 @@ export class HeaderComponent {
   private elementRef = inject(ElementRef);
   private router = inject(Router);
 
-  public nome: string = '';
+  public name: string = '';
   public email: string = '';
+  public avatar: string = '';
+
   public isModalOpen: boolean = false;
   public isOpen: boolean = false;
   public isMobile: boolean = false;
-  public menuOpen: boolean = false;
+
   public routerName: string = '';
   public pageTitle: string = '';
   public routeToTitleMap: { [key: string]: string } = {
@@ -40,42 +41,56 @@ export class HeaderComponent {
     'help': 'Ajuda',
     'profile': 'Perfil',
   };
-  constructor(
-  ) {
+
+  constructor() {
     addIcons({ menuOutline });
-    this.routerName = window.location.pathname.split('/')[1];
-    this.pageTitle = this.routeToTitleMap[this.routerName] || 'App';
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        const route = event.urlAfterRedirects.split('/')[1];
+        this.routerName = route;
+        this.pageTitle = this.routeToTitleMap[route] || 'App';
         this.closeUserMenu();
       }
     });
+
   }
 
-  ngOnInit() {
+  public ngOnInit() {
+    const cachedUser = localStorage.getItem('userDoc');
+    if (cachedUser) {
+      const data = JSON.parse(cachedUser);
+      this.name = data.displayName;
+      this.email = data.email;
+      this.avatar = data.avatar;
+    }
+
     this.userService.getUserId().then((uid) => {
       if (uid) {
-        this.userService.getUserDoc(uid).then(data => {
+        this.userService.getUserDoc(uid).then((data) => {
           if (data) {
-            this.nome = data.displayName;
+            this.name = data.displayName;
             this.email = data.email;
+            this.avatar = data.avatar;
+            localStorage.setItem('userDoc', JSON.stringify(data));
           }
         });
       }
     });
   }
 
-  toggleMenu() {
+  public toggleMenu() {
     this.menuService.toggleMenu();
   }
 
-  toggleUserMenu() {
+  public toggleOptionsMenu() {
     this.isOpen = !this.isOpen;
   }
-  closeUserMenu() {
+
+  public closeUserMenu() {
     this.isOpen = false;
   }
-  async logout() {
+
+  public async logout() {
     const result = await Swal.fire({
       title: 'Confirmação',
       text: 'Deseja realmente sair da conta?',
@@ -85,13 +100,20 @@ export class HeaderComponent {
       confirmButtonText: 'Sair',
       cancelButtonText: 'Cancelar',
     });
-
     if (result.isConfirmed) {
-      await this.authService.logout();
-      this.router.navigate(['/login']);
+      try {
+        await this.authService.logout();
+        this.router.navigate(['/login']);
+      } catch (error) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Não foi possível sair. Tente novamente.',
+          icon: 'error',
+          heightAuto: false,
+        });
+      }
     }
   }
-
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {

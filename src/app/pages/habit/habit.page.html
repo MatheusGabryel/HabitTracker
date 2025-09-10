@@ -17,7 +17,7 @@
             (close)="closeModal()"
             @fadeInOut
           ></app-create-list-modal>
-          } @if (showEditHabitModal) {
+          } @if (showEditHabitModal && habitToEdit !== null) {
           <app-edit-habit-modal
             [habitToEdit]="habitToEdit"
             (close)="closeModal()"
@@ -73,7 +73,6 @@
                 </button>
               </nav>
 
-              <!-- MOBILE VERSION WITH SWIPER -->
               <swiper-container
                 class="habit-list-tabs mobile-only"
                 slides-per-view="auto"
@@ -140,11 +139,10 @@
 
               @if (!loading) { @if (hasHabits) {
               <ul class="habit-list">
-                @for (habit of activeListHabits; track habit.id) {
+                @for (habit of filteredHabits; track habit.id) {
                 <li>
                   <app-habit-card
                     (delete)="deleteHabit($event)"
-                    [logs]="logsByHabit[habit.id] || {}"
                     [habit]="habit"
                     (open)="openEditHabitModal($event)"
                     style="width: 100%"

@@ -3,6 +3,7 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { serverTimestamp } from 'firebase/firestore';
 import { Loading } from 'notiflix';
+import { Category } from 'src/app/interfaces/category.interface';
 import { GoalData, GoalType } from 'src/app/interfaces/goal.interface';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { GoalService } from 'src/app/services/goal/goal.service';
@@ -19,31 +20,19 @@ import Swal from 'sweetalert2';
   standalone: true
 })
 export class CreateGoalModalComponent implements OnInit {
+  private goalService = inject(GoalService);
+  private userService = inject(UserService);
+  private habitService = inject(HabitService);
 
-
-  public goalService = inject(GoalService);
-  public userService = inject(UserService);
-  public habitService = inject(HabitService);
-
-  public now = new Date();
-  public currentStep = 1;
+  public currentStep: number = 1;
 
   public userHabits: HabitData[] = [];
   public selectedHabit: string = '';
 
-  constructor() { }
+  public progressTypes: string[] = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'R$', 'Dias', 'Semanas', 'Outro'];
+  public categories: Category[] = PREDEFINED_CATEGORIES;
 
-  async ngOnInit() {
-    this.goal.goalType = 'unit';
-    this.goal.hasEndDate = false;
-    await this.loadUserHabits();
-  }
-
-  @Output() close = new EventEmitter<void>();
-  progressTypes = ['Unidade', 'Kg', 'Km', 'Minutos', 'Horas', 'Páginas', 'Repetições', 'R$', 'Dias', 'Semanas', 'Outro'];
-  public categories = PREDEFINED_CATEGORIES;
-
-  goal: GoalData = {
+  public goal: GoalData = {
     id: '',
     name: '',
     category: '',
@@ -53,14 +42,22 @@ export class CreateGoalModalComponent implements OnInit {
     customProgressType: '',
     hasEndDate: false,
     endDate: '',
-    targetValue: 1,
+    targetValue: 0,
     linkedHabit: '',
     state: 'in_progress',
     progressValue: 0,
-    createdAt: undefined,
-    updatedAt: undefined,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
     completedAt: null
   };
+
+  @Output() close = new EventEmitter<void>();
+
+  async ngOnInit() {
+    this.goal.goalType = 'unit';
+    this.goal.hasEndDate = false;
+    await this.loadUserHabits();
+  }
 
   public closeModal() {
     this.close.emit();
@@ -115,7 +112,6 @@ export class CreateGoalModalComponent implements OnInit {
 
   public selectGoalType(type: GoalType) {
     this.goal.goalType = type;
-
     if (type === 'unit') {
       this.goal.progressValueType = 'Unidade';
       this.goal.targetValue = 1;
@@ -143,7 +139,7 @@ export class CreateGoalModalComponent implements OnInit {
         this.userHabits = await this.habitService.getUserHabits() as HabitData[];
       }
     } catch (error) {
-      console.error('Erro ao carregar hábitos:', error);
+      Swal.fire({ title: 'Erro', text: 'Ocorreu um erro desconhecido,', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' })
     }
   }
 
@@ -160,25 +156,14 @@ export class CreateGoalModalComponent implements OnInit {
     return this.selectedHabit === habitId;
   }
 
-
   public getHabitName(habitId: string): string {
     const habit = this.userHabits.find(cat => cat.id === habitId);
     return habit ? habit.name : '';
   }
 
-  public getCategoryName(categoryId: string): string {
+  public getCategoryInfo(categoryId: string): Category | null {
     const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.displayName : '';
-  }
-
-  public getCategoryIcon(categoryId: string): string {
-    const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.icon : '';
-  }
-
-  public getCategoryColor(categoryId: string): string {
-    const category = this.categories.find(cat => cat.id === categoryId);
-    return category ? category.color : '#cccccc';
+    return category || null
   }
 
   public getGoalTypeDisplay(): string {
@@ -190,7 +175,6 @@ export class CreateGoalModalComponent implements OnInit {
     }
   }
 
-
   public async createGoal() {
     if (!this.isFormValid()) {
       Swal.fire({
@@ -201,13 +185,11 @@ export class CreateGoalModalComponent implements OnInit {
       });
       return;
     }
-
-    let goalToSave: any = {
+    let goalToSave: GoalData = {
       ...this.goal,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
-
     if (this.goal.goalType === 'unit') {
       delete goalToSave.linkedHabit
       const progressTypeToSave =
@@ -220,7 +202,6 @@ export class CreateGoalModalComponent implements OnInit {
       goalToSave.progressValueType = progressTypeToSave as string;
     } else if (this.goal.goalType === 'habit') {
       goalToSave.linkedHabit = this.selectedHabit;
-
       delete goalToSave.progressValueType;
       delete goalToSave.customProgressType;
     } else if (this.goal.goalType === 'yes_no') {
@@ -229,52 +210,24 @@ export class CreateGoalModalComponent implements OnInit {
       delete goalToSave.linkedHabit;
       goalToSave.targetValue = 1;
     }
-
     try {
       Loading.standard('Adicionando meta...');
       const uid = await this.userService.getUserId();
       if (!uid) {
-        Swal.fire({
-          title: 'Erro',
-          text: 'Usuário não autenticado',
-          icon: 'error',
-          confirmButtonColor: '#E0004D'
-        });
+        Swal.fire({ title: 'Erro', text: 'Usuário não autenticado', icon: 'error', confirmButtonColor: '#E0004D' });
         throw new Error('Usuário não autenticado');
       }
-      console.log(goalToSave)
-      await this.goalService.addGoal(uid, goalToSave);
-
-      Swal.fire({
-        title: 'Sucesso',
-        text: 'Meta adicionada com sucesso',
-        icon: 'success',
-        heightAuto: false,
-        confirmButtonColor: '#E0004D'
-      });
-      Loading.remove()
+      await this.goalService.addGoal(goalToSave);
+      Swal.fire({ title: 'Sucesso', text: 'Meta adicionada com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
       this.closeModal();
     } catch (err: unknown) {
-      Loading.remove()
       if (err instanceof Error) {
-        console.error(err);
-        Swal.fire({
-          title: 'Erro',
-          text: err.message,
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+        Swal.fire({ title: 'Erro', text: err.message, icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
       } else {
-        console.error('Erro desconhecido', err);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Ocorreu um erro desconhecido',
-          icon: 'error',
-          heightAuto: false,
-          confirmButtonColor: '#E0004D'
-        });
+        Swal.fire({ title: 'Erro', text: 'Ocorreu um erro desconhecido', icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
       }
+    } finally {
+      Loading.remove()
     }
   }
 }

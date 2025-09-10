@@ -248,7 +248,6 @@ ion-content {
         }
     }
 
-    // Responsividade para tablets e telas médias
     @media (max-width: 1250px) {
         .goal-list-cards-wrapper {
             max-width: 100%;
@@ -284,7 +283,6 @@ ion-content {
         }
     }
 
-    // Responsividade para tablets pequenos
     @media (max-width: 900px) {
         .list-header {
             flex-direction: column;
@@ -312,7 +310,6 @@ ion-content {
         }
     }
 
-    // Responsividade para smartphones
     @media (max-width: 640px) {
         .goal-list-cards {
             grid-template-columns: 1fr;
@@ -343,7 +340,7 @@ ion-content {
             min-width: unset;
 
             p {
-                display: none; // Oculta o texto em dispositivos pequenos
+                display: none;
             }
 
             .card-icon {
@@ -353,7 +350,7 @@ ion-content {
             }
 
             .add-icon {
-                display: none; // Oculta o ícone de adicionar em dispositivos pequenos
+                display: none;
             }
 
             &:hover {
@@ -380,7 +377,6 @@ ion-content {
         }
     }
 
-    // Responsividade para smartphones muito pequenos
     @media (max-width: 480px) {
         .header-goal {
             padding: 0.8rem;

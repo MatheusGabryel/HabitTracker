@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { menuOutline, chevronDownOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
@@ -12,32 +12,28 @@ import { MenuService } from 'src/app/services/menu/menu.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent {
+
+  private router = inject(Router)
+  public menuService = inject(MenuService)
+
   public showSubMenu = false;
-  public router = inject(Router)
-   public menuService = inject(MenuService)
 
   @Output() closeMenu = new EventEmitter<void>();
 
-  constructor(
-  ) {
-    addIcons({
-      menuOutline,
-      chevronDownOutline
-    });
+  constructor() {
+    addIcons({ menuOutline, chevronDownOutline });
   }
 
-  ngOnInit() { }
-
-  isRouteActive(route: string): boolean {
+  public isRouteActive(route: string): boolean {
     return this.router.url.startsWith(route);
   }
 
-  toggleSidebarDesktop(): void {
+  public toggleSidebarDesktop(): void {
     this.menuService.toggleMenu();
   }
 
-  close(): void {
+  public close(): void {
     this.menuService.setMenuOpen(false);
   }
 }

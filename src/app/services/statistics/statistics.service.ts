@@ -4,7 +4,7 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { average, Timestamp } from 'firebase/firestore';
 import { GoalData, GoalType } from 'src/app/interfaces/goal.interface';
-import { getLastMonthStart, getLastWeekStart, getLastYearStart, getSixMonthsAgo } from 'src/app/shared/utils/date.utils';
+import { formatLocalDate, getLastMonthStart, getLastWeekStart, getLastYearStart, getSixMonthsAgo, parseLocalDate } from 'src/app/shared/utils/date.utils';
 import { normalizeFirestoreDate, normalizeFirestoreDateOrNull } from 'src/app/shared/utils/timestamp.utils';
 
 
@@ -19,11 +19,9 @@ export class StatisticsService {
     const expectedExecutions = habits.reduce((acc, habit) => {
       return acc += habit.days.length;
     }, 0)
-    // console.log(expectedExecutions)
     const completedExecutions = habits.reduce((acc, habit) => {
       return acc += habit.logs?.filter(log => weekRange.includes(log.date) && log.state === 'completed').length;
     }, 0);
-    // console.log(completedExecutions)
     return expectedExecutions === 0 ? 0 : Number(((completedExecutions / expectedExecutions) * 100).toFixed(1));
   }
 
@@ -70,8 +68,7 @@ export class StatisticsService {
     const day = date.getDay();
     return ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'][day];
   }
-
-  // refatorar ->
+  
   getBestDayOfWeek(habits: HabitData[], weekRange: any[]) {
     const start = new Date(weekRange[0].start);
     const end = new Date(weekRange[weekRange.length - 1].end);
@@ -226,14 +223,11 @@ export class StatisticsService {
 
   getIndivualHabitCompletionRate(habit: HabitData, weekRange: string[]) {
     const expectedExecutions = habit.days.length
-    // console.log(expectedExecutions)
     const completedExecutions = habit.logs?.filter(log => weekRange.includes(log.date) && log.state === 'completed').length ?? 0;
-    // console.log(habit.name, habit.logs, completedExecutions)
     let executions = { completed: 0, rate: 0 }
     return executions = { completed: completedExecutions, rate: expectedExecutions === 0 ? 0 : Number(((completedExecutions / expectedExecutions) * 100).toFixed(1)) }
   }
 
-  // refatorar ->
   calculateHabitCurrentStreak(habit: HabitData) {
     let streak = 0;
     let currentDate = new Date();
@@ -245,8 +239,6 @@ export class StatisticsService {
 
     const logMap = new Map<string, HabitLog>();
     habit.logs.forEach(log => logMap.set(log.date, log));
-
-
 
     while (true) {
       const dayOfWeek = currentDate.getDay();
@@ -267,18 +259,6 @@ export class StatisticsService {
 
     return streak;
   }
-  // refatorar ->
-  parseLocalDate(dateStr: string): Date {
-    const [year, month, day] = dateStr.split('-').map(Number);
-    return new Date(year, month - 1, day); // Local time, sem UTC
-  }
-
-  formatLocalDate(date: Date): string {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
 
   calculateHabitBestStreak(habit: HabitData): number {
     const daysOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -287,7 +267,6 @@ export class StatisticsService {
       .filter(d => d !== -1)
       .sort((a, b) => a - b);
 
-    // console.log(habit.name, habitDays)
     const logMap = new Map<string, HabitLog>();
     habit.logs.forEach(log => logMap.set(log.date, log));
 
@@ -299,13 +278,13 @@ export class StatisticsService {
 
     let bestStreak = 0;
     let currentStreak = 0;
-    let currentDate = this.parseLocalDate(sortedLogsDates[0]);
-    const lastDate = this.parseLocalDate(sortedLogsDates[sortedLogsDates.length - 1]);
+    let currentDate = parseLocalDate(sortedLogsDates[0]);
+    const lastDate = parseLocalDate(sortedLogsDates[sortedLogsDates.length - 1]);
 
     while (currentDate <= lastDate) {
       const dayOfWeek = currentDate.getDay();
       if (habitDays.includes(dayOfWeek)) {
-        const dateStr = this.formatLocalDate(currentDate);
+        const dateStr = formatLocalDate(currentDate);
         const log = logMap.get(dateStr);
         if (log?.state === 'completed') {
           currentStreak++;
@@ -343,17 +322,17 @@ export class StatisticsService {
   getPerfomanceHabit(habit: HabitData) {
     const createdAtDate = habit.createdAt as Date;
 
-    const startDate = this.formatLocalDate(createdAtDate);
+    const startDate = formatLocalDate(createdAtDate);
     const endDate = new Date();
 
     const logMap = new Map(
       habit.logs.map(log => [
-        typeof log.date === 'string' ? log.date : this.formatLocalDate(log.date),
+        typeof log.date === 'string' ? log.date : formatLocalDate(log.date),
         log.state
       ])
     );
 
-    let currentDate = this.parseLocalDate(startDate);
+    let currentDate = parseLocalDate(startDate);
     let success = 0;
     let pending = 0;
     let failed = 0;
@@ -364,7 +343,7 @@ export class StatisticsService {
       const dayName = dayMap[currentDate.getDay()];
 
       if (habit.days.includes(dayName)) {
-        const dateStr = this.formatLocalDate(currentDate);
+        const dateStr = formatLocalDate(currentDate);
         const state = logMap.get(dateStr);
 
         if (state === 'completed') {
@@ -397,14 +376,14 @@ export class StatisticsService {
   }
 
   getProgressValueHabit(habit: HabitData) {
-    const perWeek = this.parseLocalDate(getLastWeekStart());
+    const perWeek = parseLocalDate(getLastWeekStart());
 
     const logs = habit.logs ?? [];
 
     const totalValue = logs.reduce((acc, log) => acc + (log.progressValue || 0), 0);
 
     const weekValue = logs
-      .filter(log => this.parseLocalDate(log.date) >= perWeek)
+      .filter(log => parseLocalDate(log.date) >= perWeek)
       .reduce((acc, log) => acc + (log.progressValue || 0), 0);
 
     const almostValue = logs.length ? Number((totalValue / logs.length).toFixed(0)) : 0;

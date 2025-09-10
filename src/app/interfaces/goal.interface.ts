@@ -18,7 +18,7 @@ export interface GoalData {
     linkedHabit?: string,
     state: StateGoalType,
     progressValue?: number,
-    createdAt?: Date | ReturnType<typeof serverTimestamp>,
-    updatedAt?: Date | ReturnType<typeof serverTimestamp>,
+    createdAt: Date | ReturnType<typeof serverTimestamp>,
+    updatedAt: Date | ReturnType<typeof serverTimestamp>,
     completedAt?: Date | ReturnType<typeof serverTimestamp> | null
 }

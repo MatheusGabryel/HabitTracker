@@ -280,11 +280,11 @@
               @if (habit.category; as category) {
               <span>
                 <img
-                  [src]="getCategoryIcon(category)"
+                  [src]="getCategoryInfo(category)?.icon"
                   class="summary-category-icon"
                   alt="Ícone da categoria"
                 />
-                {{ getCategoryName(category) }}
+                {{ getCategoryInfo(category)?.displayName }}
               </span>
               } @else {
               <span>Não definida</span>

@@ -2,17 +2,12 @@
   <div class="modal-header">
     <h2>Gerenciar Listas</h2>
     <button class="close-button" type="button" (click)="closeModal()">
-              <img src="./assets/icon/exit.svg" alt="x" width="18px">
+      <img src="./assets/icon/exit.svg" alt="x" width="18px" />
     </button>
   </div>
 
   <div class="modal-content">
-    @if (loading) {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p>Carregando listas...</p>
-    </div>
-    } @else if (lists.length === 0) {
+    @if (lists.length === 0) {
     <div class="empty-state">
       <img
         src="./assets/icon/create_new_folder_50dp_FFFFFF.png"
@@ -20,7 +15,7 @@
         class="empty-icon"
       />
       <p>Você ainda não tem nenhuma lista</p>
-      <!-- <button class="create-button" (click)="closeModal()">Criar Lista</button> -->
+      <button class="create-button" (click)="closeModal()">Criar Lista</button>
     </div>
     } @else if (lists.length >= 1) {
     <div class="lists-container">
@@ -57,7 +52,11 @@
             @if(list.isVisible) {
             <img src="./assets/icon/eye.svg" alt="Visibilidade" width="20px" />
             } @else {
-               <img src="./assets/icon/eye-slash.svg" alt="Visibilidade" width="20px" />
+            <img
+              src="./assets/icon/eye-slash.svg"
+              alt="Visibilidade"
+              width="20px"
+            />
             }
           </button>
           <button
@@ -75,8 +74,7 @@
   </div>
 </div>
 
-@if(showEditListModal) {
-@if (selectedList) {
+@if(showEditListModal) { @if (selectedList) {
 <div class="edit-modal-container" @fadeInOut>
   <form #form="ngForm" action="" (ngSubmit)="updateList(selectedList)">
     <div class="edit-modal-header">
@@ -87,7 +85,13 @@
     </div>
     <div class="edit-modal-content">
       <label>Nome</label>
-      <input type="text" name="name" [(ngModel)]="selectedList.name" required maxlength="20"/>
+      <input
+        type="text"
+        name="name"
+        [(ngModel)]="selectedList.name"
+        required
+        maxlength="20"
+      />
 
       <label>Selecione uma categoria</label>
       <div class="category-selector">
@@ -109,9 +113,10 @@
     </div>
     <div class="edit-modal-footer">
       <button type="button" (click)="closeEditModal()">Cancelar</button>
-      <button type="submit" [disabled]="!isFormValid(selectedList)">Atualizar</button>
+      <button type="submit" [disabled]="!isFormValid(selectedList)">
+        Atualizar
+      </button>
     </div>
   </form>
 </div>
-}
-}
+} }

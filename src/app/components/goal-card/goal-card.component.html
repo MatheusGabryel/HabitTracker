@@ -51,7 +51,7 @@
           >{{ goal.progressValue }} / {{ goal.targetValue }}</span
         >
       </div>
-      @if (goal.progressValue <= goal.targetValue) {
+      @if (goal.progressValue !== undefined && goal.targetValue !== undefined && goal.progressValue <= goal.targetValue) {
       <div class="goal-info-item">
         <span class="info-label">Restante:</span>
         <span class="info-value"
@@ -59,7 +59,7 @@
           {{ goal.progressValueType || goal.customProgressType }}</span
         >
       </div>
-      } @else if (goal.progressValue > goal.targetValue){
+      } @else {
       <div class="goal-info-item">
         <span class="info-label">Extra:</span>
         <span class="info-value"
@@ -105,23 +105,17 @@
 
     <div class="goal-footer">
       <div class="goal-dates">
-        @if (goal?.updatedAt.toMillis() !== goal?.createdAt.toMillis()) {
+        @if (updatedAt?.getTime() !== createdAt?.getTime()) {
         <div class="date-info">
           <span class="date-label">Editado:</span>
-          <span class="date-value">{{
-            goal.updatedAt.toDate() | date : "dd/MM"
-          }}</span>
+          <span class="date-value">{{ updatedAt | date : "dd/MM" }}</span>
         </div>
-        } 
-        @else if (goal?.createdAt) {
+        } @else if (createdAt) {
         <div class="date-info">
           <span class="date-label">Criada:</span>
-          <span class="date-value">{{
-            goal.createdAt.toDate() | date : "dd/MM"
-          }}</span>
+          <span class="date-value">{{ createdAt | date : "dd/MM" }}</span>
         </div>
-        } 
-        @if (goal.hasEndDate && goal.goalType !== 'yes_no') {
+        } @if (goal.hasEndDate && goal.goalType !== 'yes_no') {
         <div class="date-info">
           <span class="date-label">Prazo:</span>
           <span class="date-value">{{ goal.endDate | date : "dd/MM" }}</span>
@@ -152,7 +146,8 @@
           <span class="btn-icon">+</span>
           <span class="btn-text">Progresso</span>
         </button>
-        } @else if(goal.goalType === 'yes_no') {
+        } @else if(goal.goalType === 'yes_no' && goal.progressValue !==
+        undefined) {
         <button
           class="action-btn complete-btn"
           (click)="completeGoal($event)"
@@ -224,7 +219,7 @@
               {{ goal.progressValueType || goal.customProgressType }}</span
             >
           </div>
-          @if (goal.progressValue <= goal.targetValue) {
+          @if (goal.progressValue !== undefined && goal.targetValue !== undefined && goal.progressValue <= goal.targetValue) {
           <div class="progress-item">
             <span class="label">Restante:</span>
             <span class="value"
@@ -232,7 +227,7 @@
               {{ goal.progressValueType || goal.customProgressType }}</span
             >
           </div>
-          } @else if (goal.progressValue > goal.targetValue){
+          } @else {
           <div class="progress-item">
             <span class="label">Extra:</span>
             <span class="value"
@@ -291,7 +286,7 @@
         <div class="detail-item">
           <span class="detail-label">Criada em:</span>
           <span class="detail-value">{{
-            goal.createdAt?.toDate() | date : "dd/MM/yyyy"
+            createdAt | date : "dd/MM/yyyy"
           }}</span>
         </div>
         @if (goal.hasEndDate) {
@@ -301,23 +296,18 @@
             goal.endDate | date : "dd/MM/yyyy"
           }}</span>
         </div>
-        } @if (goal.updatedAt.toMillis() !== goal.createdAt.toMillis()) {
+        } @if (updatedAt.getTime() !== createdAt.getTime()) {
         <div class="detail-item">
           <span class="detail-label">Editado em:</span>
           <span class="detail-value">{{
-            goal.updatedAt?.toDate() | date : "dd/MM/yyyy"
+            updatedAt | date : "dd/MM/yyyy"
           }}</span>
         </div>
         } @if (goal.state === 'completed') {
         <div class="detail-item">
           <span class="detail-label">Concluído em:</span>
           <span class="detail-value">
-            {{
-              (goal.completedAt.toDate
-                ? goal.completedAt.toDate()
-                : goal.completedAt
-              ) | date : "dd/MM/yyyy"
-            }}</span
+            {{ completedAt | date : "dd/MM/yyyy" }}</span
           >
         </div>
         } @if (goal.description) {
@@ -333,7 +323,9 @@
       <h3>Ações</h3>
       <div class="actions-grid">
         <button class="modal-action-btn edit-btn" (click)="editGoal($event)">
-          <span class="action-icon"><img src="./assets/icon/edit-white.svg" alt="Editar" width="20px" /></span>
+          <span class="action-icon"
+            ><img src="./assets/icon/edit-white.svg" alt="Editar" width="20px"
+          /></span>
           <span class="action-text">Editar Meta</span>
         </button>
 
@@ -351,16 +343,26 @@
           class="modal-action-btn progress-btn"
           (click)="completeGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/plus.svg" alt="Adicionar Progresso" width="20px"  /></span>
+          <span class="action-icon"
+            ><img
+              src="./assets/icon/plus.svg"
+              alt="Adicionar Progresso"
+              width="20px"
+          /></span>
           <span class="action-text">Adicionar Progresso</span>
         </button>
         } @if (goal.goalType === 'yes_no' && goal.state === 'in_progress' &&
-        goal.progressValue < 1) {
+        goal.progressValue !== undefined) {
         <button
           class="modal-action-btn complete-btn"
           (click)="completeGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/check-white.svg" alt="Completar" width="20px"  /></span>
+          <span class="action-icon"
+            ><img
+              src="./assets/icon/check-white.svg"
+              alt="Completar"
+              width="20px"
+          /></span>
           <span class="action-text">Marcar como Concluída</span>
         </button>
         }
@@ -369,7 +371,12 @@
           class="modal-action-btn delete-btn"
           (click)="deleteGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/delete-white.svg" alt="Deletar" width="20px"  /></span>
+          <span class="action-icon"
+            ><img
+              src="./assets/icon/delete-white.svg"
+              alt="Deletar"
+              width="20px"
+          /></span>
           <span class="action-text">Excluir Meta</span>
         </button>
 
@@ -378,7 +385,9 @@
           class="modal-action-btn cancel-btn"
           (click)="cancelGoal($event)"
         >
-          <span class="action-icon"><img src="./assets/icon/exit.svg" alt="Sair" width="20px"  /></span>
+          <span class="action-icon"
+            ><img src="./assets/icon/exit.svg" alt="Sair" width="20px"
+          /></span>
           <span class="action-text">Cancelar Meta</span>
         </button>
         }

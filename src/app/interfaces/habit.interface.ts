@@ -1,4 +1,5 @@
 import { serverTimestamp } from 'firebase/firestore';
+import { Category } from './category.interface';
 
 export type ProgressHabitType = 'yes_no' | 'time' | 'times';
 export type CompletionRulesHabiType = 'equal' | 'at_least' | 'at_most' | 'any';
@@ -44,6 +45,15 @@ export interface HabitList {
   updatedAt: any;
   categories: string[];
   isVisible?: boolean;
+}
+
+export interface HabitWithLogs {
+  id: string;
+  logs: HabitLog[];
+}
+
+export interface HabitDataWithCategoryObj extends HabitData {
+  categoryObj?: Category;
 }
 
 export interface HabitLogMap { [date: string]: HabitLog | null };

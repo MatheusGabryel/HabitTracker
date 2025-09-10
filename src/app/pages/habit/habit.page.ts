@@ -14,8 +14,6 @@ import Swal from 'sweetalert2';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { HabitList } from 'src/app/interfaces/habit.interface';
 import { FormsModule } from '@angular/forms';
-import { register } from 'swiper/element/bundle';
-import { HabitLog } from 'src/app/interfaces/habit.interface';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { EditHabitModalComponent } from "../../components/edit-habit-modal/edit-habit-modal.component";
 import { EditListsModalComponent } from "src/app/components/edit-lists-modal/edit-lists-modal.component";
@@ -42,39 +40,29 @@ import { EditListsModalComponent } from "src/app/components/edit-lists-modal/edi
 
 export class HabitPage {
   public habitService = inject(HabitService)
-  public logsByHabit: { [habitId: string]: { [date: string]: HabitLog } } = {};
   public userService = inject(UserService);
-  public habits: any[] = [];
-  public tabs: any[] = [];
-  public lists: HabitList[] =[]
+
   readonly DEFAULT_TAB = 'Ver tudo';
+
+  public tabs: (HabitList | { name: string; id: string | null })[] = [];
+  public habits: HabitData[] = [];
+  public lists: HabitList[] = [];
+  public filteredHabits: HabitData[] = [];
+  public filteredLists: HabitList[] = [];
+
   public activeTab: string = this.DEFAULT_TAB;
-  public activeListHabits: any[] = [];
+  public searchText: string = '';
+
+  public today: Date = new Date()
+
   public hasHabits: boolean = false;
   public loading: boolean = true;
-  public searchText: string = '';
-  public filteredHabits: any[] = [];
-  public filteredLists: any[] = []
-  today = new Date();
-  constructor() {
-    ;
-  }
+  public showHabitModal: boolean = false;
+  public showListModal: boolean = false;
+  public showEditHabitModal: boolean = false;
+  public showEditListsModal: boolean = false;
 
-  async ngOnInit() {
-    this.loadLists();
-    this.loadHabitsForActiveTab(this.DEFAULT_TAB);
-  }
-  public showHabitModal = false;
-  public showListModal = false;
-  public showEditHabitModal = false;
-
-  public showEditListsModal = false
-  public habitToEdit: any = null;
-
-
-  openHabitModal() {
-    this.showHabitModal = true;
-  }
+  public habitToEdit: HabitData | null = null;
 
   public tableHeaders: { key: 'name' | 'category' | 'state' | 'priority'; label: string; class: string }[] = [
     { key: 'name', label: 'Nome', class: 'name' },
@@ -83,10 +71,15 @@ export class HabitPage {
     { key: 'priority', label: 'Prioridade', class: 'priority' }
   ];
 
-  completeHabit(habit: any, dateIso: string) {
-    this.habitService.completeHabit(habit, dateIso);
+  public async ngOnInit() {
+    this.habits = await this.habitService.getHabitsWithLogs()
+    this.loadLists();
+    this.loadHabitsForActiveTab(this.DEFAULT_TAB);
   }
 
+  public openHabitModal() {
+    this.showHabitModal = true;
+  }
   public openListModal() {
     this.showListModal = true;
   }
@@ -94,6 +87,12 @@ export class HabitPage {
   public openEditListsModal() {
     this.showEditListsModal = true;
   }
+
+  public openEditHabitModal(habit: HabitData) {
+    this.habitToEdit = habit;
+    this.showEditHabitModal = true;
+  }
+
   public closeModal() {
     this.showHabitModal = false;
     this.showListModal = false;
@@ -105,20 +104,39 @@ export class HabitPage {
     this.loadHabitsForActiveTab(this.activeTab);
   }
 
-  public openEditHabitModal(habit: HabitData) {
-    this.habitToEdit = habit;
-    this.showEditHabitModal = true;
+  public async loadHabitsForActiveTab(tabName: string, list?: HabitList) {
+    this.loading = true
+    const uid = await this.userService.getUserId();
+    if (!uid) throw new Error('Usuário não autenticado');
+
+    if (!list && tabName !== this.DEFAULT_TAB) {
+      list = this.tabs.find(tab => tab.name === tabName && tab.id) as HabitList;
+    }
+
+    if (tabName === this.DEFAULT_TAB) {
+      this.habits
+    } else if (list) {
+      this.habits = await this.habitService.getHabitsByCategories(uid, list.categories);
+    } else {
+      this.habits = [];
+    }
+
+    this.applySearchFilter();
+    this.hasHabits = this.filteredHabits.length > 0;
+    this.loading = false;
   }
 
-  async setActive(tabName: string) {
-    this.activeTab = tabName;
-
-    const list = this.tabs.find(tab => tab.name === tabName && tab.id);
-    await this.loadHabitsForActiveTab(tabName, list as HabitList);
+  public async loadLists() {
+    const uid = await this.userService.getUserId();
+    if (uid) {
+      const lists = await this.habitService.getHabitLists(uid);
+      this.lists = lists
+      const filteredLists = lists.filter(l => l.isVisible !== false);
+      this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...filteredLists];
+    }
   }
 
-
-  async deleteHabit(habitId: string) {
+  public async deleteHabit(habitId: string) {
     try {
       Swal.fire({
         title: "Tem certeza?",
@@ -132,7 +150,7 @@ export class HabitPage {
       }).then((result) => {
         if (result.isConfirmed) {
           this.habitService.deleteHabit(habitId);
-          this.activeListHabits = this.activeListHabits.filter(h => h.id !== habitId);
+          this.filteredHabits = this.filteredHabits.filter(h => h.id !== habitId);
 
           Swal.fire({
             title: 'Excluido',
@@ -168,7 +186,7 @@ export class HabitPage {
     }
   }
 
-  async deleteList(event: any) {
+  public async deleteList(event: any) {
     const listId = event as string;
     console.log(event)
     console.log(listId)
@@ -190,7 +208,7 @@ export class HabitPage {
           this.habitService.deleteHabitList(listId);
           this.tabs = this.tabs.filter(l => l.id !== listId);
           this.lists = this.lists.filter(l => l.id !== listId)
-          
+
           Swal.fire({
             title: 'Excluido',
             text: 'Lista excluido com sucesso',
@@ -214,69 +232,36 @@ export class HabitPage {
     });
   }
 
-  async loadLists() {
-    const uid = await this.userService.getUserId();
-    if (uid) {
-      const lists = await this.habitService.getHabitLists(uid);
-      this.lists = lists
-      const filteredLists = lists.filter(l => l.isVisible !== false);
-      this.tabs = [{ name: this.DEFAULT_TAB, id: null }, ...filteredLists];
-    }
+  public async setActive(tabName: string) {
+    this.activeTab = tabName;
+
+    const list = this.tabs.find(tab => tab.name === tabName && tab.id);
+    await this.loadHabitsForActiveTab(tabName, list as HabitList);
   }
 
-
-  async toggleVisibility(listId: string) {
+  public async toggleVisibility(listId: string) {
     const uid = await this.userService.getUserId();
     if (!uid) return;
 
     const lists = await this.habitService.getHabitLists(uid);
     const list = lists.find(tab => tab.id === listId);
-    console.log(list)
     if (!list) return;
 
     const newVisibility = !list.isVisible;
 
-    try {
-      await this.habitService.updateListVisibility(uid, listId, newVisibility);
-      if (!newVisibility && this.activeTab === list.name) {
-        this.setActive(this.DEFAULT_TAB);
-      }
-      this.loadLists()
-    } catch (error) {
-      console.error('Erro ao atualizar visibilidade:', error);
+    await this.habitService.updateListVisibility(uid, listId, newVisibility);
+    if (!newVisibility && this.activeTab === list.name) {
+      this.setActive(this.DEFAULT_TAB);
     }
+    this.loadLists()
   }
 
 
-  async loadHabitsForActiveTab(tabName: string, list?: HabitList) {
-    this.loading = true
-    const uid = await this.userService.getUserId();
-    if (!uid) throw new Error('Usuário não autenticado');
-
-    if (!list && tabName !== this.DEFAULT_TAB) {
-      list = this.tabs.find(tab => tab.name === tabName && tab.id) as HabitList;
-    }
-
-    if (tabName === this.DEFAULT_TAB) {
-      this.habits = await this.habitService.getUserHabits();
-    } else if (list) {
-      this.habits = await this.habitService.getHabitsByCategories(uid, list.categories);
-    } else {
-      this.habits = [];
-    }
-
-    this.applySearchFilter();
-    this.hasHabits = this.filteredHabits.length > 0;
-    this.loading = false;
-    console.log(this.habits)
-  }
-
-  applySearchFilter() {
+  public applySearchFilter() {
     const search = this.searchText.toLowerCase();
     this.filteredHabits = this.habits.filter(habit =>
       habit.name.toLowerCase().includes(search)
     );
-    this.activeListHabits = this.filteredHabits;
   }
 
   public sortState: { key: 'name' | 'category' | 'state' | 'priority'; direction: 'asc' | 'desc' } = {
@@ -291,9 +276,9 @@ export class HabitPage {
       this.sortState.key = key;
       this.sortState.direction = 'asc';
     }
-
     this.sortHabits();
   }
+
   public sortHabits() {
     const key = this.sortState.key;
     const direction = this.sortState.direction;
@@ -305,23 +290,21 @@ export class HabitPage {
         return a[key].localeCompare(b[key]) * directionFactor;
       }
 
-      if (key === 'state') {
-        const order = ['completed', 'not_completed', 'in_progress'];
-        const aIndex = order.indexOf(a.state);
-        const bIndex = order.indexOf(b.state);
-        console.log((aIndex - bIndex) * directionFactor)
-        return (aIndex - bIndex) * directionFactor;
-      }
+      // if (key === 'state') {
+      //   const order = ['completed', 'not_completed', 'in_progress'];
+      //   const aIndex = order.indexOf(a.state);
+      //   const bIndex = order.indexOf(b.state);
+      //   console.log((aIndex - bIndex) * directionFactor)
+      //   return (aIndex - bIndex) * directionFactor;
+      // }
 
       if (key === 'priority') {
         const order = ['high', 'medium-high', 'medium', 'low'];
         const aIndex = order.indexOf(a.priority);
         const bIndex = order.indexOf(b.priority);
-                console.log((aIndex - bIndex) * directionFactor)
         return (aIndex - bIndex) * directionFactor;
 
       }
-
       return 0;
     });
   }

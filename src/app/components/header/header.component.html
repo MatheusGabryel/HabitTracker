@@ -7,17 +7,16 @@
   <div class="header_right">
     <div class="profile" >
       <div class="user-menu-container">
-        <button class="avatar-btn" (click)="toggleUserMenu(); $event.stopPropagation()">
-          <img src="" alt="Avatar do usuário" />
+        <button class="avatar-btn" (click)="toggleOptionsMenu(); $event.stopPropagation()">
+          <img [src]=`${avatar}` alt="Avatar do usuário" />
         </button>
       
         <div class="menu" [ngClass]="{ 'show': isOpen }">
           <div class="user-info">
-            <p class="name">{{ nome }}</p>
+            <p class="name">{{ name }}</p>
             <p class="email">{{ email }}</p>
           </div>
-
-          <div class="menu-item" (click)='closeUserMenu()' (click)="isModalOpen = true">👤 <span>Account</span></div>
+          
           <div class="menu-item" [routerLink]="'/settings'" (click)='closeUserMenu()'>⚙️ <span>Settings</span></div>
 
           <div class="menu-item logout" (click)="logout()">↩️ <span>Log out</span></div>
@@ -30,5 +29,3 @@
     </button>
   </div>
 </header>
-
-<app-profile-modal [isOpen]="isModalOpen" (closed)="isModalOpen = false"></app-profile-modal>

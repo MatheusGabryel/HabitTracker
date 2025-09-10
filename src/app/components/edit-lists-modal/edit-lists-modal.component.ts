@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./edit-lists-modal.component.scss'],
   imports: [CommonModule, FormsModule],
   standalone: true,
-    animations: [
+  animations: [
     trigger('fadeInOut', [
       transition(':enter', [
         style({ opacity: 0, transform: 'scale(0.95)' }),
@@ -30,37 +30,23 @@ import Swal from 'sweetalert2';
     ])
   ]
 })
-export class EditListsModalComponent implements OnInit {
-  public userService = inject(UserService);
-  public habitService = inject(HabitService);
-  public categories = PREDEFINED_CATEGORIES;
+export class EditListsModalComponent {
+  private habitService = inject(HabitService);
+
   @Input() lists!: HabitList[];
-  public loading = true;
   @Output() toggle = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
 
-  public showEditListModal = false
+  public categories: Category[] = PREDEFINED_CATEGORIES;
+  public showEditListModal: boolean = false
   public selectedList!: HabitList | null;
 
-  constructor() { }
-
-  async ngOnInit() {
-    console.log(this.lists)
-    this.isLoading()
-  }
-
-
-  isLoading() {
-    if (this.lists.length >= 1 || this.lists.length === 0) {
-      this.loading = false
-    }
-  }
-  closeModal() {
+  public closeModal() {
     this.close.emit();
   }
 
-  closeEditModal() {
+  public closeEditModal() {
     this.showEditListModal = false
   }
 
@@ -74,7 +60,7 @@ export class EditListsModalComponent implements OnInit {
     list.categories = Array.from(updatedCategories);
   }
 
-  getCategoryNames(categoryIds: string[]): string {
+  public getCategoryNames(categoryIds: string[]): string {
     if (!categoryIds || categoryIds.length === 0) return 'Nenhuma categoria';
 
     return categoryIds.map(id => {
@@ -83,20 +69,17 @@ export class EditListsModalComponent implements OnInit {
     }).filter(name => name).join(', ');
   }
 
-  editList(list: HabitList) {
+  public editList(list: HabitList) {
     this.selectedList = structuredClone(list)
     this.showEditListModal = true
-
-
-    console.log('Editar lista:', list);
   }
 
-  toggleVisibility(list: HabitList) {
+  public toggleVisibility(list: HabitList) {
     this.toggle.emit(list.id)
     list.isVisible = !list.isVisible
   }
 
-  deleteList(list: HabitList) {
+  public deleteList(list: HabitList) {
     this.delete.emit(list.id);
   }
 
@@ -105,47 +88,31 @@ export class EditListsModalComponent implements OnInit {
       list.categories.length > 0
   }
 
-
   public async updateList(list: HabitList) {
     if (list.name === '') {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Insira um nome.',
-        icon: 'warning',
-        heightAuto: false,
-      });
-      Loading.remove()
+      Swal.fire({ title: 'Erro', text: 'Insira um nome.', icon: 'warning', heightAuto: false, });
       return;
-
     }
     if (list.categories.length === 0) {
-      Swal.fire({
-        title: 'Erro',
-        text: 'Selecione uma categoria.',
-        icon: 'warning',
-        heightAuto: false,
-      });
-      Loading.remove()
+      Swal.fire({ title: 'Erro', text: 'Selecione uma categoria.', icon: 'warning', heightAuto: false, });
       return;
+    } 
+    if (!this.isFormValid(list)) {
+      Swal.fire({ title: 'Erro', text: 'Preencha todos os campos corretamente.', icon: 'warning', heightAuto: false, });
+      return
     }
     try {
-
       Loading.standard('Atualizando lista...');
-      const uid = await this.userService.getUserId();
-      if (!uid) throw new Error('Usuário não autenticado');
       list.createdAt = normalizeFirestoreDate(list.createdAt)
       list.updatedAt = serverTimestamp();
-
-      console.log(list.createdAt)
       await this.habitService.updateHabitList(list, list.id);
-      console.log(list)
       Swal.fire({ title: 'Sucesso', text: 'Lista atualizada com sucesso', icon: 'success', heightAuto: false, confirmButtonColor: '#E0004D' });
-      Loading.remove();
       this.closeModal();
     } catch (err: unknown) {
-      Loading.remove();
       const message = err instanceof Error ? err.message : 'Ocorreu um erro desconhecido';
       Swal.fire({ title: 'Erro', text: message, icon: 'error', heightAuto: false, confirmButtonColor: '#E0004D' });
+    } finally {
+      Loading.remove()
     }
   }
 

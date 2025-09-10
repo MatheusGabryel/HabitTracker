@@ -17,7 +17,7 @@
     </div>
 
     <div class="name">
-      <span>{{ habit?.name }}</span>
+      <span>{{ habit.name }}</span>
     </div>
 
     @if (category) {
@@ -45,14 +45,15 @@
     }
 
     <div class="days-mobile">
-      <app-habit-days
-        [logs]="logs"
-        [habit]="habit"
-        [habitId]="habit.id"
-        [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
-        [days]="days"
-        (logUpdated)="reloadLogs()"
-      ></app-habit-days>
+            @if(logs !== undefined) {
+            <app-habit-days
+              [logs]="logs"
+              [habit]="habit"
+              [habitId]="habit.id"
+              [days]="days"
+              (logUpdated)="reloadLogs()"
+            ></app-habit-days>
+            }
     </div>
 
     <div class="priority">
@@ -157,7 +158,7 @@
               <div class="info-label">Criado em:</div>
               <div class="info-value days-value">
                 <span class="day-badge">
-                  {{ habit.createdAt | date : "dd/MM/yyyy" }}</span
+                  {{ createdAtUI | date : "dd/MM/yyyy" }}</span
                 >
               </div>
             </div>
@@ -165,14 +166,17 @@
 
           <div class="days-desktop habit-days-container">
             <h4 class="days-title">Registro Diário</h4>
+            @if(logs !== undefined) {
             <app-habit-days
               [logs]="logs"
               [habit]="habit"
               [habitId]="habit.id"
-              [habitRule]="habit.timesTarget?.rule || habit.timeTarget?.rule"
               [days]="days"
               (logUpdated)="reloadLogs()"
             ></app-habit-days>
+            }
+
+            
           </div>
 
           <div class="stat-card progress-card">
@@ -282,7 +286,7 @@
             <div class="extra-stat-content">
               <div class="extra-stat-main">
                 <div class="extra-stat-value">
-                  {{ formatTime(timeValue.totalValue) }}
+                  {{ formatTimeValue(timeValue.totalValue) }}
                 </div>
                 <div class="extra-stat-label">Total acumulado</div>
               </div>
@@ -290,13 +294,13 @@
                 <div class="breakdown-item">
                   <span class="breakdown-label">Esta semana:</span>
                   <span class="breakdown-value">{{
-                    formatTime(timeValue.weekValue)
+                    formatTimeValue(timeValue.weekValue)
                   }}</span>
                 </div>
                 <div class="breakdown-item">
                   <span class="breakdown-label">Média diária:</span>
                   <span class="breakdown-value">{{
-                    formatTime(timeValue.almostValue)
+                    formatTimeValue(timeValue.almostValue)
                   }}</span>
                 </div>
               </div>

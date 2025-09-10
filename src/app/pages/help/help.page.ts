@@ -15,12 +15,11 @@ import Swal from 'sweetalert2';
   imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, FormsModule, ReactiveFormsModule],
 })
 export class HelpPage {
-  formulario!: FormGroup;
   private fb = inject(FormBuilder);
 
-  constructor() {}
+    public formulario!: FormGroup;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.formulario = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -30,7 +29,7 @@ export class HelpPage {
     });
   }
 
-  async onSubmit(event: Event) {
+  public async onSubmit(event: Event) {
     event.preventDefault();
 
     if (this.formulario.invalid) {
@@ -43,19 +42,17 @@ export class HelpPage {
       return;
     }
 
-    // Se honeypot estiver preenchido, bloqueia (spam)
     if (this.formulario.value._honey) {
       console.log('Spam detectado pelo honeypot');
       return;
     }
 
-    // Cria um FormData para enviar via fetch
     const formData = new FormData();
     formData.append('name', this.formulario.value.name);
     formData.append('email', this.formulario.value.email);
     formData.append('subject', this.formulario.value.subject);
     formData.append('message', this.formulario.value.message);
-    formData.append('_captcha', 'false'); // disable captcha
+    formData.append('_captcha', 'false');
 
     try {
       const response = await fetch('https://formsubmit.co/mgabryel2007@gmail.com', {

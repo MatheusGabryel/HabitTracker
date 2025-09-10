@@ -184,18 +184,18 @@
                 <div
                   class="habit-icon"
                   [ngStyle]="{
-                    'background-color': getCategoryColor(habit.category)
+                    'background-color': getCategoryInfo(habit.category)?.color
                   }"
                 >
                   <img
-                    [src]="getCategoryIcon(habit.category)"
+                    [src]="getCategoryInfo(habit.category)?.icon"
                     alt="Categoria"
                   />
                 </div>
                 <div class="habit-details">
                   <span class="habit-name">{{ habit.name }}</span>
                   <span class="habit-category">{{
-                    getCategoryName(habit.category)
+                    getCategoryInfo(habit.category)?.displayName
                   }}</span>
                 </div>
                 <div class="habit-checkbox">
@@ -278,11 +278,11 @@
             <div class="summary-item">
               <strong>Categoria:</strong>
               <img
-                [src]="getCategoryIcon(goal.category)"
+                [src]="getCategoryInfo(goal.category)?.icon"
                 class="summary-category-icon"
                 alt="Categoria"
               />
-              {{ getCategoryName(goal.category) }}
+              {{ getCategoryInfo(goal.category)?.displayName }}
             </div>
             <div class="summary-item">
               <strong>Tipo de Meta:</strong> {{ getGoalTypeDisplay() }}
