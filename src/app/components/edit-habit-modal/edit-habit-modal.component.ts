@@ -40,7 +40,6 @@ export class EditHabitModalComponent implements OnInit {
     }
 
     this.progressType = this.habit.progressType;
-    console.log(this.habit);
   }
 
   public closeModal() {

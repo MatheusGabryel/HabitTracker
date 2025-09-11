@@ -37,7 +37,18 @@ ion-content {
                 color: rgb(224, 0, 77);
             }
 
+            .icon-back {
+                display: flex;
+                align-items: center;
+                padding: 0.3rem;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: background-color 0.2s;
 
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.05);
+                }
+            }
         }
 
         .text-container {

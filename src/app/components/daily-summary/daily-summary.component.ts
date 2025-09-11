@@ -53,7 +53,6 @@ export class DailySummaryComponent {
 
   public getHabitsForWeekday(date: Date): number {
     const weekday = date.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '').toLowerCase();
-    console.log(weekday)
     const habitsForDay = this.habits.filter(habit =>
       habit.days.map(d => d.toLowerCase()).includes(weekday)
     ).length;
@@ -66,11 +65,6 @@ export class DailySummaryComponent {
       let habitCompleted = habit.logs.filter(l => l.state === 'completed' && l.date.includes(weekday)).length
       return habitCompleted = acc + habitCompleted
     }, 0)
-
-    console.log('Ids:', this.habits.map(h =>
-      h.logs.filter(l => l.state === 'completed' && l.date.includes('2025-08-27'))
-    ))
-    console.log('Nomes:', this.habits.map(h => h.id))
     return logsCompleted
   }
 

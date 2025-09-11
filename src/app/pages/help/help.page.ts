@@ -43,7 +43,6 @@ export class HelpPage {
     }
 
     if (this.formulario.value._honey) {
-      console.log('Spam detectado pelo honeypot');
       return;
     }
 

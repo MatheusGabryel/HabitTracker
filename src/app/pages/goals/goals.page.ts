@@ -15,13 +15,14 @@ import { FormsModule } from '@angular/forms';
 import { FilterGoalModalComponent } from "src/app/components/filter-goal-modal/filter-goal-modal.component";
 import { EditGoalModalComponent } from "src/app/components/edit-goal-modal/edit-goal-modal.component";
 import { GoalFilters } from 'src/app/interfaces/goalFilters.interface';
+import { CreateCardComponent } from "src/app/components/create-card/create-card.component";
 
 @Component({
   selector: 'app-goals',
   templateUrl: './goals.page.html',
   styleUrls: ['./goals.page.scss'],
   standalone: true,
-  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent, FormsModule, FilterGoalModalComponent, EditGoalModalComponent],
+  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent, FormsModule, FilterGoalModalComponent, EditGoalModalComponent, CreateCardComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [

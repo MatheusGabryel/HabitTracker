@@ -59,8 +59,6 @@ export class FilterGoalModalComponent {
   }
 
   public toggleCategory(categoryId: string) {
-    console.log('Categoria selecionada:', categoryId);
-
     if (categoryId === 'all') {
       this.selectedCategories = ['all'];
     } else {

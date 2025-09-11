@@ -72,7 +72,6 @@ export class HabitPage {
   ];
 
   public async ngOnInit() {
-    this.habits = await this.habitService.getHabitsWithLogs()
     this.loadLists();
     this.loadHabitsForActiveTab(this.DEFAULT_TAB);
   }
@@ -108,6 +107,7 @@ export class HabitPage {
     this.loading = true
     const uid = await this.userService.getUserId();
     if (!uid) throw new Error('Usuário não autenticado');
+    this.habits = await this.habitService.getHabitsWithLogs();
 
     if (!list && tabName !== this.DEFAULT_TAB) {
       list = this.tabs.find(tab => tab.name === tabName && tab.id) as HabitList;
@@ -188,8 +188,6 @@ export class HabitPage {
 
   public async deleteList(event: any) {
     const listId = event as string;
-    console.log(event)
-    console.log(listId)
 
     const uid = await this.userService.getUserId();
     if (!uid) return;
