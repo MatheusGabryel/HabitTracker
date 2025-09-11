@@ -1,12 +1,12 @@
 <ion-content>
-<ion-content>
-  <div class="app-container">
-  <app-menu></app-menu>
+  <ion-content>
+    <div class="app-container">
+      <app-menu></app-menu>
 
-  <div class="main-container">
-    <app-header></app-header>
+      <div class="main-container">
+        <app-header></app-header>
 
-    <main class="page-content">
+        <main class="page-content">
           <div class="page-description">
             <h1>Configurações</h1>
             <p>Gerencie suas preferências, dados da conta e privacidade.</p>
@@ -14,40 +14,51 @@
           <section>
             <div class="settings-header">
               <div class="tabs">
-                <button (click)="changeSection('account')" [class.active]="currentSection === 'account'">Conta</button>
-                <button (click)="changeSection('preferences')" [class.active]="currentSection === 'preferences'">Preferências</button>
-                <button (click)="changeSection('privacy')" [class.active]="currentSection === 'privacy'">Privacidade</button>
+                <button
+                  (click)="changeSection('account')"
+                  [class.active]="currentSection === 'account'"
+                >
+                  Conta
+                </button>
+                <!-- <button (click)="changeSection('preferences')" [class.active]="currentSection === 'preferences'">Preferências</button> -->
+                <button
+                  (click)="changeSection('privacy')"
+                  [class.active]="currentSection === 'privacy'"
+                >
+                  Privacidade
+                </button>
               </div>
             </div>
             <div class="tabs-content">
-              <section class="account" *ngIf="currentSection === 'account'">
+              @if(currentSection === 'account') {
+              <section class="account">
                 <div class="tab-title">
                   <h2>Informações do Usuario</h2>
                 </div>
                 <div class="settings-group">
                   <div class="setting-item">
                     <div class="row">
-                      <div class="title">Name*</div>
+                      <div class="title">Nome*</div>
                       <div class="info-section">
-                        <p>{{ nome }}</p>
+                        <input type="text" [(ngModel)]="editName" [disabled]="isDisabled" (input)="checkChanges()"/>
                       </div>
                     </div>
+                     <div class="btn-edit-profile" (click)="toggleEdit()">{{ buttonText }}*</div>
                   </div>
                   <div class="setting-item">
                     <div class="row">
                       <div class="title">Email*</div>
                       <div class="info-section">
-                        <p>{{ email }}</p>
+                        <p>{{ userEmail }}</p>
                       </div>
                     </div>
                   </div>
-                  <div class="edit-profile">
-                    <button>Editar Perfil</button>
-                  </div>
+                  <div class="edit-profile"></div>
                 </div>
               </section>
+              }
 
-              <section class="preferences" *ngIf="currentSection === 'preferences'">
+              <!-- <section class="preferences" *ngIf="currentSection === 'preferences'">
                 <div class="tab-title">
                   <h2>Preferencias</h2>
                 </div>
@@ -80,9 +91,9 @@
                     </div>
                   </div>
                 </div>
-              </section>
-
-              <section class="privacy" *ngIf="currentSection === 'privacy'">
+              </section> -->
+              @if (currentSection === 'privacy') {
+              <section class="privacy">
                 <div class="tab-title">
                   <h2>Privacidade</h2>
                 </div>
@@ -93,12 +104,14 @@
                     com terceiros. Você pode solicitar a exclusão da sua conta e
                     dados a qualquer momento clicando no botão abaixo.
                   </p>
-                  <button>Excluir meus dados</button>
+                  <button (click)="deleteUser()">Excluir meus dados</button>
                 </div>
               </section>
+              }
             </div>
           </section>
-    </main>
-  </div>
+        </main>
+      </div>
     </div>
+  </ion-content>
 </ion-content>

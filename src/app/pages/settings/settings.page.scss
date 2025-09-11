@@ -72,21 +72,28 @@ ion-content {
   .setting-item {
     border-bottom: 1px solid #e5e7eb;
     padding-bottom: 3rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
   }
 
   .setting-item .row {
     display: flex;
     flex-direction: row;
+    gap: 25vw;
   }
 
   .setting-item .row .title {
-    width: 700px;
     font-family: poppinsSemiBold;
   }
 
   .setting-item .row .info-section p {
     font-family: poppinsRegular;
     font-size: 15px;
+    padding: 4px;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: row;
   }
 
   .edit-profile button {
@@ -104,6 +111,43 @@ ion-content {
 
     &:hover {
       opacity: 0.9;
+    }
+  }
+
+  .btn-edit-profile {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    color: #1976d2;
+    font-family: poppinsSemiBold;
+    font-size: 15px;
+  }
+
+  input[type="text"] {
+    padding: 4px;
+    border: 1px solid #ddd;
+    background-color: transparent;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &:disabled {
+      background-color: #c7c7c7;
+      opacity: 0.7;
+      cursor: not-allowed;
     }
   }
 
@@ -140,7 +184,6 @@ ion-content {
       opacity: 0.9;
     }
   }
-
 }
 
 @media (max-width: 768px) {
@@ -162,10 +205,19 @@ ion-content {
     .account .settings-group .setting-item .row {
       display: flex;
       flex-direction: column;
+      gap: 1rem;
     }
 
-    .privacy-content p {
+    .btn-edit-profile {
+      align-items: flex-end;
+    }
+
+    .setting-item .row .title {
       width: auto;
+    }
+
+    .setting-item {
+      justify-content: space-between;
     }
   }
 }
