@@ -31,7 +31,7 @@ export class CreateListModalComponent {
     isVisible: true
   }
 
-  closeModal() {
+  public closeModal() {
     this.close.emit();
   }
 
