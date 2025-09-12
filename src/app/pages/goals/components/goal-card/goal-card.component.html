@@ -51,7 +51,8 @@
           >{{ goal.progressValue }} / {{ goal.targetValue }}</span
         >
       </div>
-      @if (goal.progressValue !== undefined && goal.targetValue !== undefined && goal.progressValue <= goal.targetValue) {
+      @if (goal.progressValue !== undefined && goal.targetValue !== undefined &&
+      goal.progressValue <= goal.targetValue) {
       <div class="goal-info-item">
         <span class="info-label">Restante:</span>
         <span class="info-value"
@@ -219,7 +220,8 @@
               {{ goal.progressValueType || goal.customProgressType }}</span
             >
           </div>
-          @if (goal.progressValue !== undefined && goal.targetValue !== undefined && goal.progressValue <= goal.targetValue) {
+          @if (goal.progressValue !== undefined && goal.targetValue !==
+          undefined && goal.progressValue <= goal.targetValue) {
           <div class="progress-item">
             <span class="label">Restante:</span>
             <span class="value"
@@ -335,7 +337,9 @@
           class="modal-action-btn restore-btn"
           (click)="restoreGoal($event)"
         >
-          <span class="action-icon">🔄</span>
+          <span class="action-icon"
+            ><img src="./assets/icon/rotate.svg" alt="Editar" width="20px"
+          /></span>
           <span class="action-text">Restaurar Meta</span>
         </button>
         } @if (goal.goalType === 'unit' && goal.state === 'in_progress') {

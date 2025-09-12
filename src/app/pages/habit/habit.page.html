@@ -36,13 +36,13 @@
           <div class="create-cards">
             <app-create-card
               [title]="'Novo Hábito'"
-              [imagePath]="'./assets/icon/post_add_250dp_FFFFFF.png'"
+              [imagePath]="'./assets/icon/habit.png'"
               (click)="openHabitModal()"
             ></app-create-card>
 
             <app-create-card
               [title]="'Nova Lista'"
-              [imagePath]="'./assets/icon/create_new_folder_50dp_FFFFFF.png'"
+              [imagePath]="'./assets/icon/list.png'"
               (click)="openListModal()"
             ></app-create-card>
           </div>
@@ -53,7 +53,7 @@
             <div class="habit-header">
               <h2>Lista de Hábitos</h2>
               <button class="filter" (click)="openEditListsModal()">
-                <img src="./assets/icon/tune_100dp_434343.png" alt="" />
+                <img src="./assets/icon/filter.png" alt="" />
                 <p>Editar Listas</p>
               </button>
             </div>
@@ -98,7 +98,7 @@
 
               <div class="search-bar">
                 <img
-                  src="./assets/icon/search_100dp_434343.png"
+                  src="./assets/icon/search.png"
                   alt=""
                   width="25px"
                 />
@@ -153,7 +153,7 @@
               } @else {
               <div class="empty-state">
                 <img
-                  src="./assets/icon/post_add_250dp_FFFFFF.png"
+                  src="./assets/icon/habit.png"
                   alt="Nenhum hábito"
                   class="empty-icon"
                 />

@@ -533,7 +533,10 @@
 
   .restore-btn {
     background-color: #ffc107;
-    color: #212529;
+    
+    span {
+      color: white;
+    }
 
     &:hover {
       background-color: #e0a800;

@@ -170,7 +170,7 @@ ion-content {
                 height: 64px;
                 margin-bottom: 16px;
                 opacity: 0.6;
-                background-color: #007bff;
+                background-color: #e0004d;
                 padding: 12px;
                 border-radius: 50%;
             }
@@ -190,7 +190,7 @@ ion-content {
             }
 
             .create-button {
-                background-color: #007bff;
+                background-color: #e0004d;
                 color: white;
                 border: none;
                 padding: 12px 24px;
@@ -201,7 +201,7 @@ ion-content {
                 transition: background-color 0.2s;
 
                 &:hover {
-                    background-color: #0056b3;
+                    background-color: #c50045;
                 }
             }
         }

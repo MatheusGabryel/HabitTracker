@@ -1,22 +1,22 @@
 import { UserService } from '../../services/user/user.service';
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from '../../components/menu/menu.component';
+import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
-import { HeaderComponent } from "../../components/header/header.component";
-import { CreateCardComponent } from "../../components/create-card/create-card.component";
-import { HabitCardComponent } from "../../components/habit-card/habit-card.component";
-import { CreateHabitModalComponent } from "../../components/create-habit-modal/create-habit-modal.component";
+import { HeaderComponent } from "../../shared/components/header/header.component";
+import { CreateCardComponent } from "../../shared/components/create-card/create-card.component";
+import { HabitCardComponent } from "./components/habit-card/habit-card.component";
+import { CreateHabitModalComponent } from "./components/create-habit-modal/create-habit-modal.component";
 import { trigger, transition, style, animate } from '@angular/animations';
-import { CreateListModalComponent } from "../../components/create-list-modal/create-list-modal.component";
+import { CreateListModalComponent } from "./components/create-list-modal/create-list-modal.component";
 import { Loading } from 'notiflix';
 import Swal from 'sweetalert2';
 import { HabitData } from 'src/app/interfaces/habit.interface';
 import { HabitList } from 'src/app/interfaces/habit.interface';
 import { FormsModule } from '@angular/forms';
 import { HabitService } from 'src/app/services/habit/habit.service';
-import { EditHabitModalComponent } from "../../components/edit-habit-modal/edit-habit-modal.component";
-import { EditListsModalComponent } from "src/app/components/edit-lists-modal/edit-lists-modal.component";
+import { EditHabitModalComponent } from "./components/edit-habit-modal/edit-habit-modal.component";
+import { EditListsModalComponent } from "src/app/pages/habit/components/edit-lists-modal/edit-lists-modal.component";
 
 @Component({
   selector: 'app-habit',

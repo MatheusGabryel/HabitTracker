@@ -16,7 +16,6 @@
 .modal-container {
   margin: auto;
   overflow-y: auto;
-  height: 100%;
   background: #fff;
   border-radius: 16px;
   width: 100%;
@@ -76,7 +75,7 @@
     height: 64px;
     margin-bottom: 16px;
     opacity: 0.6;
-    background-color: #007bff;
+    background-color: #e0004d;
     padding: 12px;
     border-radius: 50%;
   }
@@ -88,7 +87,7 @@
   }
 
   .create-button {
-    background-color: #007bff;
+    background-color: #e0004d;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -98,7 +97,7 @@
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: #0056b3;
+      background-color: #c50045;
     }
   }
 }

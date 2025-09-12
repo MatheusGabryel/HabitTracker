@@ -10,12 +10,11 @@
     @if (lists.length === 0) {
     <div class="empty-state">
       <img
-        src="./assets/icon/create_new_folder_50dp_FFFFFF.png"
+        src="./assets/icon/list.png"
         alt="Nenhuma lista"
         class="empty-icon"
       />
       <p>Você ainda não tem nenhuma lista</p>
-      <button class="create-button" (click)="closeModal()">Criar Lista</button>
     </div>
     } @else if (lists.length >= 1) {
     <div class="lists-container">

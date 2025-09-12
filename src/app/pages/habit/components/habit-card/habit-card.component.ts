@@ -1,6 +1,6 @@
 import { HabitLog, HabitLogMap, StateHabitType } from 'src/app/interfaces/habit.interface';
-import { Category } from './../../interfaces/category.interface';
-import { UserService } from './../../services/user/user.service';
+import { Category } from '../../../../interfaces/category.interface';
+import { UserService } from '../../../../services/user/user.service';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -75,6 +75,14 @@ export class HabitCardComponent implements OnInit {
     isHabitDay: boolean;
   }[] = [];
 
+  public dates: {
+    date: Date;
+    iso: string;
+    weekday: string;
+    formattedDate: string;
+    isHabitDay: boolean;
+  }[] = [];
+
   public today = new Date().toISOString().split('T')[0];
 
   public showDetails: boolean = false;
@@ -117,8 +125,9 @@ export class HabitCardComponent implements OnInit {
     this.createdAtUI = normalizeFirestoreDate(this.habit.createdAt)
 
     const todayDate = parseLocalDate(this.today)
-    this.days = generateDays(todayDate, 6, this.habit.days);
-    this.dateRange = this.days.map(d => d.iso);
+    this.days = generateDays(new Date(), 6, this.habit.days);
+    this.dates = generateDays(todayDate, 6, this.habit.days);
+    this.dateRange = this.dates.map(d => d.iso);
     this.loadLogsAndStatistics()
   }
 
@@ -139,6 +148,7 @@ export class HabitCardComponent implements OnInit {
   async markHabit(event: MouseEvent) {
     event.stopPropagation();
     try {
+
       await this.habitService.completeHabit(this.habit, this.today)
       await this.goalService.checkGoalsForHabit(this.habit.id)
       this.loadLogsAndStatistics()

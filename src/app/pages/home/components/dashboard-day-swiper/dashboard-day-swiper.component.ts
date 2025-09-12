@@ -10,6 +10,7 @@ import { Category } from 'src/app/interfaces/category.interface';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { HabitData, HabitDataWithCategoryObj, HabitWithLogs } from 'src/app/interfaces/habit.interface';
 import { normalizeFirestoreDate } from 'src/app/shared/utils/timestamp.utils';
+import { formatLocalDate, parseLocalDate } from 'src/app/shared/utils/date.utils';
 registerLocaleData(localePt);
 register()
 
@@ -52,7 +53,7 @@ export class DashboardDaySwiperComponent {
 
   public async markHabit(habit: HabitData, date: Date) {
     if (!this.isPastOrToday(date)) return;
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = formatLocalDate(date);
     const newState = await this.habitService.completeHabit(habit, dateKey);
   this.logsByDate = {
     ...this.logsByDate,
@@ -108,7 +109,7 @@ export class DashboardDaySwiperComponent {
   }
 
   public getDayState(habitId: string, date: Date): string {
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = formatLocalDate(date);
     const dayLog = this.logsByDate?.[dateKey]?.[habitId];
     return dayLog?.state || 'in_progress';
   }

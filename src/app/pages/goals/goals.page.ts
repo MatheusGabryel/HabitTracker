@@ -1,10 +1,10 @@
-import { GoalCardComponent } from './../../components/goal-card/goal-card.component';
+import { GoalCardComponent } from './components/goal-card/goal-card.component';
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from './../../components/menu/menu.component';
+import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
-import { HeaderComponent } from "../../components/header/header.component";
-import { CreateGoalModalComponent } from "../../components/create-goal-modal/create-goal-modal.component";
+import { HeaderComponent } from "../../shared/components/header/header.component";
+import { CreateGoalModalComponent } from "./components/create-goal-modal/create-goal-modal.component";
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UserService } from 'src/app/services/user/user.service';
 import { GoalData } from 'src/app/interfaces/goal.interface';
@@ -12,17 +12,17 @@ import Swal from 'sweetalert2';
 import { Loading } from 'notiflix';
 import { GoalService } from 'src/app/services/goal/goal.service';
 import { FormsModule } from '@angular/forms';
-import { FilterGoalModalComponent } from "src/app/components/filter-goal-modal/filter-goal-modal.component";
-import { EditGoalModalComponent } from "src/app/components/edit-goal-modal/edit-goal-modal.component";
+import { FilterGoalModalComponent } from "src/app/pages/goals/components/filter-goal-modal/filter-goal-modal.component";
+import { EditGoalModalComponent } from "src/app/pages/goals/components/edit-goal-modal/edit-goal-modal.component";
 import { GoalFilters } from 'src/app/interfaces/goalFilters.interface';
-import { CreateCardComponent } from "src/app/components/create-card/create-card.component";
+import { CreateCardComponent } from "src/app/shared/components/create-card/create-card.component";
 
 @Component({
   selector: 'app-goals',
   templateUrl: './goals.page.html',
   styleUrls: ['./goals.page.scss'],
   standalone: true,
-  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent, FormsModule, FilterGoalModalComponent, EditGoalModalComponent, CreateCardComponent],
+  imports: [IonContent, MenuComponent, CommonModule, HeaderComponent, CreateGoalModalComponent, GoalCardComponent, FormsModule, FilterGoalModalComponent, EditGoalModalComponent],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [

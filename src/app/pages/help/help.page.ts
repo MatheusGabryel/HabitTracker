@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from './../../components/menu/menu.component';
+import { MenuComponent } from '../../shared/components/menu/menu.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
-import { HeaderComponent } from "../../components/header/header.component";
+import { HeaderComponent } from "../../shared/components/header/header.component";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 

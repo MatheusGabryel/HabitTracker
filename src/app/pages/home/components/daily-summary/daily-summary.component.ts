@@ -1,5 +1,5 @@
 import { StatisticsService } from 'src/app/services/statistics/statistics.service';
-import { HabitData } from './../../interfaces/habit.interface';
+import { HabitData } from '../../../../interfaces/habit.interface';
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexLegend, NgApexchartsModule } from 'ng-apexcharts';
