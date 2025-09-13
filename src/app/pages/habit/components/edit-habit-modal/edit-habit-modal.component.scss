@@ -522,14 +522,14 @@
             }
 
             &.update {
-                background-color: #ff9800;
+                background-color: #e0004d;
                 color: white;
 
                 &:hover:not(:disabled) {
-                    background-color: #f57c00;
+                    background-color: #b1003e;
                 }
             }
-
+    
             &:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;

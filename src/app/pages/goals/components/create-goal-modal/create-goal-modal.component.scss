@@ -482,7 +482,7 @@ input[type="date"] {
 }
 
 .nav-button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
@@ -513,11 +513,11 @@ input[type="date"] {
   }
 
   &.create {
-    background-color: #28a745;
+    background-color: #e0004d;
     color: white;
 
     &:hover {
-      background-color: #218838;
+      background-color: #b1003e;
     }
 
     &:disabled {
@@ -527,28 +527,6 @@ input[type="date"] {
   }
 }
 
-button {
-  &.cancelar {
-    background: #e0e0e0;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  &.criar {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 10px;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.5;
-    }
-  }
-}
 
 @media screen and (max-width: 768px) {
   .modal-container {
