@@ -105,10 +105,10 @@ To run it locally you need to:
 <h2 id="layout">🎨 Layout</h2>
 
 <p align="center">
-    <img src="./src/assets/images/screenshots/login-habittracker.png" alt="Image Example" width="400px">
-    <img src="./src/assets/images/screenshots/signup-habittracker.png" alt="Image Example" width="400px">
-    <img src="./src/assets/images/screenshots/habit-page-habittracker.png" alt="Image Example" width="400px">
-    <img src="./src/assets/images/screenshots/goal-page-habittracker.png" alt="Image Example" width="400px">
+    <img src="https://i.postimg.cc/CLQ0rPjV/login-habittracker.png" alt="Image Example" width="400px">
+    <img src="https://i.postimg.cc/Cxng3GNn/singup-habittracker.png" alt="Image Example" width="400px">
+    <img src="https://i.postimg.cc/s2pRX3bV/habit-page-habittracker.png" alt="Image Example" width="400px">
+    <img src="https://i.postimg.cc/Gp0Cd477/goal-page-habittracker.png" alt="Image Example" width="400px">
 </p>
 
 <h2 id="next">📍 Next Steps</h2>
