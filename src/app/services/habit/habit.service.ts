@@ -178,21 +178,6 @@ export class HabitService {
     }
   }
 
-  public async getHabitsByCategories(uid: string, categories: string[]): Promise<HabitData[]> {
-    const habitsRef = collection(this.firestore, `users/${uid}/habits`);
-    if (!categories || categories.length === 0) return [];
-    const q = query(habitsRef, where('category', 'in', categories));
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs.map(doc => {
-      const data = doc.data() as Omit<HabitData, 'id'>;
-      return {
-        id: doc.id,
-        ...data
-      };
-    });
-  }
-
   public async getHabitById(habitId: string): Promise<HabitData | null> {
     const uid = await this.userService.getUserId();
     if (!uid) return null
@@ -407,7 +392,7 @@ export class HabitService {
         max: maxAllowed < 100000 ? String(maxAllowed) : '100000',
         placeholder: 'Ex: 3',
       },
-      inputValidator: (value) => {
+      inputValidator: (value: any) => {
         const num = Number(value);
         if (isNaN(num) || num < 0 || num > maxLimit) {
           return `Insira um valor válido entre 0 e ${maxLimit}.`;

@@ -116,7 +116,9 @@ export class HabitPage {
     if (tabName === this.DEFAULT_TAB) {
       this.habits
     } else if (list) {
-      this.habits = await this.habitService.getHabitsByCategories(uid, list.categories);
+      this.habits = this.habits = this.habits.filter(h =>
+        list.categories.some(cat => h.category.includes(cat))
+      );
     } else {
       this.habits = [];
     }

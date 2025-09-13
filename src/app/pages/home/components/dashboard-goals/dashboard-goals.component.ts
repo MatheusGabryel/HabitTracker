@@ -32,6 +32,9 @@ export class DashboardGoalsComponent {
     });
 
     this.getHabitName()
+    setTimeout(() => {
+      this.update.emit()
+    }, 300);
   }
 
   public completeGoal(goal: GoalData) {

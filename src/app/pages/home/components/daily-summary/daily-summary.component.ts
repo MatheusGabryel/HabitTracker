@@ -2,24 +2,15 @@ import { StatisticsService } from 'src/app/services/statistics/statistics.servic
 import { HabitData } from '../../../../interfaces/habit.interface';
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexLegend, NgApexchartsModule } from 'ng-apexcharts';
 import { GoalData } from 'src/app/interfaces/goal.interface';
 import { GoalService } from 'src/app/services/goal/goal.service';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { formatLocalDate } from 'src/app/shared/utils/date.utils';
-
-export type ChartOptions = {
-  series: ApexNonAxisChartSeries;
-  chart: ApexChart;
-  responsive: ApexResponsive[];
-  legend: ApexLegend;
-};
-
 @Component({
   selector: 'app-daily-summary',
   templateUrl: './daily-summary.component.html',
   styleUrls: ['./daily-summary.component.scss'],
-  imports: [NgApexchartsModule, CommonModule],
+  imports: [CommonModule],
 })
 export class DailySummaryComponent {
 

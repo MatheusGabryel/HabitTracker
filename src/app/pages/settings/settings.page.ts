@@ -82,7 +82,8 @@ export class SettingsPage {
       }).then((result) => {
         if (result.isConfirmed) {
           const editData: Partial<UserData> = {
-            displayName: this.editName
+            displayName: this.editName,
+            avatar: `https://avatar.iran.liara.run/username?username=${this.editName.split(/\s+/).join('+')}`
           }
           this.userName = this.editName
           this.userService.updateUserData(editData)

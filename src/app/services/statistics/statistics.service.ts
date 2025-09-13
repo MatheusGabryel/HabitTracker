@@ -278,6 +278,7 @@ export class StatisticsService {
 
     let bestStreak = 0;
     let currentStreak = 0;
+    if (sortedLogsDates.length === 0) return 0;
     let currentDate = parseLocalDate(sortedLogsDates[0]);
     const lastDate = parseLocalDate(sortedLogsDates[sortedLogsDates.length - 1]);
 
