@@ -45,26 +45,32 @@ export class DashboardDaySwiperComponent {
   public logsByDate: Record<string, Record<string, any>> = {};
 
   async ngOnChanges() {
-    this.generateWeek();
-    this.logs = await this.habitService.getLogsWithHabit()
-    this.getLogsForHabits()
+    if (this.habits) {
+      this.logs = await this.habitService.getLogsWithHabit();
+      this.getLogsForHabits();
+    }
+  }
 
+  async ngOnInit() {
+    this.generateWeek();
+    this.logs = await this.habitService.getLogsWithHabit();
+    this.getLogsForHabits();
   }
 
   public async markHabit(habit: HabitData, date: Date) {
     if (!this.isPastOrToday(date)) return;
     const dateKey = formatLocalDate(date);
     const newState = await this.habitService.completeHabit(habit, dateKey);
-  this.logsByDate = {
-    ...this.logsByDate,
-    [dateKey]: {
-      ...this.logsByDate[dateKey],
-      [habit.id]: {
-        ...(this.logsByDate[dateKey]?.[habit.id] ?? {}),
-        state: newState
+    this.logsByDate = {
+      ...this.logsByDate,
+      [dateKey]: {
+        ...this.logsByDate[dateKey],
+        [habit.id]: {
+          ...(this.logsByDate[dateKey]?.[habit.id] ?? {}),
+          state: newState
+        }
       }
-    }
-  };
+    };
     this.update.emit()
   }
 
