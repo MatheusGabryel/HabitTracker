@@ -1,27 +1,128 @@
-##Colors Theme:
+[LICENSE__BADGE]: https://img.shields.io/github/license/Fernanda-Kipper/Readme-Templates?style=for-the-badge
+[TYPESCRIPT__BADGE]: https://img.shields.io/badge/typescript-D4FAFF?style=for-the-badge&logo=typescript
+[ANGULAR__BADGE]: https://img.shields.io/badge/Angular-red?style=for-the-badge&logo=angular
+[PROJECT__BADGE]: https://img.shields.io/badge/📱Visit_this_project-000?style=for-the-badge&logo=project
+[PROJECT__URL]: https://habittracker-a4c2d.web.app
+[NODE_BADGE]: https://img.shields.io/badge/node.js-22.17.1-43853D?style=for-the-badge&logo=node.js
+[PRS_BADGE]: https://img.shields.io/badge/PRs-welcome-green?style=for-the-badge
+[FIREBASE__BADGE]: https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34
+[IONIC__BADGE]: https://img.shields.io/badge/Ionic-%233880FF.svg?style=for-the-badge&logo=Ionic&logoColor=white
 
-  🔴 City Red:
-    Primário (Base): rgb(224, 0, 77) → #E0004D
-    Claro (+20% de luminosidade): rgb(242, 102, 135) → #F26687
-    Suave (+40% de luminosidade): rgb(251, 153, 173) → #FB99AD
-    Escuro (-20% de luminosidade): rgb(179, 0, 61) → #B3003D
-    Profundo (-40% de luminosidade): rgb(134, 0, 46) → #86002E
-  🔵 River Blue:
-    Primário (Base): rgb(12, 35, 64) → #0C2340
-    Claro (+20% de luminosidade): rgb(47, 73, 110) → #2F496E
-    Suave (+40% de luminosidade): rgb(96, 123, 159) → #607B9F
-    Escuro (-20% de luminosidade): rgb(9, 26, 49) → #091A31
-    Profundo (-40% de luminosidade): rgb(6, 17, 34) → #061122
+<h1 style="font-weight: bold;">HabitTracker 📊</h1>
 
-Sugestão de Uso no Site
-Fundo Principal: rgb(242, 244, 248) (#F2F4F8)
-Texto Principal: Cinza Escuro #333333 para contraste.
-Botões e Destaques: City Red #E0004D para chamar atenção.
-Links e Detalhes: River Blue #0C2340 para equilíbrio visual.
-Bordas e Sombreamento: Cinza Médio #D1D5DB para um acabamento sutil.
+`HabitTracker` is a personal habit management app designed to help users develop a healthier routine.
 
-Fundo Principal: Azul Noite rgb(7, 15, 29) (#070F1D)
-Texto Principal: Branco Suave rgb(230, 230, 235) (#E6E6EB) para legibilidade.
-Botões e Destaques: City Red rgb(224, 0, 77) (#E0004D) para chamar atenção.
-Bordas e Divisórias: Azul Noturno rgb(26, 43, 72) (#1A2B48) para detalhes sutis.
-Efeitos Hover: Azul Mais Claro rgb(47, 73, 110) (#2F496E) para um toque dinâmico.
+![license][LICENSE__BADGE]
+![angular][ANGULAR__BADGE]
+![typescript][TYPESCRIPT__BADGE]
+![firebase][FIREBASE__BADGE]
+![ionic][IONIC__BADGE]
+![node][NODE_BADGE]
+
+<details open="open">
+<summary>Table of Contents</summary>
+ 
+- [📌 Usage](#usage)
+- [🛠️ Features](#features)
+- [💻 Technologies](#technologies)
+- [🚀 Getting started](#started)
+  - [Prerequisites](#prerequisites)
+  - [Cloning](#cloning)
+  - [Starting](#starting)
+- [🎨 Layout](#layout)
+- [📍 Next Steps](#next)
+- [📄 License](#license)
+  
+</details>
+
+<h2 id="usage">📌 Usage</h2>
+
+Visit the website by clicking the link below 🔽
+
+[![project][PROJECT__BADGE]][PROJECT__URL]
+
+<h2 id="features">🛠️ Features</h2>
+
+- Create and track habits
+
+- Organize habits into personalized lists
+
+- Set goals and track progress
+
+- Responsive interface (desktop and mobile)
+
+<h2 id="technologies">💻 Technologies</h2>
+
+- Angular
+- Firebase (Auth, Firestore)
+- Typescript
+- Ionic
+- RxJS
+
+<h2 id="started">🚀 Getting started</h2>
+
+Follow these steps to run the project locally
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+Before you begin, make sure you meet the following requirements:
+
+| Requirement                             | Version | Installation                                         |
+| --------------------------------------- | ------- | ---------------------------------------------------- |
+| [Node](https://nodejs.org)              | `>= 18` | [Donwload & Install](https://nodejs.org/en/download) |
+| [Ionic CLI](https://ionicframework.com) | `>= 8`  | `npm install -g @ionic/cli@8`                        |
+| [Npm](https://www.npmjs.com)            | `>= 9`  | Comes with Node                                      |
+
+<h3 id="cloning">Cloning</h3>
+
+Clone the repository into your machine:
+
+```bash
+git clone https://github.com/MatheusGabryel/HabitTracker.git
+```
+
+<h3 id="starting">Starting</h3>
+
+Inside the project's root directory install the dependencies:
+
+```bash
+cd HabitTracker
+
+npm install
+
+ng serve
+```
+
+<h3 id="firebase">Firebase Setup</h3>
+
+This project uses Firebase (Authentication + Firestore).  
+To run it locally you need to:
+
+1. Create a Firebase project in [Firebase Console](https://console.firebase.google.com/).  
+2. Enable **Authentication (Email/Password)** and **Firestore Database**.  
+3. Configure your Firestore rules to allow users access only to their own data.
+
+<h2 id="layout">🎨 Layout</h2>
+
+<p align="center">
+    <img src="./src/assets/images/screenshots/login-habittracker.png" alt="Image Example" width="400px">
+    <img src="./src/assets/images/screenshots/signup-habittracker.png" alt="Image Example" width="400px">
+    <img src="./src/assets/images/screenshots/habit-page-habittracker.png" alt="Image Example" width="400px">
+    <img src="./src/assets/images/screenshots/goal-page-habittracker.png" alt="Image Example" width="400px">
+</p>
+
+<h2 id="next">📍 Next Steps</h2>
+
+<details open="open">
+<summary>Future Implementation Ideas</summary>
+
+- Dark mode toggle
+- Social features for sharing progress
+- Rewards system
+- Preference settings
+
+</details>
+
+<h2 id="license">📄 License</h2>
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
