@@ -39,7 +39,10 @@
 
 Visit the website by clicking the link below 🔽
 
-[![project][PROJECT__BADGE]][PROJECT__URL]
+<a href="https://habittracker-a4c2d.web.app" target="_blank">
+  <img src="https://img.shields.io/badge/📱Visit_this_project-000?style=for-the-badge&logo=project"/>
+</a>
+
 
 <h2 id="features">🛠️ Features</h2>
 
