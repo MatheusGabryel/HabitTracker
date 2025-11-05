@@ -57,7 +57,7 @@ Visit the website by clicking the link below 🔽
 <h2 id="technologies">💻 Technologies</h2>
 
 - Angular
-- Firebase (Auth, Firestore)
+- Firebase (Auth, Firestore and Hosting)
 - Typescript
 - Ionic
 - RxJS
