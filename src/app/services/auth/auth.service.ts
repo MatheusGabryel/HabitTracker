@@ -1,9 +1,9 @@
 import { Firestore } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile, User, UserCredential } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile, User, UserCredential } from 'firebase/auth';
 import { UserData } from 'src/app/interfaces/user.interface';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { UserService } from '../user/user.service';
 
@@ -14,7 +14,7 @@ export class AuthService {
 
   private auth = inject(Auth);
   private firestore = inject(Firestore);
-  
+
   private currentUser = new BehaviorSubject<User | null>(null);
 
   constructor() {
@@ -39,11 +39,32 @@ export class AuthService {
       email: result.user.email!,
       displayName: name,
       createdAt: new Date(),
-      avatar: `https://avatar.iran.liara.run/username?username=${name.split(/\s+/).join('+')}`
+      avatar: this.generateAvatar(name)
     };
 
     await this.saveUserData(userData);
     return result;
+  }
+
+  public async signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(this.auth, provider);
+    const user = result.user;
+
+    const userRef = doc(this.firestore, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+
+     if (!userSnap.exists()) {
+      const userData = {
+        uid: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName ?? 'Usuário',
+        avatar: `https://avatar.iran.liara.run/username?username=${user.displayName ? user.displayName.split(/\s+/).join('+') : 'User'}`,
+        createdAt: new Date()
+      };
+
+      await setDoc(userRef, userData);
+    }
   }
 
   public async login(email: string, password: string): Promise<UserCredential> {
@@ -54,4 +75,7 @@ export class AuthService {
     return this.auth.signOut();
   }
 
+  public generateAvatar(name?: string | null): string {
+    return `https://avatar.iran.liara.run/username?username=${name ? name.split(/\s+/).join('+') : 'User'}`;
+  }
 }

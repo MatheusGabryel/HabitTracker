@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule, } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { EyeToogleComponent } from "src/app/shared/ui/eye-toogle/eye-toogle.comp
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink, EyeToogleComponent]
+  imports: [IonIcon, IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterLink, EyeToogleComponent]
 })
 export class LoginPage {
   private authService = inject(AuthService);
@@ -89,7 +89,31 @@ export class LoginPage {
     } finally {
       Loading.remove()
     }
-
   };
+
+  public async onGoogleRegister(): Promise<void> {
+  try {
+    Loading.circle();
+    await this.authService.signInWithGoogle();
+    Swal.fire({
+      title: 'Sucesso',
+      text: 'Login com Google realizado com sucesso!',
+      icon: 'success',
+      heightAuto: false,
+      confirmButtonColor: '#E0004D'
+    });
+    this.router.navigate(['/home']);
+  } catch (error: any) {
+    Swal.fire({
+      title: 'Erro',
+      text: 'Não foi possível fazer login com Google.',
+      icon: 'error',
+      heightAuto: false,
+      confirmButtonColor: '#E0004D'
+    });
+  } finally {
+    Loading.remove();
+  }
+}
 }
 

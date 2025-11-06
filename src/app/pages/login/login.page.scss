@@ -7,6 +7,7 @@ ion-content {
 
     .login {
         height: min-content;
+        width: 500px;
         background-color: white;
         border-radius: 20px;
         padding: 3rem 4rem;
@@ -28,6 +29,9 @@ ion-content {
             padding: 15px;
             border: 1px solid #ccc;
             border-radius: 15px;
+        }
+
+        .btn-login {
             background-color: rgb(224, 0, 77);
             color: #ffffff;
 
@@ -108,5 +112,32 @@ ion-content {
                 padding-bottom: 3rem;
             }
         }
+    }
+
+    .btn-google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #ccc;
+        margin-top: 1rem;
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+    }
+
+    .line-gray {
+        width: 100%;
+        height: 1px;
+        border-bottom: 1px solid #e5e7eb;
+        margin-top: 1.5rem;
     }
 }
