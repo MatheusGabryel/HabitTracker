@@ -72,7 +72,7 @@ Before you begin, make sure you meet the following requirements:
 
 | Requirement                             | Version | Installation                                         |
 | --------------------------------------- | ------- | ---------------------------------------------------- |
-| [Node](https://nodejs.org)              | `>= 18` | [Donwload & Install](https://nodejs.org/en/download) |
+| [Node](https://nodejs.org)              | `>= 20` | [Donwload & Install](https://nodejs.org/en/download) |
 | [Ionic CLI](https://ionicframework.com) | `>= 8`  | `npm install -g @ionic/cli@8`                        |
 | [Npm](https://www.npmjs.com)            | `>= 9`  | Comes with Node                                      |
 
