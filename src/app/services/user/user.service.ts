@@ -60,26 +60,21 @@ export class UserService {
     const habitsColPath = `users/${uid}/habits`;
     const habitsSnapshot = await getDocs(collection(this.firestore, habitsColPath));
 
-    // Para cada hábito, cria uma promessa para deletar logs e o próprio doc
     const habitsDeletePromises = habitsSnapshot.docs.map(async habitDoc => {
       const habitId = habitDoc.id;
 
-      // Deleta logs
       await this.deleteSubcollectionDocs(`users/${uid}/habits/${habitId}/habitsLogs`);
 
-      // Deleta o hábito
       await deleteDoc(doc(this.firestore, habitsColPath, habitId));
     });
 
     await Promise.all(habitsDeletePromises);
 
-    // Deleta outras subcoleções do usuário em paralelo
     await Promise.all([
       this.deleteSubcollectionDocs(`users/${uid}/goals`),
       this.deleteSubcollectionDocs(`users/${uid}/list`)
     ]);
 
-    // Deleta documento principal e Auth
     const userDocRef = doc(this.firestore, 'users', uid);
     await deleteDoc(userDocRef);
     await this.auth.currentUser?.delete();
