@@ -43,6 +43,10 @@ Visit the website by clicking the link below 🔽
   <img src="https://img.shields.io/badge/📱Visit_this_project-000?style=for-the-badge&logo=project"/>
 </a>
 
+Demo Account
+
+Email: habittracker+demo@gmail.com
+Password: habbitracker
 
 <h2 id="features">🛠️ Features</h2>
 
