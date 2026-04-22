@@ -45,8 +45,8 @@ Visit the website by clicking the link below 🔽
 
 Demo Account
 
-Email: habittracker+demo@gmail.com
-Password: habbitracker
+<p>Email: habittracker+demo@gmail.com</p>
+<p>Password: habbitracker</p>
 
 <h2 id="features">🛠️ Features</h2>
 
